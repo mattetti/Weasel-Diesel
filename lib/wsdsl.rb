@@ -1,6 +1,10 @@
+unless Object.const_defined?(:Extlib)
+  require File.expand_path('inflection', File.dirname(__FILE__))
+end
 require File.expand_path('params', File.dirname(__FILE__))
 require File.expand_path('response', File.dirname(__FILE__))
 require File.expand_path('documentation', File.dirname(__FILE__))
+require File.expand_path('ws_list', File.dirname(__FILE__))
 
 # WSDSL offers a web service DSL to define web services,
 # their params, http verbs, formats expected as well as the documentation
@@ -301,5 +305,28 @@ class WSDSL
     end
   end
 
+end
 
+# Extending the top level module to add some helpers
+#
+# @api public
+module Kernel
+
+  # Base DSL method called to describe a service
+  #
+  # @param [String] url The url of the service to add.
+  # @yield [WSDSL] The newly created service.
+  # @return [Array] The services already defined
+  # @example Describing a basic service
+  #   describe_service "hello-world.xml" do |service|
+  #     # describe the service
+  #   end
+  #
+  # @api public
+  def describe_service(url, &block)
+    service = WSDSL.new(url)
+    yield service
+    WSList.add(service)
+  end
+  
 end
