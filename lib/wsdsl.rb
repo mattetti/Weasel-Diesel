@@ -1,6 +1,6 @@
 require File.expand_path('params', File.dirname(__FILE__))
-require File.expand_path('documentation', File.dirname(__FILE__))
 require File.expand_path('response', File.dirname(__FILE__))
+require File.expand_path('documentation', File.dirname(__FILE__))
 
 # WSDSL offers a web service DSL to define web services,
 # their params, http verbs, formats expected as well as the documentation
@@ -263,6 +263,42 @@ class WSDSL
   # @api public
   def documentation
     yield(doc)
+  end
+
+  SERVICE_ROOT_REGEXP = /(.*?)[\/\(\.]/  
+  SERVICE_ACTION_REGEXP = /[\/\(\.]([a-z0-9_]+)[\/\(\.\?]/i
+  SERVICE_RESTFUL_SHOW_REGEXP = /\/:[a-z0-9_]+\.\w{3}$/
+  
+  private
+  
+  # extracts the service root name out of the url using a regexp
+  def extract_service_root_name(url)
+    url[SERVICE_ROOT_REGEXP, 1] || url
+  end
+  
+  # extracts the action name out of the url using a regexp
+  # Defaults to the list action
+  def extract_service_action(url)
+    if url =~ SERVICE_RESTFUL_SHOW_REGEXP
+      'show'
+    else
+      url[SERVICE_ACTION_REGEXP, 1] || 'list'
+    end
+  end
+  
+  # Check if we need to use a restful route in which case we need
+  # to update the service action
+  def update_restful_action(verb)
+    if verb != :get && @action && @action == 'list'
+      case verb
+      when :post
+        @action = 'create'
+      when :put
+        @action = 'update'
+      when :delete
+        @action = 'destroy'
+      end
+    end
   end
 
 
