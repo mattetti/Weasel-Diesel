@@ -85,3 +85,10 @@ Or a more complex example:
         DOC
       end
     end
+
+
+## Test suite
+
+This library comes with a test suite requiring Ruby 1.9.2
+The following gems need to be available:
+Rspec, Rack, Sinatra

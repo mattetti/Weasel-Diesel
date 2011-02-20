@@ -1,4 +1,14 @@
 require 'rspec'
-require File.expand_path("../lib/wsdsl", File.dirname(__FILE__))
-$: << File.dirname(__FILE__)
-require 'test_services'
+require 'rack/test'
+require 'sinatra'
+
+require_relative "../lib/wsdsl"
+require_relative 'test_services'
+require_relative "../lib/framework_ext/sinatra_controller"
+
+ENV["RACK_ENV"] = 'test'
+
+RSpec.configure do |conf|
+  conf.include Rack::Test::Methods
+end
+

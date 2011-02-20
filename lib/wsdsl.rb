@@ -20,7 +20,7 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 # 
 #  WSDSL
 #    |
-#    |__ service options (name, url, SSL, auth rquired formats, verbs, controller name, action, version)
+#    |__ service options (name, url, SSL, auth required formats, verbs, controller name, action, version)
 #    |__ defined_params (instance of WSDSL::Params)
 #    |             |    |  |_ Optional param rules
 #    |             |    |_ Required param rules
@@ -140,10 +140,10 @@ class WSDSL
   #
   # @return [#to_s] The response from the controller action
   # @api private
-  def dispatch(app)
+  def controller_dispatch(app)
     unless @controller
-      if WSController.const_defined?(@controller_name)
-        @controller = WSController.const_get(@controller_name)
+      if Object.const_defined?(@controller_name)
+        @controller = Object.const_get(@controller_name)
       else
         raise "The #{@controller_name} class was not found"
       end

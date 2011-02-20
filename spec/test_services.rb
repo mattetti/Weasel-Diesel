@@ -45,8 +45,8 @@ describe_service "services/test.xml" do |service|
     DOC
     
     # doc.params <name>, <definition>
-    doc.params :framework, "The test framework used, could be one of the two following: #{WSDSLSpecOptions.join(", ")}."
-    doc.params :version, "The version of the framework to use."
+    doc.param :framework, "The test framework used, could be one of the two following: #{WSDSLSpecOptions.join(", ")}."
+    doc.param :version, "The version of the framework to use."
     
     # doc.example <markdown text>
     doc.example <<-DOC
