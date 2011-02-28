@@ -92,3 +92,9 @@ Or a more complex example:
 This library comes with a test suite requiring Ruby 1.9.2
 The following gems need to be available:
 Rspec, Rack, Sinatra
+
+
+## Copyright
+
+Copyright (c) 2011 Matt Aimonetti. See LICENSE for
+further details.
