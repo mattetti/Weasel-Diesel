@@ -36,7 +36,8 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "spec/test_services.rb",
     "spec/wsdsl_sinatra_ext_spec.rb",
-    "spec/wsdsl_spec.rb"
+    "spec/wsdsl_spec.rb",
+    "wsdsl.gemspec"
   ]
   s.homepage = %q{http://github.com/mattetti/wsdsl}
   s.licenses = ["MIT"]
