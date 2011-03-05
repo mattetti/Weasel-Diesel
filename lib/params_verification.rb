@@ -166,7 +166,7 @@ module ParamsVerification
   
   def self.unexpected_params?(params, param_names)
     # Raise an exception unless no unexpected params were found
-    unexpected_keys = (params.keys(&:to_s) - param_names)
+    unexpected_keys = (params.keys - param_names)
     unless unexpected_keys.empty?
       raise UnexpectedParam, "Request included unexpected parameter(s): #{unexpected_keys.join(', ')}"
     end
