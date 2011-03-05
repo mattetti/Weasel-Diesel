@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wsdsl}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Aimonetti"]
-  s.date = %q{2011-02-28}
+  s.date = %q{2011-03-04}
   s.description = %q{A Ruby DSL describing Web Services without implementation details.}
   s.email = %q{mattaimonetti@gmail.com}
   s.extra_rdoc_files = [

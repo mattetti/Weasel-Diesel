@@ -21,8 +21,15 @@
 
 #---
 
+# Modified for the need of this software package
 
-module Extlib
+module ExtlibCopy
+
+  # Same as Inflection.classify but without the singularization
+  def self.classify(name)
+    words = name.to_s.sub(/.*\./, '').split('_')
+    words.collect { |word| word.capitalize }.join
+  end
 
   # = English Nouns Number Inflection.
   #
@@ -449,31 +456,5 @@ module Extlib
     plural_rule 'ive' , 'ives' # don't want to snag wife
     plural_rule 'fe'  , 'ves'  # don't want to snag perspectives
 
-  end
-end
-
-unless "".respond_to?(:singular)
-  class String
-    def singular
-      Extlib::Inflection.singular(self)
-    end
-    alias_method(:singularize, :singular)
-  end
-end
-
-unless "".respond_to?(:plural)
-  class String
-    def plural
-      Extlib::Inflection.plural(self)
-    end
-    alias_method(:pluralize, :plural)
-  end
-end
-
-unless "".respond_to?(:classify)
-  class String
-    def classify
-      Extlib::Inflection.classify(self)
-    end
   end
 end

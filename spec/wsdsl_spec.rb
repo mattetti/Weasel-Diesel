@@ -38,7 +38,11 @@ describe WSDSL do
   
   it "should set the controller accordingly" do
     @service.controller_name.should_not be_nil
-    @service.controller_name.should == 'ServiceController'
+    @service.controller_name.should == 'ServicesController'
+    service = WSDSL.new("preferences.xml")
+    service.name.should == 'preferences'
+    ExtlibCopy.classify('preferences').should == 'Preferences'
+    service.controller_name.should == 'PreferencesController'
   end
   
   it "should set the action accordingly" do
@@ -51,7 +55,7 @@ describe WSDSL do
     service.should_not be_nil
     service.http_verb.should == :put
     service.action.should_not be_nil
-    service.controller_name.should == 'ServiceController'
+    service.controller_name.should == 'ServicesController'
     service.action.should == 'update'
   end
 

@@ -1,6 +1,4 @@
-unless Object.const_defined?(:Extlib)
-  require File.expand_path('inflection', File.dirname(__FILE__))
-end
+require File.expand_path('inflection', File.dirname(__FILE__))
 require File.expand_path('params', File.dirname(__FILE__))
 require File.expand_path('response', File.dirname(__FILE__))
 require File.expand_path('documentation', File.dirname(__FILE__))
@@ -123,7 +121,7 @@ class WSDSL
     @doc                 = WSDSL::Documentation.new
     @response            = WSDSL::Response.new
     @name                = extract_service_root_name(url)
-    @controller_name     = "#{name.classify}Controller"
+    @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
     @action              = extract_service_action(url)
     @verb                = :get
     @formats             = []
