@@ -124,7 +124,11 @@ class WSDSL
     @doc                 = WSDSL::Documentation.new
     @response            = WSDSL::Response.new
     @name                = extract_service_root_name(url)
-    @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
+    if WSDSL.use_pluralized_controllers
+      @controller_name     = "#{ExtlibCopy.classify(ExtlibCopy::Inflection.pluralize(name))}Controller"
+    else
+      @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
+    end
     @action              = extract_service_action(url)
     @verb                = :get
     @formats             = []
@@ -134,6 +138,26 @@ class WSDSL
     @extra               = {}
   end
   
+  # Checks the WSDSL flag to see if the controller names are pluralized.
+  #
+  # @return [Boolean] The updated value, default to false
+  # @api public
+  # @since 0.1.1
+  def self.use_pluralized_controllers
+    @pluralized_controllers ||= false
+  end
+
+  # Sets a WSDSL global flag so all controller names will be automatically pluralized.
+  #
+  # @param [Boolean] True if the controllers are pluralized, False otherwise.
+  # 
+  # @return [Boolean] The updated value
+  # @api public
+  # @since 0.1.1
+  def self.use_pluralized_controllers=(val)
+    @pluralized_controllers = val
+  end
+
   # Offers a way to dispatch the service at runtime
   # Basically, it dispatches the request to the defined controller/action
   # The full request cycle looks like that:
