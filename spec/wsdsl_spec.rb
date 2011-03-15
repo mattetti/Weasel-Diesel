@@ -84,6 +84,17 @@ describe WSDSL do
     service.controller_name.should == "PlayerController"
   end
 
+
+  it "should let overwrite the controller name and action after initialization" do
+    describe_service "players/:id.xml" do |service|
+      service.controller_name = "CustomController"
+      service.action = "foo"
+    end
+    service = WSList.all.find{|s| s.url == "players/:id.xml"}
+    service.controller_name.should == "CustomController"
+    service.action.should == "foo"
+  end
+
   describe WSDSL::Params do
     
     before(:all) do

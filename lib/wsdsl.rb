@@ -80,13 +80,13 @@ class WSDSL
   #
   # @return [String]
   # @api public
-  attr_reader :action
+  attr_accessor :action
   
   # Name of the controller associated with the service
   #
   # @return [String]
   # @api public
-  attr_reader :controller_name
+  attr_accessor :controller_name
   
   # Name of the service
   #
