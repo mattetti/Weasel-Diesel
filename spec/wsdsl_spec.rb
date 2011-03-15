@@ -79,6 +79,8 @@ describe WSDSL do
     WSDSL.use_pluralized_controllers = true
     service = WSDSL.new("player/:id.xml")
     service.controller_name.should == "PlayersController"
+    service = WSDSL.new("players/:id.xml")
+    service.controller_name.should == "PlayersController"
     WSDSL.use_pluralized_controllers = false
     service = WSDSL.new("player/:id.xml")
     service.controller_name.should == "PlayerController"

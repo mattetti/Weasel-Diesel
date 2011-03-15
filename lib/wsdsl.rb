@@ -125,7 +125,8 @@ class WSDSL
     @response            = WSDSL::Response.new
     @name                = extract_service_root_name(url)
     if WSDSL.use_pluralized_controllers
-      @controller_name     = "#{ExtlibCopy.classify(ExtlibCopy::Inflection.pluralize(name))}Controller"
+      base_name = ExtlibCopy::Inflection.pluralize(ExtlibCopy::Inflection.singular(name))
+      @controller_name     = "#{ExtlibCopy.classify(base_name)}Controller"
     else
       @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
     end
