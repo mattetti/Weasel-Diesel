@@ -69,6 +69,12 @@ describe WSDSL do
     service.action.should == 'show'
   end
 
+  it "should support some extra attributes" do
+    service = WSDSL.new("players/:id.xml")
+    service.extra[:custom_name] = 'fooBar'
+    service.extra[:custom_name].should == 'fooBar'
+  end
+
   describe WSDSL::Params do
     
     before(:all) do

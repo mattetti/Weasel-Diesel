@@ -18,7 +18,7 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 # 
 #  WSDSL
 #    |
-#    |__ service options (name, url, SSL, auth required formats, verbs, controller name, action, version)
+#    |__ service options (name, url, SSL, auth required formats, verbs, controller name, action, version, extra)
 #    |__ defined_params (instance of WSDSL::Params)
 #    |             |    |  |_ Optional param rules
 #    |             |    |_ Required param rules
@@ -32,14 +32,11 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 #       |  |  | |_ overal) description
 #       |  |  |_ examples (array of examples as strings)
 #       |  |_ params documentation (Hash with the key being the param name and the value being the param documentation)
-# 
-# 
-# 
 #       |_ response (instance of Documentation.new)
 #            |_ elements (array of instances of WSDSL::Documentation::ElementDoc, each element has a name and a list of attributes)
 #                  |_ attributes (Hash with the key being the attribute name and the value being the attribute's documentation)
 # 
-# @since 0.1
+# @since 0.0.3
 # @api public
 class WSDSL
   
@@ -108,7 +105,13 @@ class WSDSL
   # @return [Boolean]
   # @api public
   attr_reader :auth_required
-  
+
+  # Extra placeholder to store data in based on developer's discretion.
+  # 
+  # @return [Hash] A hash storing extra data based.
+  # @api public
+  # @since 0.1
+  attr_reader :extra
   
   # Service constructor which is usually used via {Kernel#describe_service}
   #
@@ -128,6 +131,7 @@ class WSDSL
     @version             = '0.1'
     @ssl                 = false
     @auth_required       = true
+    @extra               = {}
   end
   
   # Offers a way to dispatch the service at runtime
