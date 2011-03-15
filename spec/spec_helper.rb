@@ -4,6 +4,7 @@ require 'sinatra'
 
 require_relative "../lib/wsdsl"
 require_relative 'test_services'
+require_relative 'preferences_service'
 require_relative "../lib/framework_ext/sinatra_controller"
 
 ENV["RACK_ENV"] = 'test'
@@ -11,4 +12,3 @@ ENV["RACK_ENV"] = 'test'
 RSpec.configure do |conf|
   conf.include Rack::Test::Methods
 end
-

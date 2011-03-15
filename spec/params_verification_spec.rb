@@ -2,10 +2,6 @@ require_relative "spec_helper"
 
 describe ParamsVerification do
   
-  def app
-    Sinatra::Application
-  end
-  
   before :all do
     @service = WSList.all.find{|s| s.url == 'services/test.xml'}
     @service.should_not be_nil
@@ -13,19 +9,29 @@ describe ParamsVerification do
   end
   
   it "should validate valid params" do
-    lambda{ ParamsVerification.validate!(@valid_params, @service.defined_params) }.should_not raise_exception
+    params = @valid_params.dup
+    lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_exception
   end
   
   it "should return the params" do
-    returned_params = ParamsVerification.validate!(@valid_params, @service.defined_params)
+    params = @valid_params.dup
+    returned_params = ParamsVerification.validate!(params, @service.defined_params)
     returned_params.should be_an_instance_of(Hash)
     returned_params.keys.size.should >= 3
   end
   
-  it "should set the default values" do
-    @valid_params['timestamp'].should be_nil
-    returned_params = ParamsVerification.validate!(@valid_params, @service.defined_params)
+  it "should set the default value for an optional param" do
+    params = @valid_params.dup
+    params['timestamp'].should be_nil
+    returned_params = ParamsVerification.validate!(params, @service.defined_params)
     returned_params['timestamp'].should_not be_nil
+  end
+
+  it "should set the default value for a namespace optional param" do
+    params = {'framework' => 'RSpec', 'version' => '1.02', 'user' => {'id' => '123'}}
+    params['user']['mailing_list'].should be_nil
+    returned_params = ParamsVerification.validate!(params, @service.defined_params)
+    returned_params['user']['mailing_list'].should be_true
   end
   
   it "should raise an exception when a required param is missing" do
@@ -49,13 +55,25 @@ describe ParamsVerification do
   it "should raise an exception when a param isn't in the param option list" do
     params = @valid_params.dup
     params['alpha'] = 'z'
+    lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamValue)
+  end
+
+  it "should raise an exception when a nested optional param isn't in the param option list" do
+    params = @valid_params.dup
+    params['user']['sex'] = 'large'
     lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamType)
+    # other service
+    params = {'preference' => {'region_code' => 'us', 'language_code' => 'de'}}
+    service = WSList.all.find{|s| s.url == 'preferences.xml'}
+    service.should_not be_nil
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamValue)
   end
   
   it "should validate that no params are passed when accept_no_params! is set on a service" do
     service = WSList.all.find{|s| s.url == "services/test_no_params.xml"}
     service.should_not be_nil
-    lambda{ ParamsVerification.validate!(@valid_params, service.defined_params) }.should raise_exception
+    params = @valid_params.dup
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception
   end
   
 end

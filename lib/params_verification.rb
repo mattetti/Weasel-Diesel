@@ -66,7 +66,10 @@ module ParamsVerification
       param.list_required.each do |rule|
         updated_params = validate_required_rule(rule, updated_params, param.space_name.to_s)
       end
-      # TODO add verification for namespaced optional rules
+      param.list_optional.each do |rule|
+        updated_params = run_optional_rule(rule, updated_params, param.space_name.to_s)
+      end
+
     end
     
     # verify nested params, only 1 level deep tho
@@ -98,22 +101,16 @@ module ParamsVerification
   def self.validate_required_rule(rule, params, namespace=nil)
     param_name  = rule.name.to_s
     
-    # Namespace check
-    if namespace == '' || namespace.nil?
-      param_value = params[param_name]
-    else
-      # puts "namespace: #{namespace} - params #{params[namespace].inspect}"
-      namespaced_params = params[namespace]
-      param_value = namespaced_params ? namespaced_params[param_name] : nil
-    end
+    param_value, namespaced_params = extract_param_values(params, param_name, namespace)
     # puts "verify #{param_name} params, current value: #{param_value}"
     
-    # Checks default
-    if param_value.nil? && rule.options && rule.options[:default]
-      param_ref = namespace.nil? ? params[param_name] : params[namespace][param_name]
-      param_ref = rule.options[:default]
+    #This is disabled since required params shouldn't have a default, otherwise, why are they required?
+    #if param_value.nil? && rule.options && rule.options[:default]
+      #param_value = rule.options[:default]
+    #end
+
     # Checks presence
-    elsif !(namespaced_params || params).keys.include?(param_name)
+    if !(namespaced_params || params).keys.include?(param_name)
       raise MissingParam, "'#{rule.name}' is missing - passed params: #{params.inspect}."
     # checks null
     elsif param_value.nil? && !rule.options[:null]
@@ -139,26 +136,65 @@ module ParamsVerification
       # puts "casting #{param_value} into type: #{rule.options[:type]}"
       params[param_name] = type_cast_value(rule.options[:type], param_value)
     end
-    
     params
   end
+
+
+  # Extract the param valie and the namespaced params
+  # based on a passed namespace and params
+  #
+  # @param [Hash] params The passed params to extract info from.
+  # @param [String] param_name The param name to find the value.
+  # @param [NilClass, String] namespace the params' namespace.
+  # @return [Arrays<Object, String>]
+  #
+  # @api private
+  def self.extract_param_values(params, param_name, namespace=nil)
+    # Namespace check
+    if namespace == '' || namespace.nil?
+      [params[param_name], nil]
+    else
+      # puts "namespace: #{namespace} - params #{params[namespace].inspect}"
+      namespaced_params = params[namespace]
+      if namespaced_params
+        [namespaced_params[param_name], namespaced_params]
+      else
+        [nil, namespaced_params]
+      end
+    end
+  end
   
-  # @todo add support for namespaces
   # @param [#WSDSL::Params::Rule] rule The optional rule
   # @param [Hash] params The request params
   # @param [String] namespace An optional namespace
   # @return [Hash] The potentially modified params
+  # 
   # @api private
   def self.run_optional_rule(rule, params, namespace=nil)
     param_name  = rule.name.to_s
-    param_value = params[param_name]
+
+    param_value, namespaced_params = extract_param_values(params, param_name, namespace)
+
     if param_value.nil? && rule.options[:default]
-      params[param_name] = rule.options[:default]
+      if namespace
+        params[namespace][param_name] = param_value = rule.options[:default]
+      else
+        params[param_name] = param_value = rule.options[:default]
+      end
     end
     
     # cast the type if a type is defined and if a range of options isn't defined since the casting should have been done already
     if rule.options[:type] && !param_value.nil?
-      params[param_name] = type_cast_value(rule.options[:type], param_value)
+      if namespace
+        params[namespace][param_name] = param_value = type_cast_value(rule.options[:type], param_value)
+      else
+        params[param_name] = param_value = type_cast_value(rule.options[:type], param_value)
+      end
+    end
+
+    choices = rule.options[:options] || rule.options[:in]
+    if choices && param_value && !choices.include?(param_value)
+      raise InvalidParamValue, "Value for parameter '#{param_name}' (#{param_value}) is not in the allowed set of values."
     end
     
     params

@@ -11,6 +11,7 @@ describe_service "services/test.xml" do |service|
     p.string   :alpha,     :in      => ['a', 'b', 'c']
     p.string   :version,   :null    => false
     p.integer  :num,      :minvalue => 42
+
   end
   
   # service.param :delta, :optional => true, :type => 'float'
@@ -19,6 +20,8 @@ describe_service "services/test.xml" do |service|
   
   service.params.namespace :user do |user|
     user.integer :id, :required => :true
+    user.string :sex, :in => %Q{female, male}
+    user.boolean :mailing_list, :default => true
   end
   
   # the response contains a list of player creation ratings each object in the list 
