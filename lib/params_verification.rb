@@ -23,7 +23,8 @@ module ParamsVerification
                             :float    => /^-?(\d*\.\d+|\d+)$/,
                             :decimal  => /^-?(\d*\.\d+|\d+)$/,
                             :datetime => /^[-\d:T\s]+$/,  # "T" is for ISO date format
-                            :boolean  => /^(1|true|TRUE|T|Y|0|false|FALSE|F|N)$/
+                            :boolean  => /^(1|true|TRUE|T|Y|0|false|FALSE|F|N)$/,
+                            :array    => /,/
                           }
   end
   
@@ -232,6 +233,9 @@ module ParamsVerification
           raise InvalidParamValue, "Could not typecast boolean to appropriate value"
         end
       end
+    # An array type is a comma delimited string, we need to cast the passed strings.
+    when :array
+      value.respond_to?(:split) ? value.split(',') : value
     when :binary, :array, :file
       value
     else
@@ -248,6 +252,9 @@ module ParamsVerification
   #
   # @return [Nil]
   # @api public
+  # TODO raising an exception really isn't a good idea since it forces the stack to unwind.
+  # More than likely developers are using exceptions to control the code flow and a different approach should be used.
+  # Catch/throw is a bit more efficient but is still the wrong approach for this specific problem.
   def self.verify_cast(name, value, expected_type)
     validation = ParamsVerification.type_validations[expected_type.to_sym]
     unless validation.nil? || value.to_s =~ validation

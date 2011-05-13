@@ -39,6 +39,20 @@ describe ParamsVerification do
     params.delete('framework')
     lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::MissingParam)
   end
+
+  it "should cast a comma delimited string into an array when param marked as an array" do
+    service = WSList.all.find{|s| s.url == "services/array_param.xml"}
+    service.should_not be_nil
+    params = {'seq' => "a,b,c,d,e,g"}
+    validated = ParamsVerification.validate!(params, service.defined_params)
+    validated['seq'].should == %W{a b c d e g}
+  end
+
+  it "should raise an exception if a req array param doesn't contain a comma" do
+    service = WSList.all.find{|s| s.url == "services/array_param.xml"}
+    params = {'seq' => "a b c d e g"}
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamType)
+  end
   
   it "should raise an exception when a param is of the wrong type" do
     params = @valid_params.dup

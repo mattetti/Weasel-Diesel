@@ -71,3 +71,13 @@ describe_service "services.xml" do |service|
   service.http_verb :put
   
 end
+
+describe_service "services/array_param.xml" do |s|
+  s.formats :xml
+  s.http_verb :post
+
+  s.params do |p|
+    p.array :seq, :required => true
+  end
+
+end
