@@ -30,12 +30,20 @@ Gem::Specification.new do |s|
     "lib/response.rb",
     "lib/ws_list.rb",
     "lib/wsdsl.rb",
+    "spec/hello_world_controller.rb",
+    "spec/hello_world_service.rb",
+    "spec/params_verification_spec.rb",
+    "spec/preferences_service.rb",
+    "spec/spec_helper.rb",
+    "spec/test_services.rb",
+    "spec/wsdsl_sinatra_ext_spec.rb",
+    "spec/wsdsl_spec.rb",
     "wsdsl.gemspec"
   ]
   s.homepage = %q{http://github.com/mattetti/wsdsl}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.7.2}
   s.summary = %q{Web Service DSL}
   s.test_files = [
     "spec/hello_world_controller.rb",

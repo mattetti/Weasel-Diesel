@@ -48,10 +48,10 @@ describe ParamsVerification do
     validated['seq'].should == %W{a b c d e g}
   end
 
-  it "should raise an exception if a req array param doesn't contain a comma" do
+  it "should not raise an exception if a req array param doesn't contain a comma" do
     service = WSList.all.find{|s| s.url == "services/array_param.xml"}
     params = {'seq' => "a b c d e g"}
-    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamType)
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception(ParamsVerification::InvalidParamType)
   end
   
   it "should raise an exception when a param is of the wrong type" do
