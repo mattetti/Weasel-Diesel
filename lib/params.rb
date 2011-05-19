@@ -67,11 +67,12 @@ class WSDSL
 
     # Defines a new param and add it to the optional or required list based
     # the passed options.
+    # @param [Symbol] type
+    #   The type of param
     #
     # @param [Symbol, String] name
     #   The name of the param
-    # @param [Symbol] type
-    #   The type of param
+    #
     # @param [Hash] options
     #   A hash representing the param settings
     #
@@ -80,7 +81,7 @@ class WSDSL
     #
     # @return [Array] the typed list of params (required or optional)
     # @api public]
-    def param(name, type, options={})
+    def param(type, name, options={})
       options[:type] = type
       options[:space_name] = options[:space_name] || space_name
       if options.delete(:required)
@@ -106,7 +107,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def string(name, options={})
-      param(name, :string, options)
+      param(:string, name, options)
     end
 
     # Defines a new integer param and add it to the required or optional list
@@ -123,7 +124,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def integer(name, options={})
-      param(name, :integer, options)
+      param(:integer, name, options)
     end
 
     # Defines a new float param and add it to the required or optional list
@@ -140,7 +141,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def float(name, options={})
-      param(name, :float, options)
+      param(:float, name, options)
     end
 
     # Defines a new decimal param and add it to the required or optional list
@@ -157,7 +158,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def decimal(name, options={})
-      param(name, :decimal, options)
+      param(:decimal, name, options)
     end
 
     # Defines a new boolean param and add it to the required or optional list
@@ -174,7 +175,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def boolean(name, options={})
-      param(name, :boolean, options)
+      param(:boolean, name, options)
     end
 
     # Defines a new datetime param and add it to the required or optional list
@@ -191,7 +192,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def datetime(name, options={})
-      param(name, :datetime, options)
+      param(:datetime, name, options)
     end
 
     # Defines a new text param and add it to the required or optional list
@@ -208,7 +209,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def text(name, options={})
-      param(name, :text, options)
+      param(:text, name, options)
     end
 
     # Defines a new binary param and add it to the required or optional list
@@ -225,7 +226,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def binary(name, options={})
-      param(name, :binary, options)
+      param(:binary, name, options)
     end
 
     # Defines a new array param and add it to the required or optional list
@@ -242,7 +243,7 @@ class WSDSL
     # @return [Array<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def array(name, options={})
-      param(name, :array, options)
+      param(:array, name, options)
     end
 
     # Defines a new file param and add it to the required or optional list
@@ -259,7 +260,7 @@ class WSDSL
     # @return [Arrays<WSDSL::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def file(name, options={})
-      param(name, :file, options)
+      param(:file, name, options)
     end
 
     # @group param setters based on the state (required or optional)

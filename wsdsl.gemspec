@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wsdsl}
-  s.version = "0.1.5"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Aimonetti"]
-  s.date = %q{2011-05-13}
+  s.date = %q{2011-05-19}
   s.description = %q{A Ruby DSL describing Web Services without implementation details.}
   s.email = %q{mattaimonetti@gmail.com}
   s.extra_rdoc_files = [
@@ -30,20 +30,12 @@ Gem::Specification.new do |s|
     "lib/response.rb",
     "lib/ws_list.rb",
     "lib/wsdsl.rb",
-    "spec/hello_world_controller.rb",
-    "spec/hello_world_service.rb",
-    "spec/params_verification_spec.rb",
-    "spec/preferences_service.rb",
-    "spec/spec_helper.rb",
-    "spec/test_services.rb",
-    "spec/wsdsl_sinatra_ext_spec.rb",
-    "spec/wsdsl_spec.rb",
     "wsdsl.gemspec"
   ]
   s.homepage = %q{http://github.com/mattetti/wsdsl}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.7.2}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Web Service DSL}
   s.test_files = [
     "spec/hello_world_controller.rb",
