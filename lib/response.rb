@@ -13,6 +13,20 @@ class WSDSL
       @elements = []
     end
 
+    alias :nodes :elements
+
+    # Shortcut to automatically create a typed node.
+    # Very useful when describing a JSON response.
+    #
+    # @param [String, Symbol] name the name of the element.
+    # @param [Hash] opts the element options.
+    # @see Element#array
+    def array(name, opts={})
+      el = element(opts.merge(:name => name))
+      yield el if block_given?
+      el
+    end
+
     # Defines a new element and yields the content of an optional block
     # Each new element is then stored in the elements array.
     #
@@ -32,6 +46,7 @@ class WSDSL
       el = Element.new(opts[:name], opts[:type])
       yield(el) if block_given?
       @elements << el
+      el
     end
 
     # Returns a response element object based on its name
@@ -56,6 +71,9 @@ class WSDSL
 
       # @api public
       attr_reader :type
+
+      # The optional lookup key of an object
+      attr_reader :key
 
       # @return [Array<WSDSL::Response::Element::Attribute>] An array of attributes
       # @api public
@@ -83,6 +101,7 @@ class WSDSL
         @type       = type
         @attributes = []
         @vectors    = []
+        @key        = nil
         # we don't need to initialize the nested elements, by default they should be nil
       end
 
@@ -172,6 +191,58 @@ class WSDSL
         yield(el) if block_given?
         @elements ||= []
         @elements << el
+        el
+      end
+
+      def object(name, opts={})
+        element(opts.merge(:name => name))
+      end
+
+      # Getter/Setter for the key name and optional options.
+      # A key name can be used to lookup an object by a primary key for instance.
+      #
+      # @params [Symbol, String] name the name of the key attribute.
+      # @params [Hash] opts the options attached with the key.
+      def key(name=nil, opts={})
+        attribute_getter_setter(:key, name, opts)
+      end
+
+      def type(name=nil, opts={})
+        attribute_getter_setter(:type, name, opts)
+      end
+
+      def string(name=nil, opts={})
+         attribute_getter_setter(:string, name, opts)
+      end
+
+      def integer(name=nil, opts={})
+        attribute_getter_setter(:integer, name, opts)
+      end
+
+      def float(name=nil, opts={})
+        attribute_getter_setter(:float, name, opts)
+      end
+
+      def decimal(name=nil, opts={})
+        attribute_getter_setter(:decimal, name, opts)
+      end
+
+      def boolean(name=nil, opts={})
+        attribute_getter_setter(:boolean, name, opts)
+      end
+
+      def datetime(name=nil, opts={})
+        attribute_getter_setter(:datetime, name, opts)
+      end
+
+      private
+
+      def attribute_getter_setter(type, name, opts)
+        if name
+          attribute(opts.merge(:name => name, :type => type))
+        else
+          attributes.find{|att| att.type == :key}
+        end
       end
 
       # Response element's attribute class

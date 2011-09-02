@@ -60,8 +60,8 @@ describe WSDSL do
   end
 
   it "should have a default action" do
-   service = WSDSL.new('spec_test.xml')
-   service.action.should == 'list'
+    service = WSDSL.new('spec_test.xml')
+    service.action.should == 'list'
   end
 
   it "should route to show when an id is the last passed param" do

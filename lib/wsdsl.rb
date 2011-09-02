@@ -354,6 +354,7 @@ module Kernel
     service = WSDSL.new(url)
     yield service
     WSList.add(service)
+    service
   end
   
 end
