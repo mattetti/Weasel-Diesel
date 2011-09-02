@@ -1,6 +1,6 @@
 # Web Service DSL
 
-WSDSL is a simple DSL allowind developers to simply describe and
+WSDSL is a simple DSL allowing developers to simply describe and
 document their web APIS. For instance:
 
 
@@ -86,6 +86,57 @@ Or a more complex example:
       end
     end
 
+
+## JSON APIs
+
+This library was designed with XML responses in mind and JSON support
+was added later on which explains why some response methods are aliases.
+Consider the following JSON response:
+
+    { people: [ 
+      { 
+        id : 1, 
+        online : false,
+        created_at : 123123123123, 
+        team : {
+          id : 1231,
+          score : 123.32
+        }
+      }, 
+      { 
+        id : 2, 
+        online : true,
+        created_at : 123123123123, 
+        team: {
+          id : 1233,
+          score : 1.32
+        }
+      }, 
+    ] }
+
+It would be described as follows:
+
+    describe_service "json_list" do |service|
+      service.formats  :json
+      service.response do |response|
+        response.array :people do |node|
+          node.integer :id
+          node.boolean :online
+          node.datetime :created_at
+          node.object :team do |team|
+            team.integer :id
+            team.float :score
+          end
+        end
+      end
+    end
+
+Nodes/elements can also use some meta attributes. Currently the
+following meta attributes are available:
+
+* key (refers to an attribute name that is key to this object)
+* type (refers to the type of object described, valuable when using JSON
+  cross OO based apps.
 
 ## Test suite
 
