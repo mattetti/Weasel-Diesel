@@ -79,6 +79,10 @@ class WSDSL
       # @api public
       attr_reader :attributes
 
+      # @return [Array<WSDSL::Response::Element::MetaAttribute>] An array of meta attributes
+      # @api public
+      attr_reader :meta_attributes
+
       # @return [Array] An array of vectors/arrays
       # @api public
       attr_reader :vectors
@@ -90,6 +94,12 @@ class WSDSL
       # @return [NilClass, Array<WSDSL::Response::Element>] The optional nested elements
       attr_reader :elements
 
+      # Alias to use a JSON/JS jargon instead of XML.
+      alias :properties :attributes
+
+      # Alias to use a JSON/JS jargon instead of XML.
+      alias :objects :elements
+
       # param [String, Symbol] name The name of the element
       # param [String, Symbol] type The optional type of the element
       # @api public
@@ -100,6 +110,7 @@ class WSDSL
         @name       = name
         @type       = type
         @attributes = []
+        @meta_attributes = []
         @vectors    = []
         @key        = nil
         # we don't need to initialize the nested elements, by default they should be nil
@@ -132,6 +143,29 @@ class WSDSL
           @doc.attribute(new_attribute.name, opts[:doc])
         end
         @attributes
+      end
+
+      # sets a new meta attribute and returns the entire list of meta attributes
+      #
+      # @param [Hash] opts An element's attribute options
+      # @option opts [String, Symbol] attribute_name The name of the attribute, the value being the type
+      # @option opts [String, Symbol] :mock An optional mock value used by service related tools
+      # 
+      # @example Creation of a response attribute called 'best_lap_time'
+      #   service.response do |response|
+      #    response.element(:name => "my_stats", :type => 'Leaderboard') do |e|
+      #      e.meta_attribute "id"       => :key
+      #    end
+      #   end
+      #
+      # @return [Array<WSDSL::Response::MetaAttribute>]
+      # @api public
+      def meta_attribute(opts)
+        raise ArgumentError unless opts.is_a?(Hash)
+        # extract the documentation part and add it where it belongs
+        new_attribute = MetaAttribute.new(opts)
+        @meta_attributes << new_attribute
+        @meta_attributes
       end
 
       # Defines an array aka vector of elements.
@@ -186,62 +220,87 @@ class WSDSL
       #
       # @return [Array<WSDSL::Response::Element>]
       # @api public
-      def element(opts={})
+      def element(opts={}, &block)
         el = Element.new(opts[:name], opts[:type])
-        yield(el) if block_given?
+        block.call(el) if block_given?
         @elements ||= []
         @elements << el
         el
       end
 
-      def object(name, opts={})
-        element(opts.merge(:name => name))
+      # Shortcut to create a new element.
+      #
+      # @param [Symbol, String] name the name of the element.
+      # @param [Hash] opts the options for the newly created element.
+      def object(name, opts={}, &block)
+        element(opts.merge(:name => name), &block)
       end
 
-      # Getter/Setter for the key name and optional options.
+      # Getter/setter for the key meta attribute.
       # A key name can be used to lookup an object by a primary key for instance.
       #
-      # @params [Symbol, String] name the name of the key attribute.
-      # @params [Hash] opts the options attached with the key.
+      # @param [Symbol, String] name the name of the key attribute.
+      # @param [Hash] opts the options attached with the key.
       def key(name=nil, opts={})
-        attribute_getter_setter(:key, name, opts)
+        meta_attribute_getter_setter(:key, name, opts)
       end
 
+      # Getter/setter for the type meta attribute.
+      #
+      # @param [Symbol, String] name the name of the type attribute.
+      # @param [Hash] opts the options attached with the key.
       def type(name=nil, opts={})
-        attribute_getter_setter(:type, name, opts)
+        meta_attribute_getter_setter(:type, name, opts)
       end
 
+      # Shortcut to create a string attribute
+      #
+      # @param [Symbol, String] name the name of the attribute.
+      # @param [Hash] opts the attribute options.
       def string(name=nil, opts={})
-         attribute_getter_setter(:string, name, opts)
+        attribute(opts.merge(:name => name, :type => :string))
       end
 
+      # Shortcut to create a string attribute
+      #
+      # @param [Symbol, String] name the name of the attribute.
+      # @param [Hash] opts the attribute options.
       def integer(name=nil, opts={})
-        attribute_getter_setter(:integer, name, opts)
+        attribute({name => :integer}.merge(opts))
       end
 
+      # Shortcut to create a string attribute
+      #
+      # @param [Symbol, String] name the name of the attribute.
+      # @param [Hash] opts the attribute options.
       def float(name=nil, opts={})
-        attribute_getter_setter(:float, name, opts)
+        attribute({name => :float}.merge(opts))
       end
 
-      def decimal(name=nil, opts={})
-        attribute_getter_setter(:decimal, name, opts)
-      end
-
+      # Shortcut to create a string attribute
+      #
+      # @param [Symbol, String] name the name of the attribute.
+      # @param [Hash] opts the attribute options.
       def boolean(name=nil, opts={})
-        attribute_getter_setter(:boolean, name, opts)
+        attribute({name => :boolean}.merge(opts))
       end
 
+      # Shortcut to create a string attribute
+      #
+      # @param [Symbol, String] name the name of the attribute.
+      # @param [Hash] opts the attribute options.
       def datetime(name=nil, opts={})
-        attribute_getter_setter(:datetime, name, opts)
+        attribute({name => :datetime}.merge(opts))
       end
 
       private
 
-      def attribute_getter_setter(type, name, opts)
+      # Create a meta element attribute
+      def meta_attribute_getter_setter(type, name, opts)
         if name
-          attribute(opts.merge(:name => name, :type => type))
+          meta_attribute({name => type}.merge(opts))
         else
-          attributes.find{|att| att.type == :key}
+          meta_attributes.find{|att| att.type == type}
         end
       end
 
@@ -252,6 +311,7 @@ class WSDSL
         # @return [String, #to_s] The attribute's name.
         # @api public
         attr_reader :name
+        alias :value :name
 
         # @return [Symbol, String, #to_s] The attribute's type such as boolean, string etc..
         # @api public
@@ -292,6 +352,11 @@ class WSDSL
             @opts = params
           end
         end
+      end
+
+      # Response's meta attribute meant to set some extra
+      # attributes which are not part of the response per se.
+      class MetaAttribute < Attribute
       end
 
       # Array of objects inside an element
