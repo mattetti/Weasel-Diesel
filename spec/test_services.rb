@@ -32,7 +32,7 @@ describe_service "services/test.xml" do |service|
       e.attribute  :is_accepted => :boolean, :doc => "is accepted doc"
       e.attribute  :name        => :string,  :doc => "name doc"
       
-      e.array :name => 'player_creation_rating', :type => 'PlayerCreationRating' do |a|
+      e.array :player_creation_rating, 'PlayerCreationRating' do |a|
         a.attribute :comments  => :string,  :doc => "comments doc"
         a.attribute :player_id => :integer, :doc => "player_id doc"
         a.attribute :rating    => :integer, :doc => "rating doc"

@@ -35,67 +35,83 @@ describe WSDSL do
   it "should have direct access to the nested params" do
     @service.nested_params.should == @service.params.namespaced_params
   end
-  
-  it "should set the controller accordingly" do
-    @service.controller_name.should_not be_nil
-    @service.controller_name.should == 'ServicesController'
-    service = WSDSL.new("preferences.xml")
-    service.name.should == 'preferences'
-    ExtlibCopy.classify('preferences').should == 'Preferences'
-    service.controller_name.should == 'PreferencesController'
-  end
-  
-  it "should set the action accordingly" do
-    @service.action.should_not be_nil
-    @service.action.should == 'test' 
-  end
-  
-  it "should support restful routes based on the HTTP verb" do
-    service = WSList.all.find{|s| s.url == "services.xml"}
-    service.should_not be_nil
-    service.http_verb.should == :put
-    service.action.should_not be_nil
-    service.controller_name.should == 'ServicesController'
-    service.action.should == 'update'
-  end
-
-  it "should have a default action" do
-    service = WSDSL.new('spec_test.xml')
-    service.action.should == 'list'
-  end
-
-  it "should route to show when an id is the last passed param" do
-    service = WSDSL.new("players/:id.xml")
-    service.action.should == 'show'
-  end
-
-  it "should support some extra attributes" do
-    service = WSDSL.new("players/:id.xml")
-    service.extra[:custom_name] = 'fooBar'
-    service.extra[:custom_name].should == 'fooBar'
-  end
-
-  it "should respect the global controller pluralization flag" do
-    WSDSL.use_pluralized_controllers = true
-    service = WSDSL.new("player/:id.xml")
-    service.controller_name.should == "PlayersController"
-    service = WSDSL.new("players/:id.xml")
-    service.controller_name.should == "PlayersController"
-    WSDSL.use_pluralized_controllers = false
-    service = WSDSL.new("player/:id.xml")
-    service.controller_name.should == "PlayerController"
-  end
-
-
-  it "should let overwrite the controller name and action after initialization" do
-    describe_service "players/:id.xml" do |service|
-      service.controller_name = "CustomController"
-      service.action = "foo"
+ 
+  describe "With controller dispatch on" do
+    before :all do
+      @original_services = WSList.all.dup
+      WSList.all.clear
+      WSDSL.use_controller_dispatch = true
+      load File.expand_path('test_services.rb', File.dirname(__FILE__))
+      @c_service = WSList.all.find{|s| s.url == 'services/test.xml'}
+      @c_service.should_not be_nil
     end
-    service = WSList.all.find{|s| s.url == "players/:id.xml"}
-    service.controller_name.should == "CustomController"
-    service.action.should == "foo"
+    after :all do
+      WSDSL.use_controller_dispatch = false
+      WSList.all.replace @original_services
+    end
+
+    it "should set the controller accordingly" do
+      @c_service.controller_name.should_not be_nil
+      @c_service.controller_name.should == 'ServicesController'
+      service = WSDSL.new("preferences.xml")
+      service.name.should == 'preferences'
+      ExtlibCopy.classify('preferences').should == 'Preferences'
+      service.controller_name.should == 'PreferencesController'
+    end
+    
+    it "should set the action accordingly" do
+      @c_service.action.should_not be_nil
+      @c_service.action.should == 'test' 
+    end
+    
+    it "should support restful routes based on the HTTP verb" do
+      service = WSList.all.find{|s| s.url == "services.xml"}
+      service.should_not be_nil
+      service.http_verb.should == :put
+      service.action.should_not be_nil
+      service.controller_name.should == 'ServicesController'
+      service.action.should == 'update'
+    end
+
+    it "should have a default action" do
+      service = WSDSL.new('spec_test.xml')
+      service.action.should == 'list'
+    end
+
+    it "should route to show when an id is the last passed param" do
+      service = WSDSL.new("players/:id.xml")
+      service.action.should == 'show'
+    end
+
+    it "should support some extra attributes" do
+      service = WSDSL.new("players/:id.xml")
+      service.extra[:custom_name] = 'fooBar'
+      service.extra[:custom_name].should == 'fooBar'
+    end
+
+    it "should respect the global controller pluralization flag" do
+      WSDSL.use_pluralized_controllers = true
+      service = WSDSL.new("player/:id.xml")
+      service.controller_name.should == "PlayersController"
+      service = WSDSL.new("players/:id.xml")
+      service.controller_name.should == "PlayersController"
+      WSDSL.use_pluralized_controllers = false
+      service = WSDSL.new("player/:id.xml")
+      service.controller_name.should == "PlayerController"
+    end
+
+
+    it "should let overwrite the controller name and action after initialization" do
+      describe_service "players/:id.xml" do |service|
+        service.controller_name = "CustomController"
+        service.action = "foo"
+      end
+      service = WSList.all.find{|s| s.url == "players/:id.xml"}
+      service.controller_name.should == "CustomController"
+      service.action.should == "foo"
+    end
   end
+
 
   describe WSDSL::Params do
     
@@ -203,8 +219,8 @@ The most common way to use this service looks like that:
     it "should have documentation for a response element array" do
       element = @service.response.elements.first
       element.arrays.should_not be_empty
-      element.arrays.first.name.should == "player_creation_rating"
-      element.arrays.first.obj_type.should == "PlayerCreationRating"
+      element.arrays.first.name.should == :player_creation_rating
+      element.arrays.first.type.should == "PlayerCreationRating"
       element.arrays.first.attributes.should_not be_empty
     end
     

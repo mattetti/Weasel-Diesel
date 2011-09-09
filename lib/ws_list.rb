@@ -34,13 +34,23 @@ module WSList
   # @return [WSDSL] The found service.
   #
   # @api public
-  def self.named(name)
+  def named(name)
     service = all.find{|service| service.name == name}
     if service.nil?
       raise UnknownService, "Service named #{name} isn't available"
     else
       service
     end
+  end
+
+  # Returns a service based on its url
+  #
+  # @param [String] url The url of the service you are looking for.
+  # @return [Nil, WSDSL] The found service.
+  #
+  # @api public
+   def [](url)
+    @list.find{|service| service.url == url}
   end
   
   

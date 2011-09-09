@@ -25,9 +25,11 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 #    |             |_ Namespaced params (array containing nested optional and required rules)
 #    |__ response (instance of WSDSL::Response)
 #    |      |_ elements (array of elements with each element having a name, type, attributes and vectors
-#    |            |  |_ attributes (array of WSDSL::Response::Attribute, each attribute has a name, a type, a doc and some extra options)
-#    |            |_ vectors (array of WSDSL::Response::Vector), each vector has a name, obj_type, & an array of attributes
-#    |                 |_ attributes (array of WSDSL::Response::Attribute, each attribute has a name, a type and a doc)
+#    |      |      |  |_ attributes (array of WSDSL::Response::Attribute, each attribute has a name, a type, a doc and some extra options)
+#    |      |      |_ vectors (array of WSDSL::Response::Vector), each vector has a name, obj_type, & an array of attributes
+#    |      |           |_ attributes (array of WSDSL::Response::Attribute, each attribute has a name, a type and a doc)
+#    |      |_ arrays (like elements but represent an array of objects)
+#    |
 #    |__ doc (instance of WSDSL::Documentation)
 #       |  |  | |_ overal) description
 #       |  |  |_ examples (array of examples as strings)
@@ -123,14 +125,16 @@ class WSDSL
     @defined_params      = WSDSL::Params.new
     @doc                 = WSDSL::Documentation.new
     @response            = WSDSL::Response.new
-    @name                = extract_service_root_name(url)
-    if WSDSL.use_pluralized_controllers
-      base_name = ExtlibCopy::Inflection.pluralize(ExtlibCopy::Inflection.singular(name))
-      @controller_name     = "#{ExtlibCopy.classify(base_name)}Controller"
-    else
-      @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
+    if WSDSL.use_controller_dispatch
+      @name                = extract_service_root_name(url)
+      if WSDSL.use_pluralized_controllers
+        base_name = ExtlibCopy::Inflection.pluralize(ExtlibCopy::Inflection.singular(name))
+        @controller_name     = "#{ExtlibCopy.classify(base_name)}Controller"
+      else
+        @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
+      end
+      @action              = extract_service_action(url)
     end
-    @action              = extract_service_action(url)
     @verb                = :get
     @formats             = []
     @version             = '0.1'
@@ -157,6 +161,27 @@ class WSDSL
   # @since 0.1.1
   def self.use_pluralized_controllers=(val)
     @pluralized_controllers = val
+  end
+
+  # Checks the WSDSL flag to see if controller are used to dispatch requests.
+  # This allows apps to use this DSL but route to controller/actions.
+  #
+  # @return [Boolean] The updated value, default to false
+  # @api public
+  # @since 0.3.0
+  def self.use_controller_dispatch
+    @controller_dispatch
+  end
+
+  # Sets a WSDSL global flag so the controller settings can be generated
+  # Setting this flag will automatically set the controller/action names.
+  # @param [Boolean] True if the controllers are pluralized, False otherwise.
+  # 
+  # @return [Boolean] The updated value
+  # @api public
+  # @since 0.1.1
+  def self.use_controller_dispatch=(val)
+    @controller_dispatch = val
   end
 
   # Offers a way to dispatch the service at runtime
@@ -196,7 +221,14 @@ class WSDSL
     end
   end
   alias :param :params
-  
+ 
+  # Returns true if the DSL defined any params
+  #
+  # @return [Boolean]
+  def params?
+    !(required_rules.empty? && optional_rules.empty? && nested_params.empty?)
+  end
+
   # Returns an array of required param rules
   #
   # @return [Array<WSDSL::Params::Rule>] Only the required param rules

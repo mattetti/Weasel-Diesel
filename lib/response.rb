@@ -9,22 +9,30 @@ class WSDSL
     # @api public
     attr_reader :elements
 
+    # The list of all the arays inside the response
+    #
+    # @return [Array<WSDSL::Response::Array>]
+    attr_reader :arrays
+
     def initialize
       @elements = []
+      @arrays  = []
     end
 
-    alias :nodes :elements
+    def nodes 
+      elements + arrays
+    end
 
-    # Shortcut to automatically create a typed node.
-    # Very useful when describing a JSON response.
+    # Shortcut to automatically create a node of array type.
+    # Useful when describing a JSON response.
     #
     # @param [String, Symbol] name the name of the element.
     # @param [Hash] opts the element options.
-    # @see Element#array
-    def array(name, opts={})
-      el = element(opts.merge(:name => name))
-      yield el if block_given?
-      el
+    # @see Vector#initialize
+    def array(name, type=nil)
+      vector = Vector.new(name, type)
+      yield(vector) if block_given?
+      @arrays << vector
     end
 
     # Defines a new element and yields the content of an optional block
@@ -170,27 +178,27 @@ class WSDSL
 
       # Defines an array aka vector of elements.
       #
-      # @param [Hash] opts A hash representing the array information, usually a name and a type.
-      # @option opts [String, Symbol] :name The name of the defined array
-      # @option opts [String, Symbol] :type The class name of the element inside the array
+      # @param [String, Symbol] name The name of the array element.
+      # @param [String, Symbol] type Optional type information, useful to store the represented 
+      #        object types for instance.
       #
       # @param [Proc] &block
       #   A block to execute against the newly created array.
       # 
       # @example Defining an element array called 'player_creation_rating'
-      #   element.array :name => 'player_creation_rating', :type => 'PlayerCreationRating' do |a|
+      #   element.array 'player_creation_rating', 'PlayerCreationRating' do |a|
       #     a.attribute :comments  => :string
       #     a.attribute :player_id => :integer
       #     a.attribute :rating    => :integer
       #     a.attribute :username  => :string
       #   end
       # @yield [Vector] the newly created array/vector instance
-      # @see Vector#initialize
+      # @see Element#initialize
       # 
-      # @return [Array<WSDSL::Response::Element::Vector>]
+      # @return [Array<WSDSL::Response::Vector>]
       # @api public
-      def array(opts)
-        vector = Vector.new(opts)
+      def array(name, type=nil)
+        vector = Vector.new(name, type)
         yield(vector) if block_given?
         @vectors << vector
       end
@@ -198,8 +206,8 @@ class WSDSL
       # Returns the arrays/vectors contained in the response.
       # This is an alias to access @vectors
       # @see @vectors
-      # 
-      # @return [Array<WSDSL::Response::Element::Vector>]
+      #
+      # @return [Array<WSDSL::Response::Vector>]
       # @api public
       def arrays
         @vectors
@@ -220,9 +228,9 @@ class WSDSL
       #
       # @return [Array<WSDSL::Response::Element>]
       # @api public
-      def element(opts={}, &block)
+      def element(opts={})
         el = Element.new(opts[:name], opts[:type])
-        block.call(el) if block_given?
+        yield(el) if block_given?
         @elements ||= []
         @elements << el
         el
@@ -300,7 +308,8 @@ class WSDSL
         if name
           meta_attribute({name => type}.merge(opts))
         else
-          meta_attributes.find{|att| att.type == type}
+          # with a fallback to the @type ivar
+          meta_attributes.find{|att| att.type == type} || @type
         end
       end
 
@@ -359,79 +368,12 @@ class WSDSL
       class MetaAttribute < Attribute
       end
 
-      # Array of objects inside an element
-      # @api public
-      class Vector
-
-        # @api public
-        attr_reader :name
-
-        # @api public
-        attr_reader :obj_type
-
-        # @api public
-        attr_accessor :attributes
-
-        # A vector can have nested elements.
-        # This value is nil by default.
-        #
-        # @return [NilClass, Array<WSDSL::Response::Element>]
-        # @see #element
-        # @api public
-        attr_reader :elements
-
-        # Initialize a Vector object, think about it as an array of objects of a certain type.
-        # It is recommended to passthe type argument as a string so the constant doesn't need to be resolved.
-        # In other words, if you say you are creating a vector of Foo objects, the Foo class doesn't need to be 
-        # loaded yet. That makes service parsing easier and avoids dependency challenges.
-        #
-        # @param [Hash] opts A hash representing the vector information, usually a name and a type, both as strings
-        # @option opts [String] :name The array's name
-        # @option opts [Symbol, String] :type The type of the objects inside the array
-        #
-        # @example
-        #   Vector.new(:name => 'player_creation_rating', :type => 'PlayerCreationRating')
-        #
-        # @api public
-        def initialize(opts)
-          @name       = opts[:name]
-          @obj_type   = opts[:type]
-          @attributes = []
-        end
-
-        # Sets a vector attribute
-        #
-        # @param (see Attribute#initialize)
-        # @api public
-        def attribute(opts)
-          raise ArgumentError unless opts.is_a?(Hash)
-          @attributes << Attribute.new(opts)
-        end
-
-        # Defines a new element and yields the content of an optional block
-        # Each new element is then stored in the elements array.
-        #
-        # @param [Hash] opts Options used to define the element
-        # @option opts [String, Symbol] :name The element name
-        # @option opts [String, Symbol] :type The optional type
-        #
-        # @yield [WSDSL::Response::Element] the newly created element
-        # @example create an element called 'my_stats'.
-        #   service.response do |response|
-        #    response.element(:name => "my_stats", :type => 'Leaderboard')
-        #   end
-        #
-        # @return [Array<WSDSL::Response::Element>]
-        # @api public
-        def element(opts={})
-          el = Element.new(opts[:name], opts[:type])
-          yield(el) if block_given?
-          @elements ||= []
-          @elements << el
-        end
-
-      end # of Vector
     end # of Element
+
+    # Array of objects
+    # @api public
+    class Vector < Element
+    end # of Vector
 
   end # of Response
 end
