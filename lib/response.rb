@@ -309,7 +309,12 @@ class WSDSL
           meta_attribute({name => type}.merge(opts))
         else
           # with a fallback to the @type ivar
-          meta_attributes.find{|att| att.type == type} || @type
+          meta = meta_attributes.find{|att| att.type == type}
+          if meta
+            meta.value
+          else
+            instance_variable_get("@#{type}")
+          end
         end
       end
 

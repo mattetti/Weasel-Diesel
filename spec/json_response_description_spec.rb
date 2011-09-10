@@ -87,6 +87,8 @@ describe "WSDSL JSON response description" do
       meta.should_not be_nil
       meta.value.should == value
     end
+    @root_node.key.should == :id
+    @root_node.type.should == :Voucher
   end
   
 end
