@@ -27,15 +27,17 @@ describe "WSDSL JSON response description" do
 =end
 
   before :all do
+    @timestamp = Time.now.to_i
     @service =  describe_service "json_list" do |service|
       service.formats  :json
       service.response do |response|
         response.array :vouchers do |node|
           node.key :id
           node.type :Voucher
+          node.string :name, :mock => "test"
           node.integer :id, :doc => "Identifier"
           node.boolean :redeemed
-          node.datetime :created_at
+          node.datetime :created_at, :mock => @timestamp
           node.object :option do |option|
             option.integer :id
             option.integer :deal_id, :mock => 1
@@ -89,6 +91,16 @@ describe "WSDSL JSON response description" do
     end
     @root_node.key.should == :id
     @root_node.type.should == :Voucher
+  end
+
+  it "should handle mocked values properly" do
+    created_at = @root_node.properties.find{|prop| prop.name == :created_at}
+    created_at.opts[:mock].should == @timestamp
+    option = @root_node.objects.find{|prop| prop.name == :option}
+    deal_id = option.properties.find{|prop| prop.name == :deal_id}
+    deal_id.opts[:mock].should == 1
+    name = @root_node.properties.find{|prop| prop.name == :name}
+    name.opts[:mock].should == "test"
   end
   
 end

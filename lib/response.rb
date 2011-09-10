@@ -266,7 +266,7 @@ class WSDSL
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def string(name=nil, opts={})
-        attribute(opts.merge(:name => name, :type => :string))
+        attribute({name => :string}.merge(opts))
       end
 
       # Shortcut to create a string attribute
