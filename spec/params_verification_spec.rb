@@ -82,6 +82,15 @@ describe ParamsVerification do
     service.should_not be_nil
     lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamValue)
   end
+
+  it "should raise an exception when a required param is present but doesn't match the limited set of options" do
+    service = describe_service "search" do |service|
+      service.params { |p| p.string :by, :options => ['name', 'code', 'last_four'], :required => true }
+    end
+    params = {'by' => 'foo'}
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamValue)
+  end
+
   
   it "should validate that no params are passed when accept_no_params! is set on a service" do
     service = WSList.all.find{|s| s.url == "services/test_no_params.xml"}

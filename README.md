@@ -44,7 +44,7 @@ Or a more complex example:
       end
       
       # service.param :delta, :optional => true, :type => 'float'
-      # if the optional flag isn't passed, the param is considered required. 
+      # All params are optional by default.
       # service.param :epsilon, :type => 'string'
       
       service.params.namespace :user do |user|

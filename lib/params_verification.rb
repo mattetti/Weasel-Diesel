@@ -51,7 +51,7 @@ module ParamsVerification
     end
     
     # dupe the params so we don't modify the passed value
-    updated_params = params.dup      
+    updated_params = params.dup
     # Required param verification
     service_params.list_required.each do |rule|
       updated_params = validate_required_rule(rule, updated_params)
@@ -119,7 +119,8 @@ module ParamsVerification
     # checks type
     elsif rule.options[:type]
       verify_cast(param_name, param_value, rule.options[:type])
-    elsif rule.options[:options] || rule.options[:in]
+    end
+    if rule.options[:options] || rule.options[:in]
       choices = rule.options[:options] || rule.options[:in]
       if rule.options[:type]
         # Force the cast so we can compare properly
