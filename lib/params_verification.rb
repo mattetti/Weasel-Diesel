@@ -120,6 +120,7 @@ module ParamsVerification
     elsif rule.options[:type]
       verify_cast(param_name, param_value, rule.options[:type])
     end
+
     if rule.options[:options] || rule.options[:in]
       choices = rule.options[:options] || rule.options[:in]
       if rule.options[:type]
@@ -127,9 +128,10 @@ module ParamsVerification
         param_value = params[param_name] = type_cast_value(rule.options[:type], param_value)
       end
       raise InvalidParamValue, "Value for parameter '#{param_name}' (#{param_value}) is not in the allowed set of values." unless choices.include?(param_value)
+    # You can have a "in" rule that also applies a min value since they are mutually exclusive
     elsif rule.options[:minvalue]
       min = rule.options[:minvalue]
-      raise InvalidParamValue, "Value for parameter '#{param_name}' is lower than the min accepted value (#{min})." if param_value.to_i >= min
+      raise InvalidParamValue, "Value for parameter '#{param_name}' is lower than the min accepted value (#{min})." if param_value.to_i < min
     end
     # Returns the updated params
     
