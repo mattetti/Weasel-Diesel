@@ -8,6 +8,7 @@ module JSONResponseVerification
   # @return [Array<TrueClass, FalseClass, Array<String>>] True/false and an array of errors.
   def validate_hash_response(hash)
     errors = []
+    # nodes without the arrays
     response.nodes.each do |node|
       if node.name
         # Verify that the named node exists in the hash
@@ -27,13 +28,13 @@ module JSONResponseVerification
   # Recursively validates a hash representing a json response.
   #
   # @param [Hash>] hash the hash to verify.
-  # @param [WDSL::Response::Element>] node the reference element defined in the response description.
-  # @param [<TrueClass, FalseClass>] nested if the node/hash to verify is nested or not. If nested, the method expects to get the subhash 
+  # @param [WDSL::Response::Element] node the reference element defined in the response description.
+  # @param [TrueClass, FalseClass] nested if the node/hash to verify is nested or not. If nested, the method expects to get the subhash 
   #   & won't verify that the name exists since it was done a level higher.
   # @param [Arrays<String>] errors the list of errors encountered while verifying.
-  #
-  # @return [<TrueClass, FalseClass>]
-  def validate_hash_against_template_node(hash, node, nested=false, errors=[])
+  # @param []
+  # @return [TrueClass, FalseClass]
+  def validate_hash_against_template_node(hash, node, nested=false, errors=[], array_item=false)
     if hash.nil?
       errors << json_response_error(node, hash)
       return errors
@@ -43,20 +44,29 @@ module JSONResponseVerification
       if hash.has_key?(node.name.to_s)
         subhash = hash[node.name.to_s]
       else
-        errors << json_response_error(node, hash) unless hash.has_key?(node.name.to_s)
+        errors << json_response_error(node, hash)
       end
     end
 
-    node.properties.each do |prop|
-      subhash ||= hash
-      errors << json_response_error(prop, subhash) unless subhash.has_key?(prop.name.to_s)
-      errors << json_response_error(prop, subhash, true) unless valid_hash_type?(subhash, prop)
-    end
+    subhash ||= hash
+    if node.is_a?(WSDSL::Response::Vector) && !array_item
+      errors << json_response_error(node, subhash, true) unless subhash.is_a?(Array)
+      subhash.each do |obj|
+        validate_hash_against_template_node(obj, node, true, errors, true)
+      end
+    else
+      node.properties.each do |prop|
+        if !array_item && !subhash.has_key?(prop.name.to_s)
+          errors << json_response_error(prop, subhash)
+        end
+        errors << json_response_error(prop, subhash, true) unless valid_hash_type?(subhash, prop)
+      end
 
-    node.objects.each do |obj|
-      # recursive call
-      validate_hash_against_template_node(subhash[obj.name.to_s], obj, true, errors)
-    end if node.objects
+      node.objects.each do |obj|
+        # recursive call
+        validate_hash_against_template_node(subhash[obj.name.to_s], obj, true, errors)
+      end if node.objects
+    end
 
     errors
   end

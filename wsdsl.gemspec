@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wsdsl}
-  s.version = "0.3.3"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Matt Aimonetti}]
-  s.date = %q{2011-09-12}
+  s.date = %q{2011-09-23}
   s.description = %q{A Ruby DSL describing Web Services without implementation details.}
   s.email = %q{mattaimonetti@gmail.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "lib/framework_ext/sinatra.rb",
     "lib/framework_ext/sinatra_controller.rb",
     "lib/inflection.rb",
+    "lib/json_response_verification.rb",
     "lib/params.rb",
     "lib/params_verification.rb",
     "lib/response.rb",
@@ -33,6 +34,7 @@ Gem::Specification.new do |s|
     "spec/hello_world_controller.rb",
     "spec/hello_world_service.rb",
     "spec/json_response_description_spec.rb",
+    "spec/json_response_verification_spec.rb",
     "spec/params_verification_spec.rb",
     "spec/preferences_service.rb",
     "spec/spec_helper.rb",
