@@ -136,16 +136,17 @@ describe "JSON response verification" do
      response["user"].delete("creds")
      valid, errors = @service.validate_hash_response(response)
      valid.should be_false
-     errors.should_not be_empty
      errors.first.should match(/creds/)
      errors.first.should match(/missing/)
   end
 
-  it "should validate non namespaced responses" do
-    valid, errors = @second_service.validate_hash_response(valid_response(false))
+  it "should validate nil attributes if marked as nullable" do
+    response = valid_response(false)
+    response["name"] = nil
+    valid, errors = @second_service.validate_hash_response(response)
     valid.should be_true
-    errors.should be_empty
   end
+
 
   it "should validate array items" do
     valid, errors = @third_service.validate_hash_response(valid_array_response)
@@ -172,5 +173,6 @@ describe "JSON response verification" do
     valid, errors = @forth_service.validate_hash_response(valid_nested_array_response)
     valid.should be_true
   end
+
 
 end
