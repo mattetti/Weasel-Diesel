@@ -75,18 +75,31 @@ module JSONResponseVerification
     if el_or_attr.is_a?(WSDSL::Response::Element)
       "#{el_or_attr.name || 'top level'} Node/Object/Element is missing"
     elsif type_error
-      "#{el_or_attr.name || el_or_attr.inspect} was of wrong type"
+      error = "#{el_or_attr.name || el_or_attr.inspect} was of wrong type, expected #{el_or_attr.type}"
+      if el_or_attr.name
+        error << " and the value was: #{hash[el_or_attr.name.to_s]}"
+      end
+      error
     else
       "#{el_or_attr.name || el_or_attr.inspect} is missing in #{hash.inspect}"
     end
   end
 
   def valid_hash_type?(hash, prop_template)
+    name = prop_template.name.to_s
+    attribute = hash[name]
+    # Check for nullity
+    if attribute.nil? && prop_template.opts[:null] != true
+      return false
+    end
     type = prop_template.type
     return true if type.nil?
     rule = ParamsVerification.type_validations[type.to_sym]
-    return true if rule.nil?
-    attribute = hash[prop_template.name.to_s]
+    if rule.nil?
+      puts "Don't know how to validate attributes of type #{type}" if type.to_sym != :string
+      return true
+    end
+    
     attribute.to_s =~ rule
   end
 

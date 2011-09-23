@@ -25,7 +25,7 @@ describe "JSON response verification" do
       service.response do |response|
         response.object do |user|
           user.integer :id
-          user.string :name
+          user.string :name, :null => true
           user.datetime :created_at
           user.object :creds do |creds|
             creds.integer :id
@@ -42,7 +42,7 @@ describe "JSON response verification" do
           node.integer :id
           node.string  :name
           node.boolean :admin, :doc => "true if the user is an admin"
-          node.string  :state, :doc => "test"
+          node.string  :state, :doc => "test", :null => true
           node.datetime :last_login_at
         end
       end
@@ -69,7 +69,7 @@ describe "JSON response verification" do
   def valid_response(namespaced=true)
     response = { 
       "id" => 1, 
-      "name" => "matt", 
+      "name" => "matt",
       "created_at" => "2011-09-22T16:32:46-07:00", 
       "creds" => { "id" => 42, "price" => 2010.07, "enabled" => false }
       } 
@@ -80,11 +80,13 @@ describe "JSON response verification" do
     {"users" => [
       {"id" => 1,
         "admin" => true,
+        "name" => "Heidi",
         "state" => "retired",
         "last_login_at" => "2011-09-22T22:46:35-07:00"
       },
       {"id" => 2,
         "admin" => false,
+        "name" => "Giana",
         "state" => "playing",
         "last_login_at" => "2011-09-22T22:46:35-07:00"
       }]
@@ -95,11 +97,13 @@ describe "JSON response verification" do
     {"users" => [
       {"id" => 1,
         "admin" => true,
+        "name" => "Heidi",
         "state" => "retired",
         "pets" => []
       },
       {"id" => 2,
         "admin" => false,
+        "name" => "Giana",
         "state" => "playing",
         "pets" => [{"id" => 23, "name" => "medor"}, {"id" => 34, "name" => "rex"}]
       }]
@@ -109,6 +113,7 @@ describe "JSON response verification" do
 
   it "should validate the response" do
     valid, errors = @service.validate_hash_response(valid_response)
+    errors.should == []
     valid.should be_true
     errors.should be_empty
   end
@@ -121,7 +126,7 @@ describe "JSON response verification" do
     errors.should_not be_empty
   end
 
-  it "should detect that a property type is wrong" do
+  it "should detect that a property integer type is wrong" do
      response = valid_response
      response["user"]["id"] = 'test'
      valid, errors = @service.validate_hash_response(response)
@@ -131,6 +136,28 @@ describe "JSON response verification" do
      errors.first.should match(/wrong type/)
   end
 
+  it "should detect that an integer attribute value is nil" do
+    response = valid_response
+     response["user"]["id"] = nil
+     valid, errors = @service.validate_hash_response(response)
+     valid.should be_false
+     errors.should_not be_empty
+     errors.first.should match(/id/)
+     errors.first.should match(/wrong type/)
+  end
+
+  it "should detect that a string attribute value is nil [bug]" do
+    response = valid_response
+     response["user"]["name"] = nil
+     # puts response.inspect
+     valid, errors = @service.validate_hash_response(response)
+     valid.should be_false
+     errors.should_not be_empty
+     errors.first.should match(/name/)
+     errors.first.should match(/wrong type/)
+  end
+
+
   it "should detect that a nested object is missing" do
      response = valid_response
      response["user"].delete("creds")
@@ -138,6 +165,11 @@ describe "JSON response verification" do
      valid.should be_false
      errors.first.should match(/creds/)
      errors.first.should match(/missing/)
+  end
+
+  it "should validate non namespaced responses" do
+    valid, errors = @second_service.validate_hash_response(valid_response(false))
+    valid.should be_true
   end
 
   it "should validate nil attributes if marked as nullable" do
