@@ -19,6 +19,9 @@ class WSDSL
       @arrays  = []
     end
 
+    # Lists all top level simple elements and array elements.
+    #
+    # @return [Array<WSDSL::Response::Element, WSDSL::Response::Array>]
     def nodes 
       elements + arrays
     end
@@ -48,13 +51,21 @@ class WSDSL
     #    response.element(:name => "my_stats", :type => 'Leaderboard')
     #   end
     #
-    # @return [Array<WSDSL::Response::Element>]
+    # @return [WSDSL::Response::Element]
     # @api public
     def element(opts={})
       el = Element.new(opts[:name], opts[:type])
       yield(el) if block_given?
       @elements << el
       el
+    end
+
+    # Defines an anonymous element
+    # Useful for JSON response description
+    #
+    # @return [WSDSL::Response::Element]
+    def object
+      yield element
     end
 
     # Returns a response element object based on its name

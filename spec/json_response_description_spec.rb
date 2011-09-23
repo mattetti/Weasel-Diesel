@@ -102,5 +102,23 @@ describe "WSDSL JSON response description" do
     name = @root_node.properties.find{|prop| prop.name == :name}
     name.opts[:mock].should == "test"
   end
+
+  it "should allow an anonymous object at the root of the response" do
+    service =  describe_service "json_anonymous_obj" do |service|
+      service.formats  :json
+      service.response do |response|
+        response.object do |obj|
+          obj.integer :id
+          obj.string :foo
+        end
+      end
+    end
+    response = service.response
+    response.nodes.should_not be_empty
+    obj = response.nodes.first
+    obj.should_not be_nil
+    obj.properties.find{|prop| prop.name == :id}.should_not be_nil
+    obj.properties.find{|prop| prop.name == :foo}.should_not be_nil
+  end
   
 end
