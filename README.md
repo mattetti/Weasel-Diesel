@@ -125,7 +125,7 @@ It would be described as follows:
           node.datetime :created_at
           node.object :team do |team|
             team.integer :id
-            team.float :score
+            team.float :score, :null => true
           end
         end
       end
@@ -137,6 +137,11 @@ following meta attributes are available:
 * key (refers to an attribute name that is key to this object)
 * type (refers to the type of object described, valuable when using JSON
   cross OO based apps.
+
+JSON response validation can be done using an optional module.
+Look at the spec/json_response_verification_spec.rb file for a complete
+example. The goal of this module is to help automate API testing by
+validating the data structure of the returned object.
 
 ## Test suite
 
