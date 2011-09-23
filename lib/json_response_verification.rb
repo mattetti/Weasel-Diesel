@@ -88,18 +88,21 @@ module JSONResponseVerification
   def valid_hash_type?(hash, prop_template)
     name = prop_template.name.to_s
     attribute = hash[name]
+
     # Check for nullity
-    if attribute.nil? && prop_template.opts[:null] != true
-      return false
+    if attribute.nil?
+      return prop_template.opts[:null] == true
     end
+    
     type = prop_template.type
     return true if type.nil?
+
     rule = ParamsVerification.type_validations[type.to_sym]
     if rule.nil?
       puts "Don't know how to validate attributes of type #{type}" if type.to_sym != :string
       return true
     end
-    
+
     attribute.to_s =~ rule
   end
 
