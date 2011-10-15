@@ -194,9 +194,10 @@ class WSDSL
   # @api private
   def controller_dispatch(app)
     unless @controller
-      if Object.const_defined?(@controller_name)
-        @controller = Object.const_get(@controller_name)
-      else
+      klass = @controller_name.split("::")
+      begin
+        @controller = klass.inject(Object) { |const,k| const.const_get(k) }
+      rescue NameError => e
         raise "The #{@controller_name} class was not found"
       end
     end

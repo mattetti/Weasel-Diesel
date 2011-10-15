@@ -49,6 +49,18 @@ describe WSDSL do
       end
     end
 
+    module Projects
+      class TasksController < ProjectsController
+      end
+    end
+
+    module Projects
+      module Tasks
+        class ItemsController < ProjectsController
+        end
+      end
+    end
+
     before :all do
       @original_use_controller_dispatch = WSDSL.use_controller_dispatch
       WSDSL.use_controller_dispatch = true
@@ -66,6 +78,34 @@ describe WSDSL do
       service = WSList.all.find{|s| s.url == "projects.xml"}
       service.controller_dispatch("application").
         should == ["application", "projects", "list"]
+    end
+
+    it "should be able to dispatch namespaced controller" do
+      describe_service("project/:project_id/tasks.xml") do |service|
+        service.controller_name = "Projects::TasksController"
+        service.action = "list"
+      end
+
+      describe_service("project/:project_id/task/:task_id/items.xml") do |service|
+        service.controller_name = "Projects::Tasks::ItemsController"
+        service.action = "list"
+      end
+
+      service = WSList.all.find{|s| s.url == "project/:project_id/tasks.xml"}
+      service.controller_dispatch("application").should == ["application", "project", "list"]
+
+      service = WSList.all.find{|s| s.url == "project/:project_id/task/:task_id/items.xml"}
+      service.controller_dispatch("application").should == ["application", "project", "list"]
+    end
+
+    it "should raise exception when controller class is not found" do
+      describe_service("unknown.xml") do |service|
+        service.controller_name = "UnknownController"
+        service.action = "list"
+      end
+      service = WSList.all.find{|s| s.url == "unknown.xml"}
+      lambda { service.controller_dispatch("application") }.
+        should raise_error("The UnknownController class was not found")
     end
 
   end
