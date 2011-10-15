@@ -3,35 +3,35 @@ WSDSLSpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
 describe_service "services/test.xml" do |service|
   service.formats  :xml, :json
   service.http_verb :get
-  
+
   service.params do |p|
     p.string :framework, :in => WSDSLSpecOptions, :null => false, :required => true
-   
+
     p.datetime :timestamp, :default => Time.now
     p.string   :alpha,     :in      => ['a', 'b', 'c']
     p.string   :version,   :null    => false
     p.integer  :num,      :minvalue => 42
 
   end
-  
+
   # service.param :delta, :optional => true, :type => 'float'
-  # # if the optional flag isn't passed, the param is considered required. 
+  # # if the optional flag isn't passed, the param is considered required.
   # service.param :epsilon, :type => 'string'
-  
+
   service.params.namespace :user do |user|
     user.integer :id, :required => :true
     user.string :sex, :in => %Q{female, male}
     user.boolean :mailing_list, :default => true
   end
-  
-  # the response contains a list of player creation ratings each object in the list 
-  
+
+  # the response contains a list of player creation ratings each object in the list
+
   service.response do |response|
     response.element(:name => "player_creation_ratings") do |e|
       e.attribute  :id          => :integer, :doc => "id doc"
       e.attribute  :is_accepted => :boolean, :doc => "is accepted doc"
       e.attribute  :name        => :string,  :doc => "name doc"
-      
+
       e.array :player_creation_rating, 'PlayerCreationRating' do |a|
         a.attribute :comments  => :string,  :doc => "comments doc"
         a.attribute :player_id => :integer, :doc => "player_id doc"
@@ -40,17 +40,17 @@ describe_service "services/test.xml" do |service|
       end
     end
   end
-  
+
   service.documentation do |doc|
     # doc.overall <markdown description text>
     doc.overall <<-DOC
      This is a test service used to test the framework.
     DOC
-    
+
     # doc.params <name>, <definition>
     doc.param :framework, "The test framework used, could be one of the two following: #{WSDSLSpecOptions.join(", ")}."
     doc.param :version, "The version of the framework to use."
-    
+
     # doc.example <markdown text>
     doc.example <<-DOC
 The most common way to use this service looks like that:
@@ -69,7 +69,7 @@ end
 describe_service "services.xml" do |service|
   service.formats  :xml
   service.http_verb :put
-  
+
 end
 
 describe_service "services/array_param.xml" do |s|
