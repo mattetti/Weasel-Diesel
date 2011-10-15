@@ -8,14 +8,14 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 # their params, http verbs, formats expected as well as the documentation
 # for all these aspects of a web service.
 #
-# This DSL is only meant to describe a web service and isn't meant to cover any type 
+# This DSL is only meant to describe a web service and isn't meant to cover any type
 # of implementation details. It is meant to be framework/tool agnostic.
 #
 # However, tools can be built around the Web Service DSL data structure to extract documentation,
 # generate routing information, verify that an incoming request is valid, generate automated tests...
 #
-# 
-# 
+#
+#
 #  WSDSL
 #    |
 #    |__ service options (name, url, SSL, auth required formats, verbs, controller name, action, version, extra)
@@ -37,71 +37,71 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 #       |_ response (instance of Documentation.new)
 #            |_ elements (array of instances of WSDSL::Documentation::ElementDoc, each element has a name and a list of attributes)
 #                  |_ attributes (Hash with the key being the attribute name and the value being the attribute's documentation)
-# 
+#
 # @since 0.0.3
 # @api public
 class WSDSL
-  
+
   # Returns the service url
   #
   # @return [String] The service url
   # @api public
   attr_reader :url
-  
+
   # List of all the service params
   #
   # @return [Array<WSDSL::Params>]
   # @api public
   attr_reader :defined_params
-  
+
   # Documentation instance containing all the service doc
   #
   # @return [WSDSL::Documentation]
   # @api public
   attr_reader :doc
-  
+
   # The HTTP verb supported
   #
   # @return [Symbol]
   # @api public
   attr_reader :verb
-  
+
   # Service's version
   #
   # @return [String]
   # @api public
   attr_reader :version
-  
+
   # Controller instance associated with the service
   #
   # @return [WSController]
   # @api public
   attr_reader :controller
-  
-  # Name of the controller action associated with the service 
+
+  # Name of the controller action associated with the service
   #
   # @return [String]
   # @api public
   attr_accessor :action
-  
+
   # Name of the controller associated with the service
   #
   # @return [String]
   # @api public
   attr_accessor :controller_name
-  
+
   # Name of the service
   #
   # @return [String]
   # @api public
   attr_reader :name
-  
+
   # Is SSL required?
   #
   # @return [Boolean]
   # @api public
   attr_reader :ssl
-  
+
   # Is authentication required?
   #
   # @return [Boolean]
@@ -109,12 +109,12 @@ class WSDSL
   attr_reader :auth_required
 
   # Extra placeholder to store data in based on developer's discretion.
-  # 
+  #
   # @return [Hash] A hash storing extra data based.
   # @api public
   # @since 0.1
   attr_reader :extra
-  
+
   # Service constructor which is usually used via {Kernel#describe_service}
   #
   # @param [String] url Service's url
@@ -142,7 +142,7 @@ class WSDSL
     @auth_required       = true
     @extra               = {}
   end
-  
+
   # Checks the WSDSL flag to see if the controller names are pluralized.
   #
   # @return [Boolean] The updated value, default to false
@@ -155,7 +155,7 @@ class WSDSL
   # Sets a WSDSL global flag so all controller names will be automatically pluralized.
   #
   # @param [Boolean] True if the controllers are pluralized, False otherwise.
-  # 
+  #
   # @return [Boolean] The updated value
   # @api public
   # @since 0.1.1
@@ -176,7 +176,7 @@ class WSDSL
   # Sets a WSDSL global flag so the controller settings can be generated
   # Setting this flag will automatically set the controller/action names.
   # @param [Boolean] True if the controllers are pluralized, False otherwise.
-  # 
+  #
   # @return [Boolean] The updated value
   # @api public
   # @since 0.1.1
@@ -194,9 +194,10 @@ class WSDSL
   # @api private
   def controller_dispatch(app)
     unless @controller
-      if Object.const_defined?(@controller_name)
-        @controller = Object.const_get(@controller_name)
-      else
+      klass = @controller_name.split("::")
+      begin
+        @controller = klass.inject(Object) { |const,k| const.const_get(k) }
+      rescue NameError => e
         raise "The #{@controller_name} class was not found"
       end
     end
@@ -204,8 +205,8 @@ class WSDSL
     # param verification could be done when the controller gets initialized.
     @controller.new(app, self).send(@action)
   end
-  
-  # Returns the defined params 
+
+  # Returns the defined params
   # for DSL use only!
   # To keep the distinction between the request params and the service params
   # using the +defined_params+ accessor is recommended.
@@ -221,7 +222,7 @@ class WSDSL
     end
   end
   alias :param :params
- 
+
   # Returns true if the DSL defined any params
   #
   # @return [Boolean]
@@ -236,7 +237,7 @@ class WSDSL
   def required_rules
     @defined_params.list_required
   end
-  
+
   # Returns an array of optional param rules
   #
   # @return [Array<WSDSL::Params::Rule>]Only the optional param rules
@@ -244,7 +245,7 @@ class WSDSL
   def optional_rules
     @defined_params.list_optional
   end
-  
+
   # Returns an array of namespaced params
   # @see WSDSL::Params#namespaced_params
   #
@@ -253,7 +254,7 @@ class WSDSL
   def nested_params
     @defined_params.namespaced_params
   end
-  
+
   # Mark that the service doesn't require authentication.
   # Note: Authentication is turned on by default
   #
@@ -262,7 +263,7 @@ class WSDSL
   def disable_auth
     @auth_required = false
   end
-  
+
   # Mark that the service requires a SSL connection
   #
   # @return [Boolean]
@@ -270,19 +271,19 @@ class WSDSL
   def enable_ssl
     @ssl = true
   end
-  
+
   # Mark the current service as not accepting any params.
-  # This is purely for expressing the developer's objective since 
+  # This is purely for expressing the developer's objective since
   # by default an error is raise if no params are defined and some
   # params are sent.
-  # 
+  #
   # @return [Nil]
   # @api public
   def accept_no_params!
     # no op operation since this is the default behavior
     # unless params get defined. Makes sense for documentation tho.
   end
-  
+
   # Returns the service response
   # @yield The service response object
   #
@@ -295,7 +296,7 @@ class WSDSL
       @response
     end
   end
-  
+
   # Sets or returns the supported formats
   # @param [String, Symbol] f_types Format type supported, such as :xml
   #
@@ -305,7 +306,7 @@ class WSDSL
     f_types.each{|f| @formats << f unless @formats.include?(f) }
     @formats
   end
-  
+
   # Sets the accepted HTTP verbs or return it if nothing is passed.
   #
   # @return [String, Symbol]
@@ -318,7 +319,7 @@ class WSDSL
     update_restful_action(@verb)
     @verb
   end
-  
+
   # Yields and returns the documentation object
   # @yield [WSDSL::Documentation]
   #
@@ -328,17 +329,17 @@ class WSDSL
     yield(doc)
   end
 
-  SERVICE_ROOT_REGEXP = /(.*?)[\/\(\.]/  
+  SERVICE_ROOT_REGEXP = /(.*?)[\/\(\.]/
   SERVICE_ACTION_REGEXP = /[\/\(\.]([a-z0-9_]+)[\/\(\.\?]/i
   SERVICE_RESTFUL_SHOW_REGEXP = /\/:[a-z0-9_]+\.\w{3}$/
-  
+
   private
-  
+
   # extracts the service root name out of the url using a regexp
   def extract_service_root_name(url)
     url[SERVICE_ROOT_REGEXP, 1] || url
   end
-  
+
   # extracts the action name out of the url using a regexp
   # Defaults to the list action
   def extract_service_action(url)
@@ -348,7 +349,7 @@ class WSDSL
       url[SERVICE_ACTION_REGEXP, 1] || 'list'
     end
   end
-  
+
   # Check if we need to use a restful route in which case we need
   # to update the service action
   def update_restful_action(verb)
@@ -388,5 +389,5 @@ module Kernel
     WSList.add(service)
     service
   end
-  
+
 end
