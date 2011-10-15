@@ -36,6 +36,40 @@ describe WSDSL do
     @service.nested_params.should == @service.params.namespaced_params
   end
 
+  describe "#controller_dispatch" do
+
+    class ProjectsController
+      def initialize(app, service)
+        @app = app
+        @service = service.name
+      end
+
+      def send(action)
+        [@app, @service, action]
+      end
+    end
+
+    before :all do
+      @original_use_controller_dispatch = WSDSL.use_controller_dispatch
+      WSDSL.use_controller_dispatch = true
+      @original_services = WSList.all.dup
+      WSList.all.clear
+    end
+
+    after :all do
+      WSDSL.use_controller_dispatch = @original_use_controller_dispatch
+      WSList.all.replace @original_services
+    end
+
+    it "should be able to dispatch controller" do
+      describe_service("projects.xml") { |s| }
+      service = WSList.all.find{|s| s.url == "projects.xml"}
+      service.controller_dispatch("application").
+        should == ["application", "projects", "list"]
+    end
+
+  end
+
   describe "With controller dispatch on" do
     before :all do
       @original_services = WSList.all.dup
