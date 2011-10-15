@@ -75,7 +75,7 @@ describe WSDSL do
 
     it "should be able to dispatch controller" do
       describe_service("projects.xml") { |s| }
-      service = WSList.all.find{|s| s.url == "projects.xml"}
+      service = WSList["projects.xml"]
       service.controller_dispatch("application").
         should == ["application", "projects", "list"]
     end
@@ -91,10 +91,10 @@ describe WSDSL do
         service.action = "list"
       end
 
-      service = WSList.all.find{|s| s.url == "project/:project_id/tasks.xml"}
+      service = WSList["project/:project_id/tasks.xml"]
       service.controller_dispatch("application").should == ["application", "project", "list"]
 
-      service = WSList.all.find{|s| s.url == "project/:project_id/task/:task_id/items.xml"}
+      service = WSList["project/:project_id/task/:task_id/items.xml"]
       service.controller_dispatch("application").should == ["application", "project", "list"]
     end
 
@@ -103,7 +103,7 @@ describe WSDSL do
         service.controller_name = "UnknownController"
         service.action = "list"
       end
-      service = WSList.all.find{|s| s.url == "unknown.xml"}
+      service = WSList["unknown.xml"]
       lambda { service.controller_dispatch("application") }.
         should raise_error("The UnknownController class was not found")
     end
