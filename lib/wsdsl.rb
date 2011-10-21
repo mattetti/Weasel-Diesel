@@ -329,6 +329,28 @@ class WSDSL
     yield(doc)
   end
 
+  # Assign a route loading point to compare two routes.
+  # Using this point value, one can load routes with the more globbing
+  # routes later than short routes.
+  #
+  # @return [Integer] point value
+  def route_loading_point
+    url =~ /(.*?):(.*?)[\/\.](.*)/
+    return url.size if $1.nil?
+    # The shortest the prepend, the further the service should be loaded
+    prepend = $1.size
+    # The shortest the placeholder, the further it should be in the queue
+    place_holder = $2.size
+     # The shortest the trail, the further it should be in the queue
+    trail = $3.size
+    prepend + place_holder + trail
+  end
+
+  # Compare two services using the route loading point
+  def <=> (other)
+    route_loading_point <=> other.route_loading_point
+  end
+
   SERVICE_ROOT_REGEXP = /(.*?)[\/\(\.]/
   SERVICE_ACTION_REGEXP = /[\/\(\.]([a-z0-9_]+)[\/\(\.\?]/i
   SERVICE_RESTFUL_SHOW_REGEXP = /\/:[a-z0-9_]+\.\w{3}$/

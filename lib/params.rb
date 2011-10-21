@@ -50,6 +50,13 @@ class WSDSL
         @options[:space_name]
       end
 
+      # Converts the rule into a hash with its name and options.
+      #
+      # @return [Hash]
+      def to_hash
+        {:name => name, :options => options}
+      end
+
     end # of Rule
 
     # The namespace used if any

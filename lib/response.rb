@@ -1,3 +1,5 @@
+require 'json'
+
 class WSDSL
   # Response DSL class
   # @api public
@@ -75,6 +77,13 @@ class WSDSL
     # @api public
     def element_named(name)
       @elements.find{|e| e.name.to_s == name.to_s}
+    end
+
+
+    # Converts the object into a JSON representation
+    # @return [String] JSON representation of the response
+    def to_json
+      nodes.size > 1 ? nodes.to_json : nodes.first.to_json
     end
 
     # The Response element class describing each element of a service response.
@@ -310,6 +319,15 @@ class WSDSL
       # @param [Hash] opts the attribute options.
       def datetime(name=nil, opts={})
         attribute({name => :datetime}.merge(opts))
+      end
+
+      # Converts an element into a hash representation
+      #
+      # @return [Hash] the element attributes formated in a hash
+      def to_hash
+        attrs = {}
+        attributes.each{ |attr| attrs[attr.name] = attr.type }
+        name ? {name => attrs} : attrs
       end
 
       private
