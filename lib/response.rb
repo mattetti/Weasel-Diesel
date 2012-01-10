@@ -82,8 +82,21 @@ class WSDSL
 
     # Converts the object into a JSON representation
     # @return [String] JSON representation of the response
-    def to_json
-      nodes.size > 1 ? nodes.to_json : nodes.first.to_json
+    def to_json(*args)
+      if nodes.size > 1
+        nodes.to_json(*args)
+      else
+        nodes.first.to_json(*args)
+      end
+    end
+
+
+    class Params
+      class Rule
+        def to_hash
+          {:name => name, :options => options}
+        end
+      end
     end
 
     # The Response element class describing each element of a service response.
@@ -327,7 +340,36 @@ class WSDSL
       def to_hash
         attrs = {}
         attributes.each{ |attr| attrs[attr.name] = attr.type }
-        name ? {name => attrs} : attrs
+        elements.each{ |el| attrs[el.name] = el.to_hash } if elements
+        if self.class == Vector
+          name ? {name => [attrs]} : [attrs]
+        else
+          name ? {name => attrs} : attrs
+        end
+      end
+
+      def to_html
+        output = ""
+        if name
+          output << "<li>"
+          output << "<span class='label notice'>#{name}</span> of type <span class='label success'>#{self.is_a?(Vector) ? 'Array' : 'Object'}</span>"
+        end
+        if self.is_a? Vector
+          output << "<h6>Properties of each array item:</h6>"
+        else
+          output << "<h6>Properties:</h6>"
+        end
+        output << "<ul>"
+        properties.each do |prop|
+          output << "<li><span class='label notice'>#{prop.name}</span> of type <span class='label success'>#{prop.type}</span> "
+          output <<  prop.doc unless prop.doc.blank?
+          output << "</li>"
+        end
+        arrays.each{ |arr| output << arr.html }
+        elements.each {|el| output << el.to_html } if elements
+        output << "</ul>"
+        output << "</li>" if name
+        output
       end
 
       private
