@@ -173,14 +173,13 @@ class WSDSL
       #
       # @return [Array<WSDSL::Response::Attribute>]
       # @api public
-      def attribute(opts)
-        raise ArgumentError unless opts.is_a?(Hash)
-        # extract the documentation part and add it where it belongs
-        new_attribute = Attribute.new(opts)
+      def attribute(opts, extra_opts={})
+        raise ArgumentError unless opts.is_a?(Hash) && extra_opts.is_a?(Hash)
+        new_attribute = Attribute.new(opts, extra_opts)
         @attributes << new_attribute
         # document the attribute if description available
         # we might want to have a placeholder message when a response attribute isn't defined
-        if opts.has_key?(:doc)
+        if opts.merge!(extra_opts).has_key?(:doc)
           @doc.attribute(new_attribute.name, opts[:doc])
         end
         @attributes
@@ -299,7 +298,7 @@ class WSDSL
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def string(name=nil, opts={})
-        attribute({name => :string}.merge(opts))
+        attribute({name => :string}, opts)
       end
 
       # Shortcut to create a string attribute
@@ -307,7 +306,7 @@ class WSDSL
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def integer(name=nil, opts={})
-        attribute({name => :integer}.merge(opts))
+        attribute({name => :integer}, opts)
       end
 
       # Shortcut to create a string attribute
@@ -315,7 +314,7 @@ class WSDSL
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def float(name=nil, opts={})
-        attribute({name => :float}.merge(opts))
+        attribute({name => :float}, opts)
       end
 
       # Shortcut to create a string attribute
@@ -323,7 +322,7 @@ class WSDSL
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def boolean(name=nil, opts={})
-        attribute({name => :boolean}.merge(opts))
+        attribute({name => :boolean}, opts)
       end
 
       # Shortcut to create a string attribute
@@ -331,7 +330,7 @@ class WSDSL
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def datetime(name=nil, opts={})
-        attribute({name => :datetime}.merge(opts))
+        attribute({name => :datetime}, opts)
       end
 
       # Converts an element into a hash representation
@@ -422,14 +421,17 @@ class WSDSL
         # name, type, doc, type
         #
         # @param [Hash, Array] o_params
+        # @param [Hash] o_extra_params A hash with extra params passed, needed to support Ruby 1.8 :(
         #
         # @api public
-        def initialize(o_params)
+        def initialize(o_params, o_extra_params={})
           params = o_params.dup
+          extra_params = o_extra_params.dup
           if params.is_a?(Hash)
             @name, @type = params.shift
             @doc  = params.delete(:doc) if params.has_key?(:doc)
-            @opts = params
+            @doc  ||= extra_params.delete(:doc) if extra_params.has_key?(:doc)
+            @opts = params.merge!(extra_params)
           elsif params.is_a?(Array)
             @name = params.shift
             @type = params.shift

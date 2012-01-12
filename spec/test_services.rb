@@ -26,6 +26,8 @@ describe_service "services/test.xml" do |service|
 
   # the response contains a list of player creation ratings each object in the list
 
+=begin
+  #Format not supported by Ruby 1.8 due to hash insertion order not being maintained.
   service.response do |response|
     response.element(:name => "player_creation_ratings") do |e|
       e.attribute  :id          => :integer, :doc => "id doc"
@@ -40,6 +42,23 @@ describe_service "services/test.xml" do |service|
       end
     end
   end
+=end
+
+  service.response do |response|
+    response.element(:name => "player_creation_ratings") do |e|
+      e.integer  :id, :doc => "id doc"
+      e.boolean  :is_accepted, :doc => "is accepted doc"
+      e.string   :name, :doc => "name doc"
+
+      e.array :player_creation_rating, 'PlayerCreationRating' do |a|
+        a.string :comments,  :doc => "comments doc"
+        a.integer :player_id, :doc => "player_id doc"
+        a.integer :rating, :doc => "rating doc"
+        a.string :username,  :doc => "username doc"
+      end
+    end
+  end
+
 
   service.documentation do |doc|
     # doc.overall <markdown description text>

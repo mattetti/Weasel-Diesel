@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{wsdsl}
-  s.version = "0.4.3"
+  s.name = "wsdsl"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Matt Aimonetti}]
-  s.date = %q{2011-09-23}
-  s.description = %q{A Ruby DSL describing Web Services without implementation details.}
-  s.email = %q{mattaimonetti@gmail.com}
+  s.authors = ["Matt Aimonetti"]
+  s.date = "2012-01-10"
+  s.description = "A Ruby DSL describing Web Services without implementation details."
+  s.email = "mattaimonetti@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE",
     "README.md"
@@ -43,11 +43,11 @@ Gem::Specification.new do |s|
     "spec/wsdsl_spec.rb",
     "wsdsl.gemspec"
   ]
-  s.homepage = %q{http://github.com/mattetti/wsdsl}
-  s.licenses = [%q{MIT}]
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.6}
-  s.summary = %q{Web Service DSL}
+  s.homepage = "http://github.com/mattetti/wsdsl"
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.10"
+  s.summary = "Web Service DSL"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

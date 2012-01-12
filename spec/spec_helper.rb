@@ -1,3 +1,9 @@
+if RUBY_VERSION =~ /1.8/
+  require 'rubygems'
+  require 'backports'
+  require 'json'
+end
+
 require 'rspec'
 require 'rack/test'
 require 'sinatra'

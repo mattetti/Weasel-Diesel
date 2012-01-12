@@ -149,6 +149,35 @@ This library comes with a test suite requiring Ruby 1.9.2
 The following gems need to be available:
 Rspec, Rack, Sinatra
 
+## RUBY 1.8 warning
+
+This library was written for Ruby 1.9 and 1.8 support was added later on
+via the backports libary and some tweaks. However, because unlike in
+ruby 1.9, the hash insert order isn't kept in 1.8 the following syntax
+isn't supported and the alternative version needs to be used:
+
+    service.response do |response|
+      response.element(:name => "player_creation_ratings") do |e|
+        e.attribute  :id          => :integer, :doc => "id doc"
+        e.attribute  :is_accepted => :boolean, :doc => "is accepted doc"
+        e.attribute  :name        => :string,  :doc => "name doc"
+      end
+    end
+
+Instead the following version should be used:
+
+    service.response do |response|
+      response.element(:name => "player_creation_ratings") do |e|
+        e.integer  :id, :doc => "id doc"
+        e.boolean  :is_accepted, :doc => "is accepted doc"
+        e.string   :name, :doc => "name doc"
+      end
+    end
+
+Both code snippets do the exact same thing but the first version is 1.9
+only.
+
+
 
 ## Copyright
 

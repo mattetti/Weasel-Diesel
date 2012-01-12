@@ -287,6 +287,7 @@ The most common way to use this service looks like that:
     end
 
     it "should have documentation for a response element attribute" do
+      p @service.response.elements.first.doc.inspect
       @service.response.elements.first.doc.attributes.should_not be_empty
       @service.response.elements.first.doc.attributes[:id].should == "id doc"
     end
