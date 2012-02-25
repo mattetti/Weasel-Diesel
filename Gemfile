@@ -1,10 +1,4 @@
-source :rubygems
+source "http://rubygems.org"
 
-gem 'jeweler'
-gem 'rspec'
-gem 'rack-test'
-gem 'sinatra'
-if RUBY_VERSION =~ /1.8/
-  gem 'backports'
-  gem 'json'
-end
+# Specify your gem's dependencies in wsdsl.gemspec
+gemspec
