@@ -56,7 +56,7 @@ module JSONResponseVerification
       end
     else
       node.properties.each do |prop|
-        if !array_item && !subhash.has_key?(prop.name.to_s)
+        if !array_item && !subhash.has_key?(prop.name.to_s) && (prop.opts && prop.respond_to?(:opts) && !prop.opts[:null])
           errors << json_response_error(prop, subhash)
         end
         errors << json_response_error(prop, subhash, true) unless valid_hash_type?(subhash, prop)

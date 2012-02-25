@@ -5,11 +5,10 @@
 
 Gem::Specification.new do |s|
   s.name = "wsdsl"
-  s.version = "0.5.0"
+  s.version = "0.5.2"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Aimonetti"]
-  s.date = "2012-01-10"
+  s.date = "2012-02-25"
   s.description = "A Ruby DSL describing Web Services without implementation details."
   s.email = "mattaimonetti@gmail.com"
   s.extra_rdoc_files = [
@@ -30,32 +29,12 @@ Gem::Specification.new do |s|
     "lib/params_verification.rb",
     "lib/response.rb",
     "lib/ws_list.rb",
-    "lib/wsdsl.rb",
-    "spec/hello_world_controller.rb",
-    "spec/hello_world_service.rb",
-    "spec/json_response_description_spec.rb",
-    "spec/json_response_verification_spec.rb",
-    "spec/params_verification_spec.rb",
-    "spec/preferences_service.rb",
-    "spec/spec_helper.rb",
-    "spec/test_services.rb",
-    "spec/wsdsl_sinatra_ext_spec.rb",
-    "spec/wsdsl_spec.rb",
-    "wsdsl.gemspec"
+    "lib/wsdsl.rb"
   ]
   s.homepage = "http://github.com/mattetti/wsdsl"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
   s.summary = "Web Service DSL"
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
 end
 

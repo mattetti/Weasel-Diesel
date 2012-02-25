@@ -360,7 +360,7 @@ class WSDSL
         end
         output << "<ul>"
         properties.each do |prop|
-          output << "<li><span class='label notice'>#{prop.name}</span> of type <span class='label success'>#{prop.type}</span> "
+          output << "<li><span class='label notice'>#{prop.name}</span> of type <span class='label success'>#{prop.type}</span> #{'(Can be blank or missing) ' if prop.opts && prop.opts.respond_to?(:[]) && prop.opts[:null]} "
           output <<  prop.doc unless prop.doc.blank?
           output << "</li>"
         end

@@ -63,8 +63,18 @@ describe "JSON response verification" do
       end
     end
 
+    @optional_prop_service = describe_service "opt_prop_service" do |service|
+      service.response do |response|
+        response.object do |obj|
+          obj.string  :email,     :null => true
+          obj.integer :city_id,   :null => true
+          obj.string  :full_name, :null => true
+        end
+      end
+    end
 
   end
+
 
   def valid_response(namespaced=true)
     response = { 
@@ -148,23 +158,22 @@ describe "JSON response verification" do
 
   it "should detect that a string attribute value is nil [bug]" do
     response = valid_response
-     response["user"]["name"] = nil
-     # puts response.inspect
-     valid, errors = @service.validate_hash_response(response)
-     valid.should be_false
-     errors.should_not be_empty
-     errors.first.should match(/name/)
-     errors.first.should match(/wrong type/)
+    response["user"]["name"] = nil
+    valid, errors = @service.validate_hash_response(response)
+    valid.should be_false
+    errors.should_not be_empty
+    errors.first.should match(/name/)
+    errors.first.should match(/wrong type/)
   end
 
 
   it "should detect that a nested object is missing" do
-     response = valid_response
-     response["user"].delete("creds")
-     valid, errors = @service.validate_hash_response(response)
-     valid.should be_false
-     errors.first.should match(/creds/)
-     errors.first.should match(/missing/)
+    response = valid_response
+    response["user"].delete("creds")
+    valid, errors = @service.validate_hash_response(response)
+    valid.should be_false
+    errors.first.should match(/creds/)
+    errors.first.should match(/missing/)
   end
 
   it "should validate non namespaced responses" do
@@ -203,6 +212,12 @@ describe "JSON response verification" do
 
   it "should validate nested arrays" do
     valid, errors = @forth_service.validate_hash_response(valid_nested_array_response)
+    valid.should be_true
+  end
+
+
+  it "should respect optional properties" do
+    valid, errors = @optional_prop_service.validate_hash_response({})
     valid.should be_true
   end
 
