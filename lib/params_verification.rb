@@ -22,7 +22,7 @@ module ParamsVerification
     @type_validations ||= { :integer  => /^-?\d+$/,
                             :float    => /^-?(\d*\.\d+|\d+)$/,
                             :decimal  => /^-?(\d*\.\d+|\d+)$/,
-                            :datetime => /^[-\d:T\s]+$/,  # "T" is for ISO date format
+                            :datetime => /^[-\d:T\s\+]+$/,  # "T" is for ISO date format
                             :boolean  => /^(1|true|TRUE|T|Y|0|false|FALSE|F|N)$/,
                             #:array    => /,/
                           }
