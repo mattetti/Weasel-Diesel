@@ -1,4 +1,4 @@
-# include this module in WSDSL
+# include this module in WeaselDiesel
 # to add response verification methods.
 #
 module JSONResponseVerification
@@ -49,7 +49,7 @@ module JSONResponseVerification
     end
 
     subhash ||= hash
-    if node.is_a?(WSDSL::Response::Vector) && !array_item
+    if node.is_a?(WeaselDiesel::Response::Vector) && !array_item
       errors << json_response_error(node, subhash, true) unless subhash.is_a?(Array)
       subhash.each do |obj|
         validate_hash_against_template_node(obj, node, true, errors, true)
@@ -72,7 +72,7 @@ module JSONResponseVerification
   end
 
   def json_response_error(el_or_attr, hash, type_error=false)
-    if el_or_attr.is_a?(WSDSL::Response::Element)
+    if el_or_attr.is_a?(WeaselDiesel::Response::Element)
       "#{el_or_attr.name || 'top level'} Node/Object/Element is missing"
     elsif type_error
       error = "#{el_or_attr.name || el_or_attr.inspect} was of wrong type, expected #{el_or_attr.type}"

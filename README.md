@@ -1,9 +1,47 @@
 # Web Service DSL
 
-WSDSL is a simple DSL allowing developers to simply describe and
-document their web APIS. For instance:
+Weasel Diesel is a simple DSL allowing developers to simply describe and
+document their web APIS. 
+The DSL is already setup on top of Sinatra in this [example
+application](https://github.com/mattetti/sinatra-web-api-example) that
+you can simply fork and use as a base for your application.
 
+DSL examples:
 
+``` ruby
+describe_service "hello_world" do |service|
+  service.formats   :json
+  service.http_verb :get
+  service.disable_auth # on by default
+
+  # INPUT
+  service.param.string  :name, :default => 'World'
+
+  # OUTPUT
+  service.response do |response|
+    response.object do |obj|
+	    obj.string :message, :doc => "The greeting message sent back. Defaults to 'World'"
+      obj.datetime :at, :doc => "The timestamp of when the message was dispatched"
+	  end
+  end
+
+  # DOCUMENTATION
+  service.documentation do |doc|
+  	doc.overall "This service provides a simple hello world implementation example."
+  	doc.param :name, "The name of the person to greet."
+  	doc.example "<code>curl -I 'http://localhost:9292/hello_world?name=Matt'</code>"
+ end
+
+  # ACTION/IMPLEMENTATION (specific to the sinatra app example, can
+  # instead be set to call a controller action)
+  service.implementation do
+    {:message => "Hello #{params[:name]}", :at => Time.now}.to_json
+  end
+
+end
+```
+
+``` ruby
     describe_service "hello_world" do |service|
       service.formats    :xml
       service.http_verb :get
@@ -24,10 +62,11 @@ document their web APIS. For instance:
      end
 
     end
-
+```
 
 Or a more complex example:
 
+``` ruby
     SpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
 
     describe_service "wsdsl/test.xml" do |service|
@@ -85,7 +124,7 @@ Or a more complex example:
         DOC
       end
     end
-
+```
 
 ## JSON APIs
 
@@ -93,6 +132,7 @@ This library was designed with XML responses in mind and JSON support
 was added later on which explains why some response methods are aliases.
 Consider the following JSON response:
 
+``` json
     { people: [ 
       { 
         id : 1, 
@@ -116,6 +156,7 @@ Consider the following JSON response:
 
 It would be described as follows:
 
+``` ruby
     describe_service "json_list" do |service|
       service.formats  :json
       service.response do |response|
@@ -130,6 +171,7 @@ It would be described as follows:
         end
       end
     end
+```
 
 Nodes/elements can also use some meta attributes. Currently the
 following meta attributes are available:
@@ -156,6 +198,7 @@ via the backports libary and some tweaks. However, because unlike in
 ruby 1.9, the hash insert order isn't kept in 1.8 the following syntax
 isn't supported and the alternative version needs to be used:
 
+``` ruby
     service.response do |response|
       response.element(:name => "player_creation_ratings") do |e|
         e.attribute  :id          => :integer, :doc => "id doc"
@@ -163,9 +206,11 @@ isn't supported and the alternative version needs to be used:
         e.attribute  :name        => :string,  :doc => "name doc"
       end
     end
+```
 
 Instead the following version should be used:
 
+``` ruby
     service.response do |response|
       response.element(:name => "player_creation_ratings") do |e|
         e.integer  :id, :doc => "id doc"
@@ -173,6 +218,7 @@ Instead the following version should be used:
         e.string   :name, :doc => "name doc"
       end
     end
+```
 
 Both code snippets do the exact same thing but the first version is 1.9
 only.
@@ -181,5 +227,5 @@ only.
 
 ## Copyright
 
-Copyright (c) 2011 Matt Aimonetti. See LICENSE for
+Copyright (c) 2012 Matt Aimonetti. See LICENSE for
 further details.

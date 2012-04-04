@@ -1,8 +1,8 @@
-# Module used to extend {WSDSL} and add {#load_sinatra_route} to services.
-# This code is Sinatra specific and therefore lives outside the {WSDSL}
-# @see {WSDSL}
+# Module used to extend {WeaselDiesel} and add {#load_sinatra_route} to services.
+# This code is Sinatra specific and therefore lives outside the {WeaselDiesel}
+# @see {WeaselDiesel}
 # @api public
-module WSDSLSinatraExtension
+module WeaselDieselSinatraExtension
   
   # Defines a sinatra service route based on its settings
   #

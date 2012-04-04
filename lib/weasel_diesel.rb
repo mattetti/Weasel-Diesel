@@ -4,7 +4,7 @@ require File.expand_path('response', File.dirname(__FILE__))
 require File.expand_path('documentation', File.dirname(__FILE__))
 require File.expand_path('ws_list', File.dirname(__FILE__))
 
-# WSDSL offers a web service DSL to define web services,
+# WeaselDiesel offers a web service DSL to define web services,
 # their params, http verbs, formats expected as well as the documentation
 # for all these aspects of a web service.
 #
@@ -16,31 +16,31 @@ require File.expand_path('ws_list', File.dirname(__FILE__))
 #
 #
 #
-#  WSDSL
+#  WeaselDiesel
 #    |
 #    |__ service options (name, url, SSL, auth required formats, verbs, controller name, action, version, extra)
-#    |__ defined_params (instance of WSDSL::Params)
+#    |__ defined_params (instance of WeaselDiesel::Params)
 #    |             |    |  |_ Optional param rules
 #    |             |    |_ Required param rules
 #    |             |_ Namespaced params (array containing nested optional and required rules)
-#    |__ response (instance of WSDSL::Response)
+#    |__ response (instance of WeaselDiesel::Response)
 #    |      |_ elements (array of elements with each element having a name, type, attributes and vectors
-#    |      |      |  |_ attributes (array of WSDSL::Response::Attribute, each attribute has a name, a type, a doc and some extra options)
-#    |      |      |_ vectors (array of WSDSL::Response::Vector), each vector has a name, obj_type, & an array of attributes
-#    |      |           |_ attributes (array of WSDSL::Response::Attribute, each attribute has a name, a type and a doc)
+#    |      |      |  |_ attributes (array of WeaselDiesel::Response::Attribute, each attribute has a name, a type, a doc and some extra options)
+#    |      |      |_ vectors (array of WeaselDiesel::Response::Vector), each vector has a name, obj_type, & an array of attributes
+#    |      |           |_ attributes (array of WeaselDiesel::Response::Attribute, each attribute has a name, a type and a doc)
 #    |      |_ arrays (like elements but represent an array of objects)
 #    |
-#    |__ doc (instance of WSDSL::Documentation)
+#    |__ doc (instance of WeaselDiesel::Documentation)
 #       |  |  | |_ overal) description
 #       |  |  |_ examples (array of examples as strings)
 #       |  |_ params documentation (Hash with the key being the param name and the value being the param documentation)
 #       |_ response (instance of Documentation.new)
-#            |_ elements (array of instances of WSDSL::Documentation::ElementDoc, each element has a name and a list of attributes)
+#            |_ elements (array of instances of WeaselDiesel::Documentation::ElementDoc, each element has a name and a list of attributes)
 #                  |_ attributes (Hash with the key being the attribute name and the value being the attribute's documentation)
 #
 # @since 0.0.3
 # @api public
-class WSDSL
+class WeaselDiesel
 
   # Returns the service url
   #
@@ -50,13 +50,13 @@ class WSDSL
 
   # List of all the service params
   #
-  # @return [Array<WSDSL::Params>]
+  # @return [Array<WeaselDiesel::Params>]
   # @api public
   attr_reader :defined_params
 
   # Documentation instance containing all the service doc
   #
-  # @return [WSDSL::Documentation]
+  # @return [WeaselDiesel::Documentation]
   # @api public
   attr_reader :doc
 
@@ -122,12 +122,12 @@ class WSDSL
   # @api public
   def initialize(url)
     @url                 = url
-    @defined_params      = WSDSL::Params.new
-    @doc                 = WSDSL::Documentation.new
-    @response            = WSDSL::Response.new
-    if WSDSL.use_controller_dispatch
+    @defined_params      = WeaselDiesel::Params.new
+    @doc                 = WeaselDiesel::Documentation.new
+    @response            = WeaselDiesel::Response.new
+    if WeaselDiesel.use_controller_dispatch
       @name                = extract_service_root_name(url)
-      if WSDSL.use_pluralized_controllers
+      if WeaselDiesel.use_pluralized_controllers
         base_name = ExtlibCopy::Inflection.pluralize(ExtlibCopy::Inflection.singular(name))
         @controller_name     = "#{ExtlibCopy.classify(base_name)}Controller"
       else
@@ -143,7 +143,7 @@ class WSDSL
     @extra               = {}
   end
 
-  # Checks the WSDSL flag to see if the controller names are pluralized.
+  # Checks the WeaselDiesel flag to see if the controller names are pluralized.
   #
   # @return [Boolean] The updated value, default to false
   # @api public
@@ -152,7 +152,7 @@ class WSDSL
     @pluralized_controllers ||= false
   end
 
-  # Sets a WSDSL global flag so all controller names will be automatically pluralized.
+  # Sets a WeaselDiesel global flag so all controller names will be automatically pluralized.
   #
   # @param [Boolean] True if the controllers are pluralized, False otherwise.
   #
@@ -163,7 +163,7 @@ class WSDSL
     @pluralized_controllers = val
   end
 
-  # Checks the WSDSL flag to see if controller are used to dispatch requests.
+  # Checks the WeaselDiesel flag to see if controller are used to dispatch requests.
   # This allows apps to use this DSL but route to controller/actions.
   #
   # @return [Boolean] The updated value, default to false
@@ -173,7 +173,7 @@ class WSDSL
     @controller_dispatch
   end
 
-  # Sets a WSDSL global flag so the controller settings can be generated
+  # Sets a WeaselDiesel global flag so the controller settings can be generated
   # Setting this flag will automatically set the controller/action names.
   # @param [Boolean] True if the controllers are pluralized, False otherwise.
   #
@@ -210,9 +210,9 @@ class WSDSL
   # for DSL use only!
   # To keep the distinction between the request params and the service params
   # using the +defined_params+ accessor is recommended.
-  # @see WSDSL::Params
+  # @see WeaselDiesel::Params
   #
-  # @return [WSDSL::Params] The defined params
+  # @return [WeaselDiesel::Params] The defined params
   # @api public
   def params
     if block_given?
@@ -232,7 +232,7 @@ class WSDSL
 
   # Returns an array of required param rules
   #
-  # @return [Array<WSDSL::Params::Rule>] Only the required param rules
+  # @return [Array<WeaselDiesel::Params::Rule>] Only the required param rules
   # @api public
   def required_rules
     @defined_params.list_required
@@ -240,16 +240,16 @@ class WSDSL
 
   # Returns an array of optional param rules
   #
-  # @return [Array<WSDSL::Params::Rule>]Only the optional param rules
+  # @return [Array<WeaselDiesel::Params::Rule>]Only the optional param rules
   # @api public
   def optional_rules
     @defined_params.list_optional
   end
 
   # Returns an array of namespaced params
-  # @see WSDSL::Params#namespaced_params
+  # @see WeaselDiesel::Params#namespaced_params
   #
-  # @return [Array<WSDSL::Params>] the namespaced params
+  # @return [Array<WeaselDiesel::Params>] the namespaced params
   # @api public
   def nested_params
     @defined_params.namespaced_params
@@ -287,7 +287,7 @@ class WSDSL
   # Returns the service response
   # @yield The service response object
   #
-  # @return [WSDSL::Response]
+  # @return [WeaselDiesel::Response]
   # @api public
   def response
     if block_given?
@@ -321,9 +321,9 @@ class WSDSL
   end
 
   # Yields and returns the documentation object
-  # @yield [WSDSL::Documentation]
+  # @yield [WeaselDiesel::Documentation]
   #
-  # @return [WSDSL::Documentation] The service documentation object
+  # @return [WeaselDiesel::Documentation] The service documentation object
   # @api public
   def documentation
     yield(doc)
@@ -397,7 +397,7 @@ module Kernel
   # Base DSL method called to describe a service
   #
   # @param [String] url The url of the service to add.
-  # @yield [WSDSL] The newly created service.
+  # @yield [WeaselDiesel] The newly created service.
   # @return [Array] The services already defined
   # @example Describing a basic service
   #   describe_service "hello-world.xml" do |service|
@@ -406,7 +406,7 @@ module Kernel
   #
   # @api public
   def describe_service(url, &block)
-    service = WSDSL.new(url)
+    service = WeaselDiesel.new(url)
     yield service
     WSList.add(service)
     service

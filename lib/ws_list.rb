@@ -10,8 +10,8 @@ module WSList
   # Add a service to the array tracking
   # the playco services
   #
-  # @param [WSDSL] The service to add.
-  # @return [Array<WSDSL>] All the added services.
+  # @param [WeaselDiesel] The service to add.
+  # @return [Array<WeaselDiesel>] All the added services.
   # @api public
   def add(service)
     @list ||= []
@@ -21,7 +21,7 @@ module WSList
   
   # Returns an array of services
   #
-  # @return [Array<WSDSL>] All the added services.
+  # @return [Array<WeaselDiesel>] All the added services.
   # @api public
   def all
     @list || []
@@ -31,7 +31,7 @@ module WSList
   #
   # @param [String] name The name of the service you are looking for.
   # @raise [UnknownService] if a service with the passed name isn't found.
-  # @return [WSDSL] The found service.
+  # @return [WeaselDiesel] The found service.
   #
   # @api public
   def named(name)
@@ -46,7 +46,7 @@ module WSList
   # Returns a service based on its url
   #
   # @param [String] url The url of the service you are looking for.
-  # @return [Nil, WSDSL] The found service.
+  # @return [Nil, WeaselDiesel] The found service.
   #
   # @api public
    def [](url)

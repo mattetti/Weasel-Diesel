@@ -1,11 +1,11 @@
-WSDSLSpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
+WeaselDieselSpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
 
 describe_service "services/test.xml" do |service|
   service.formats  :xml, :json
   service.http_verb :get
 
   service.params do |p|
-    p.string :framework, :in => WSDSLSpecOptions, :null => false, :required => true
+    p.string :framework, :in => WeaselDieselSpecOptions, :null => false, :required => true
 
     p.datetime :timestamp, :default => Time.now
     p.string   :alpha,     :in      => ['a', 'b', 'c']
@@ -67,7 +67,7 @@ describe_service "services/test.xml" do |service|
     DOC
 
     # doc.params <name>, <definition>
-    doc.param :framework, "The test framework used, could be one of the two following: #{WSDSLSpecOptions.join(", ")}."
+    doc.param :framework, "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
     doc.param :version, "The version of the framework to use."
 
     # doc.example <markdown text>

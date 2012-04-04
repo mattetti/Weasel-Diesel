@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "wsdsl/version"
+require "weasel_diesel/version"
 
 Gem::Specification.new do |s|
-  s.name        = "wsdsl"
-  s.version     = WSDSL::VERSION
+  s.name        = "weasel_diesel"
+  s.version     = WeaselDiesel::VERSION
   s.authors     = ["Matt Aimonetti"]
   s.email       = ["mattaimonetti@gmail.com"]
-  s.homepage    = "http://github.com/mattetti/wsdsl"
+  s.homepage    = "https://github.com/mattetti/Weasel-Diesel"
   s.summary     = %q{Web Service DSL}
   s.description = %q{Ruby DSL describing Web Services without implementation details.}
 

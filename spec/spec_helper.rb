@@ -8,7 +8,7 @@ require 'rspec'
 require 'rack/test'
 require 'sinatra'
 
-require_relative "../lib/wsdsl"
+require_relative "../lib/weasel_diesel"
 require_relative 'test_services'
 require_relative 'preferences_service'
 require_relative "../lib/framework_ext/sinatra_controller"

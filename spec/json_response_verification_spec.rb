@@ -1,7 +1,7 @@
 require File.expand_path("spec_helper", File.dirname(__FILE__))
 require File.expand_path("../lib/json_response_verification", File.dirname(__FILE__))
 
-WSDSL.send(:include, JSONResponseVerification)
+WeaselDiesel.send(:include, JSONResponseVerification)
 
 describe "JSON response verification" do
 

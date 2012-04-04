@@ -28,11 +28,11 @@ module ParamsVerification
                           }
   end
   
-  # Validation against each required WSDSL::Params::Rule
+  # Validation against each required WeaselDiesel::Params::Rule
   # and returns the potentially modified params (with default values)
   # 
   # @param [Hash] params The params to verify (incoming request params)
-  # @param [WSDSL::Params] service_params A Playco service param compatible object listing required and optional params 
+  # @param [WeaselDiesel::Params] service_params A Playco service param compatible object listing required and optional params 
   # @param [Boolean] ignore_unexpected Flag letting the validation know if unexpected params should be ignored
   #
   # @return [Hash]
@@ -91,7 +91,7 @@ module ParamsVerification
   # Validate a required rule against a list of params passed.
   #
   #
-  # @param [WSDSL::Params::Rule] rule The required rule to check against.
+  # @param [WeaselDiesel::Params::Rule] rule The required rule to check against.
   # @param [Hash] params The request params.
   # @param [String] namespace Optional param namespace to check the rule against.
   #
@@ -168,7 +168,7 @@ module ParamsVerification
     end
   end
   
-  # @param [#WSDSL::Params::Rule] rule The optional rule
+  # @param [#WeaselDiesel::Params::Rule] rule The optional rule
   # @param [Hash] params The request params
   # @param [String] namespace An optional namespace
   # @return [Hash] The potentially modified params

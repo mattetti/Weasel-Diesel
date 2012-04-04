@@ -1,7 +1,7 @@
 require File.expand_path("spec_helper", File.dirname(__FILE__))
 require 'sinatra'
 require File.expand_path("./../lib/framework_ext/sinatra.rb", File.dirname(__FILE__))
-WSDSL.send(:include, WSDSLSinatraExtension)
+WeaselDiesel.send(:include, WeaselDieselSinatraExtension)
 
 describe "Hello World example" do
     require_relative "hello_world_service"

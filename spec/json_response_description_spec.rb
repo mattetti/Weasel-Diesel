@@ -1,6 +1,6 @@
 require File.expand_path("spec_helper", File.dirname(__FILE__))
 
-describe "WSDSL JSON response description" do
+describe "WeaselDiesel JSON response description" do
 
 # JSON response example
 =begin

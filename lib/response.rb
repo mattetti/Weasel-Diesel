@@ -1,19 +1,19 @@
 require 'json'
 
-class WSDSL
+class WeaselDiesel
   # Response DSL class
   # @api public
   class Response
 
     # The list of all the elements inside the response
     #
-    # @return [Array<WSDSL::Response::Element>]
+    # @return [Array<WeaselDiesel::Response::Element>]
     # @api public
     attr_reader :elements
 
     # The list of all the arays inside the response
     #
-    # @return [Array<WSDSL::Response::Array>]
+    # @return [Array<WeaselDiesel::Response::Array>]
     attr_reader :arrays
 
     def initialize
@@ -23,7 +23,7 @@ class WSDSL
 
     # Lists all top level simple elements and array elements.
     #
-    # @return [Array<WSDSL::Response::Element, WSDSL::Response::Array>]
+    # @return [Array<WeaselDiesel::Response::Element, WeaselDiesel::Response::Array>]
     def nodes 
       elements + arrays
     end
@@ -47,13 +47,13 @@ class WSDSL
     # @option opts [String, Symbol] :name The element name
     # @option opts [String, Symbol] :type The optional type
     #
-    # @yield [WSDSL::Response::Element] the newly created element
+    # @yield [WeaselDiesel::Response::Element] the newly created element
     # @example create an element called 'my_stats'.
     #   service.response do |response|
     #    response.element(:name => "my_stats", :type => 'Leaderboard')
     #   end
     #
-    # @return [WSDSL::Response::Element]
+    # @return [WeaselDiesel::Response::Element]
     # @api public
     def element(opts={})
       el = Element.new(opts[:name], opts[:type])
@@ -65,7 +65,7 @@ class WSDSL
     # Defines an anonymous element
     # Useful for JSON response description
     #
-    # @return [WSDSL::Response::Element]
+    # @return [WeaselDiesel::Response::Element]
     def object
       yield element
     end
@@ -73,7 +73,7 @@ class WSDSL
     # Returns a response element object based on its name
     # @param [String, Symbol] The element name we want to match
     #
-    # @return [WSDSL::Response::Element]
+    # @return [WeaselDiesel::Response::Element]
     # @api public
     def element_named(name)
       @elements.find{|e| e.name.to_s == name.to_s}
@@ -102,7 +102,7 @@ class WSDSL
     # The Response element class describing each element of a service response.
     # Instances are usually not instiated directly but via the Response#element accessor.
     #
-    # @see WSDSL::Response#element
+    # @see WeaselDiesel::Response#element
     # @api public
     class Element
 
@@ -116,11 +116,11 @@ class WSDSL
       # The optional lookup key of an object
       attr_reader :key
 
-      # @return [Array<WSDSL::Response::Element::Attribute>] An array of attributes
+      # @return [Array<WeaselDiesel::Response::Element::Attribute>] An array of attributes
       # @api public
       attr_reader :attributes
 
-      # @return [Array<WSDSL::Response::Element::MetaAttribute>] An array of meta attributes
+      # @return [Array<WeaselDiesel::Response::Element::MetaAttribute>] An array of meta attributes
       # @api public
       attr_reader :meta_attributes
 
@@ -128,11 +128,11 @@ class WSDSL
       # @api public
       attr_reader :vectors
 
-      # @return [WSDSL::Documentation::ElementDoc] Response element documentation
+      # @return [WeaselDiesel::Documentation::ElementDoc] Response element documentation
       # @api public
       attr_reader :doc
 
-      # @return [NilClass, Array<WSDSL::Response::Element>] The optional nested elements
+      # @return [NilClass, Array<WeaselDiesel::Response::Element>] The optional nested elements
       attr_reader :elements
 
       # Alias to use a JSON/JS jargon instead of XML.
@@ -171,7 +171,7 @@ class WSDSL
       #    end
       #   end
       #
-      # @return [Array<WSDSL::Response::Attribute>]
+      # @return [Array<WeaselDiesel::Response::Attribute>]
       # @api public
       def attribute(opts, extra_opts={})
         raise ArgumentError unless opts.is_a?(Hash) && extra_opts.is_a?(Hash)
@@ -198,7 +198,7 @@ class WSDSL
       #    end
       #   end
       #
-      # @return [Array<WSDSL::Response::MetaAttribute>]
+      # @return [Array<WeaselDiesel::Response::MetaAttribute>]
       # @api public
       def meta_attribute(opts)
         raise ArgumentError unless opts.is_a?(Hash)
@@ -227,7 +227,7 @@ class WSDSL
       # @yield [Vector] the newly created array/vector instance
       # @see Element#initialize
       # 
-      # @return [Array<WSDSL::Response::Vector>]
+      # @return [Array<WeaselDiesel::Response::Vector>]
       # @api public
       def array(name, type=nil)
         vector = Vector.new(name, type)
@@ -239,7 +239,7 @@ class WSDSL
       # This is an alias to access @vectors
       # @see @vectors
       #
-      # @return [Array<WSDSL::Response::Vector>]
+      # @return [Array<WeaselDiesel::Response::Vector>]
       # @api public
       def arrays
         @vectors
@@ -252,13 +252,13 @@ class WSDSL
       # @option opts [String, Symbol] :name The element name
       # @option opts [String, Symbol] :type The optional type
       #
-      # @yield [WSDSL::Response::Element] the newly created element
+      # @yield [WeaselDiesel::Response::Element] the newly created element
       # @example create an element called 'my_stats'.
       #   service.response do |response|
       #    response.element(:name => "my_stats", :type => 'Leaderboard')
       #   end
       #
-      # @return [Array<WSDSL::Response::Element>]
+      # @return [Array<WeaselDiesel::Response::Element>]
       # @api public
       def element(opts={})
         el = Element.new(opts[:name], opts[:type])

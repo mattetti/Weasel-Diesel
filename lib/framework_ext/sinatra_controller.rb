@@ -19,7 +19,7 @@ class SinatraServiceController
   
   class AuthenticationFailed < StandardError; end
   
-  # @return [WSDSL] The service served by this controller
+  # @return [WeaselDiesel] The service served by this controller
   # @api public
   attr_reader :service
   
@@ -46,7 +46,7 @@ class SinatraServiceController
   attr_accessor :params
   
   # @param [Sinatra::Application] app The Sinatra app used as a reference and to access request params
-  # @param [WSDSL] service The service served by this controller
+  # @param [WeaselDiesel] service The service served by this controller
   # @raise [ParamError, NoParamsDefined, MissingParam, UnexpectedParam, InvalidParamType, InvalidParamValue] 
   #   If the params don't validate one of the {ParamsVerification} errors will be raised.
   # @api public

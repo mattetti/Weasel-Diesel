@@ -1,4 +1,4 @@
-class WSDSL
+class WeaselDiesel
   # Service documentation class
   #
   # @api public

@@ -1,6 +1,6 @@
 require File.expand_path("spec_helper", File.dirname(__FILE__))
 
-describe WSDSL do
+describe WeaselDiesel do
 
   before :all do
     @service = WSList.all.find{|s| s.url == 'services/test.xml'}
@@ -21,7 +21,7 @@ describe WSDSL do
   end
 
   it "should have params info" do
-    @service.params.should be_an_instance_of(WSDSL::Params)
+    @service.params.should be_an_instance_of(WeaselDiesel::Params)
   end
 
   it "should have direct access to the required params" do
@@ -62,14 +62,14 @@ describe WSDSL do
     end
 
     before :all do
-      @original_use_controller_dispatch = WSDSL.use_controller_dispatch
-      WSDSL.use_controller_dispatch = true
+      @original_use_controller_dispatch = WeaselDiesel.use_controller_dispatch
+      WeaselDiesel.use_controller_dispatch = true
       @original_services = WSList.all.dup
       WSList.all.clear
     end
 
     after :all do
-      WSDSL.use_controller_dispatch = @original_use_controller_dispatch
+      WeaselDiesel.use_controller_dispatch = @original_use_controller_dispatch
       WSList.all.replace @original_services
     end
 
@@ -114,20 +114,20 @@ describe WSDSL do
     before :all do
       @original_services = WSList.all.dup
       WSList.all.clear
-      WSDSL.use_controller_dispatch = true
+      WeaselDiesel.use_controller_dispatch = true
       load File.expand_path('test_services.rb', File.dirname(__FILE__))
       @c_service = WSList.all.find{|s| s.url == 'services/test.xml'}
       @c_service.should_not be_nil
     end
     after :all do
-      WSDSL.use_controller_dispatch = false
+      WeaselDiesel.use_controller_dispatch = false
       WSList.all.replace @original_services
     end
 
     it "should set the controller accordingly" do
       @c_service.controller_name.should_not be_nil
       @c_service.controller_name.should == 'ServicesController'
-      service = WSDSL.new("preferences.xml")
+      service = WeaselDiesel.new("preferences.xml")
       service.name.should == 'preferences'
       ExtlibCopy.classify('preferences').should == 'Preferences'
       service.controller_name.should == 'PreferencesController'
@@ -148,29 +148,29 @@ describe WSDSL do
     end
 
     it "should have a default action" do
-      service = WSDSL.new('spec_test.xml')
+      service = WeaselDiesel.new('spec_test.xml')
       service.action.should == 'list'
     end
 
     it "should route to show when an id is the last passed param" do
-      service = WSDSL.new("players/:id.xml")
+      service = WeaselDiesel.new("players/:id.xml")
       service.action.should == 'show'
     end
 
     it "should support some extra attributes" do
-      service = WSDSL.new("players/:id.xml")
+      service = WeaselDiesel.new("players/:id.xml")
       service.extra[:custom_name] = 'fooBar'
       service.extra[:custom_name].should == 'fooBar'
     end
 
     it "should respect the global controller pluralization flag" do
-      WSDSL.use_pluralized_controllers = true
-      service = WSDSL.new("player/:id.xml")
+      WeaselDiesel.use_pluralized_controllers = true
+      service = WeaselDiesel.new("player/:id.xml")
       service.controller_name.should == "PlayersController"
-      service = WSDSL.new("players/:id.xml")
+      service = WeaselDiesel.new("players/:id.xml")
       service.controller_name.should == "PlayersController"
-      WSDSL.use_pluralized_controllers = false
-      service = WSDSL.new("player/:id.xml")
+      WeaselDiesel.use_pluralized_controllers = false
+      service = WeaselDiesel.new("player/:id.xml")
       service.controller_name.should == "PlayerController"
     end
 
@@ -188,7 +188,7 @@ describe WSDSL do
   end
 
 
-  describe WSDSL::Params do
+  describe WeaselDiesel::Params do
 
     before(:all) do
       @sparams = @service.params
@@ -196,7 +196,7 @@ describe WSDSL do
 
     it "should have the possibility to have a space name" do
       @sparams.should respond_to(:space_name)
-      service_params = WSDSL::Params.new(:space_name => 'spec_test')
+      service_params = WeaselDiesel::Params.new(:space_name => 'spec_test')
       service_params.space_name.should == 'spec_test'
     end
 
@@ -216,7 +216,7 @@ describe WSDSL do
       @sparams.namespaced_params.first.space_name.should == :user
     end
 
-    describe WSDSL::Params::Rule do
+    describe WeaselDiesel::Params::Rule do
       before :all do
         @rule = @sparams.list_required.first
         @rule.should_not be_nil
@@ -228,7 +228,7 @@ describe WSDSL do
 
       it "should have options" do
         @rule.options[:type].should == :string
-        @rule.options[:in].should ==  WSDSLSpecOptions
+        @rule.options[:in].should ==  WeaselDieselSpecOptions
         @rule.options[:null].should be_false
       end
     end
@@ -236,10 +236,10 @@ describe WSDSL do
   end
 
   it "should have some documentation" do
-    @service.doc.should be_an_instance_of(WSDSL::Documentation)
+    @service.doc.should be_an_instance_of(WeaselDiesel::Documentation)
   end
 
-  describe WSDSL::Documentation do
+  describe WeaselDiesel::Documentation do
     before(:all) do
       @doc = @service.doc
       @doc.should_not be_nil
@@ -252,7 +252,7 @@ describe WSDSL do
     it "should have a list of params doc" do
       @doc.params_doc.should be_an_instance_of(Hash)
       @doc.params_doc.keys.sort.should == [:framework, :version]
-      @doc.params_doc[:framework].should == "The test framework used, could be one of the two following: #{WSDSLSpecOptions.join(", ")}."
+      @doc.params_doc[:framework].should == "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
     end
 
     it "should allow to define namespaced params doc" do

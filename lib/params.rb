@@ -1,8 +1,8 @@
-class WSDSL
+class WeaselDiesel
   # Service params class letting you define param rules.
   # Usually not initialized directly but accessed via the service methods.
   #
-  # @see WSDSL#params
+  # @see WeaselDiesel#params
   #
   # @api public
   class Params  
@@ -111,7 +111,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def string(name, options={})
       param(:string, name, options)
@@ -128,7 +128,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def integer(name, options={})
       param(:integer, name, options)
@@ -145,7 +145,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def float(name, options={})
       param(:float, name, options)
@@ -162,7 +162,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def decimal(name, options={})
       param(:decimal, name, options)
@@ -179,7 +179,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def boolean(name, options={})
       param(:boolean, name, options)
@@ -196,7 +196,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def datetime(name, options={})
       param(:datetime, name, options)
@@ -213,7 +213,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def text(name, options={})
       param(:text, name, options)
@@ -230,7 +230,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def binary(name, options={})
       param(:binary, name, options)
@@ -247,7 +247,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Array<WSDSL::Params::Rule>] 
+    # @return [Array<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def array(name, options={})
       param(:array, name, options)
@@ -264,7 +264,7 @@ class WSDSL
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WSDSL::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>] 
     #   List of optional or required param rules depending on the new param rule type
     def file(name, options={})
       param(:file, name, options)
@@ -283,7 +283,7 @@ class WSDSL
     # @example Defining a required service param called 'id' of `Integer` type
     #   service.params.required :id, :type => 'integer', :default => 9999
     #
-    # @return [Array<WSDSL::Params::Rule>] The list of required rules
+    # @return [Array<WeaselDiesel::Params::Rule>] The list of required rules
     #
     # @api public
     def required(param_name, opts={})
@@ -310,7 +310,7 @@ class WSDSL
     # @example Defining an optional service param called 'id' of `Integer` type
     #   service.params.optional :id, :type => 'integer', :default => 9999
     #
-    # @return [Array<WSDSL::Params::Rule>] The list of optional rules
+    # @return [Array<WeaselDiesel::Params::Rule>] The list of optional rules
     # @api public
     def optional(param_name, opts={})
       # # recursive rule creation
@@ -325,7 +325,7 @@ class WSDSL
 
     # Returns an array of all the required params
     #
-    # @return [Array<WSDSL::Params::Rule>] The list of required rules
+    # @return [Array<WeaselDiesel::Params::Rule>] The list of required rules
     # @api public
     def list_required
       @required ||= []
@@ -333,7 +333,7 @@ class WSDSL
 
     # Returns an array of all the optional params
     #
-    # @return [Array<WSDSL::Params::Rule>] all the optional params
+    # @return [Array<WeaselDiesel::Params::Rule>] all the optional params
     # @api public
     def list_optional
       @optional ||= []
@@ -344,7 +344,7 @@ class WSDSL
     # Defines a namespaced param
     #
     # @yield [Params] the newly created namespaced param
-    # @return [Array<WSDSL::Params>] the list of all the namespaced params
+    # @return [Array<WeaselDiesel::Params>] the list of all the namespaced params
     # @api public
     def namespace(name)
       params = Params.new(:space_name => name)
@@ -354,7 +354,7 @@ class WSDSL
 
     # Returns the namespaced params
     #
-    # @return [Array<WSDSL::Params>] the list of all the namespaced params
+    # @return [Array<WeaselDiesel::Params>] the list of all the namespaced params
     # @api public
     def namespaced_params
       @namespaced_params ||= []
@@ -362,7 +362,7 @@ class WSDSL
 
     # Returns the names of the first level expected params
     #
-    # @return [Array<WSDSL::Params>]
+    # @return [Array<WeaselDiesel::Params>]
     # @api public
     def param_names
       first_level_expected_params = (list_required + list_optional).map{|rule| rule.name.to_s}
