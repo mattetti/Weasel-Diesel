@@ -41,30 +41,7 @@ describe_service "hello_world" do |service|
 end
 ```
 
-``` ruby
-    describe_service "hello_world" do |service|
-      service.formats    :xml
-      service.http_verb :get
-      service.disable_auth # on by default
-
-      service.param.string  :name, :default => 'World'
-
-      service.response do |response|
-        response.element(:name => "greeting") do |e|
-          e.attribute "message" => :string, :doc => "The greeting message sent back."
-        end
-      end
-
-      service.documentation do |doc|
-        doc.overall "This service provides a simple hello world implementation example."
-        doc.params :name, "The name of the person to greet."
-        doc.example "<code>http://example.com/hello_world.xml?name=Matt</code>"
-     end
-
-    end
-```
-
-Or a more complex example:
+Or a more complex example using XML:
 
 ``` ruby
     SpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
@@ -73,6 +50,7 @@ Or a more complex example:
       service.formats  :xml, :json
       service.http_verb :get
       
+      # INPUT
       service.params do |p|
         p.string :framework, :in => SpecOptions, :null => false, :required => true
        
@@ -80,18 +58,13 @@ Or a more complex example:
         p.string   :alpha,     :in      => ['a', 'b', 'c']
         p.string   :version,   :null    => false
         p.integer  :num,      :minvalue => 42
+        p.namespace :user do |user|
+          user.integer :id, :required => :true
+        end
       end
       
-      # service.param :delta, :optional => true, :type => 'float'
-      # All params are optional by default.
-      # service.param :epsilon, :type => 'string'
-      
-      service.params.namespace :user do |user|
-        user.integer :id, :required => :true
-      end
-      
+      # OUTPUT
       # the response contains a list of player creation ratings each object in the list 
-      
       service.response do |response|
         response.element(:name => "player_creation_ratings") do |e|
           e.attribute  :id          => :integer, :doc => "id doc"
@@ -107,6 +80,7 @@ Or a more complex example:
         end
       end
       
+      # DOCUMENTATION
       service.documentation do |doc|
         # doc.overall <markdown description text>
         doc.overall <<-DOC
