@@ -132,7 +132,7 @@ This library was designed with XML responses in mind and JSON support
 was added later on which explains why some response methods are aliases.
 Consider the following JSON response:
 
-``` json
+``` 
     { people: [ 
       { 
         id : 1, 
@@ -153,6 +153,7 @@ Consider the following JSON response:
         }
       }, 
     ] }
+```
 
 It would be described as follows:
 
