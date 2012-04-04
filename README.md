@@ -188,7 +188,7 @@ validating the data structure of the returned object.
 
 ## Test suite
 
-This library comes with a test suite requiring Ruby 1.9.2
+This library comes with a test suite requiring Ruby 1.9.*
 The following gems need to be available:
 Rspec, Rack, Sinatra
 
