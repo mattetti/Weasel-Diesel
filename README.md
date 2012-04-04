@@ -1,10 +1,10 @@
 # Web Service DSL
 
-Weasel Diesel is a simple DSL allowing developers to simply describe and
-document their web APIS. 
-The DSL is already setup on top of Sinatra in this [example
+Weasel Diesel is a DSL to describe and document your web API. 
+
+To get you going quickly, there's a Sinatra-based [example
 application](https://github.com/mattetti/sinatra-web-api-example) that
-you can simply fork and use as a base for your application.
+you can fork and use as a base for your application.
 
 DSL examples:
 
@@ -102,8 +102,6 @@ Or a more complex example using XML:
 
 ## JSON APIs
 
-This library was designed with XML responses in mind and JSON support
-was added later on which explains why some response methods are aliases.
 Consider the following JSON response:
 
 ``` 
@@ -148,30 +146,27 @@ It would be described as follows:
     end
 ```
 
-Nodes/elements can also use some meta attributes. Currently the
-following meta attributes are available:
+Nodes/elements can also use some meta-attributes including:
 
-* key (refers to an attribute name that is key to this object)
-* type (refers to the type of object described, valuable when using JSON
-  cross OO based apps.
+* `key` : refers to an attribute name that is key to this object
+* `type` : refers to the type of object described, valuable when using JSON across OO based apps.
 
-JSON response validation can be done using an optional module.
-Look at the spec/json_response_verification_spec.rb file for a complete
-example. The goal of this module is to help automate API testing by
+JSON response validation can be done using an optional module as shown in 
+(spec/json_response_verification_spec.rb)[https://github.com/mattetti/Weasel-Diesel/blob/master/spec/json_response_verification_spec.rb].
+The goal of this module is to help automate API testing by
 validating the data structure of the returned object.
 
-## Test suite
+## Test Suite & Dependencies
 
-This library comes with a test suite requiring Ruby 1.9.*
-The following gems need to be available:
-Rspec, Rack, Sinatra
+The test suite requires Ruby 1.9.* along with `RSpec`, `Rack`, and `Sinatra` gems.
 
-## RUBY 1.8 warning
+## Usage with Ruby 1.8
 
-This library was written for Ruby 1.9 and 1.8 support was added later on
-via the backports libary and some tweaks. However, because unlike in
-ruby 1.9, the hash insert order isn't kept in 1.8 the following syntax
-isn't supported and the alternative version needs to be used:
+This library prioritizes Ruby 1.9, but 1.8 support was added 
+via the backports libary and some tweaks. 
+
+However, because Ruby 1.8 hashes do not preserve insert order, the following syntax
+**will not work**:
 
 ``` ruby
     service.response do |response|
@@ -183,7 +178,7 @@ isn't supported and the alternative version needs to be used:
     end
 ```
 
-Instead the following version should be used:
+Instead, this alternate syntax must be used:
 
 ``` ruby
     service.response do |response|
@@ -195,10 +190,7 @@ Instead the following version should be used:
     end
 ```
 
-Both code snippets do the exact same thing but the first version is 1.9
-only.
-
-
+The end results are identical.
 
 ## Copyright
 
