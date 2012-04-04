@@ -163,7 +163,7 @@ The test suite requires Ruby 1.9.* along with `RSpec`, `Rack`, and `Sinatra` gem
 ## Usage with Ruby 1.8
 
 This library prioritizes Ruby 1.9, but 1.8 support was added 
-via the backports libary and some tweaks. 
+via the backports library and some tweaks. 
 
 However, because Ruby 1.8 hashes do not preserve insert order, the following syntax
 **will not work**:
