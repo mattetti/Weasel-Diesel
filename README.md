@@ -20,9 +20,9 @@ describe_service "hello_world" do |service|
   # OUTPUT
   service.response do |response|
     response.object do |obj|
-	    obj.string :message, :doc => "The greeting message sent back. Defaults to 'World'"
+      obj.string :message, :doc => "The greeting message sent back. Defaults to 'World'"
       obj.datetime :at, :doc => "The timestamp of when the message was dispatched"
-	  end
+    end
   end
 
   # DOCUMENTATION
