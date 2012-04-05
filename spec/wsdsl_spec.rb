@@ -309,6 +309,9 @@ The most common way to use this service looks like that:
       attribute.doc.should == "comments doc"
     end
 
-  end
+    it "should emit html documention for elements" do
+      @service.response.elements.first.to_html.should be_a(String)
+    end
 
+  end
 end
