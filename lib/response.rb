@@ -361,10 +361,10 @@ class WeaselDiesel
         output << "<ul>"
         properties.each do |prop|
           output << "<li><span class='label notice'>#{prop.name}</span> of type <span class='label success'>#{prop.type}</span> #{'(Can be blank or missing) ' if prop.opts && prop.opts.respond_to?(:[]) && prop.opts[:null]} "
-          output <<  prop.doc unless prop.doc.blank?
+          output <<  prop.doc unless prop.doc.nil? or prop.doc.empty?
           output << "</li>"
         end
-        arrays.each{ |arr| output << arr.html }
+        arrays.each{ |arr| output << arr.to_html }
         elements.each {|el| output << el.to_html } if elements
         output << "</ul>"
         output << "</li>" if name
