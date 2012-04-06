@@ -160,7 +160,7 @@ describe "WeaselDiesel anonymous JSON object response description" do
 
 # JSON response example
 =begin
-  {{"name": "Example"}}
+  {"name": "Example"}
 =end
 
   before :all do
