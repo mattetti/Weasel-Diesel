@@ -174,6 +174,23 @@ Other JSON DSL examples:
   end
 ```
 
+``` 
+ {"name": "Example"}
+```
+
+``` Ruby
+describe_service "example" do |service|
+  service.formats  :json
+  service.response do |response|
+    response.object do |node|
+      node.string :name
+    end
+  end
+end
+```
+
+
+
 
 ## Test Suite & Dependencies
 
