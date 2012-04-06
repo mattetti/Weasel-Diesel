@@ -156,6 +156,25 @@ JSON response validation can be done using an optional module as shown in
 The goal of this module is to help automate API testing by
 validating the data structure of the returned object.
 
+
+Other JSON DSL examples:
+
+```
+{"organization": {"name": "Example"}}
+```
+
+``` Ruby
+  describe_service "example" do |service|
+    service.formats  :json
+    service.response do |response|
+      response.object :organization do |node|
+        node.string :name
+      end
+    end
+  end
+```
+
+
 ## Test Suite & Dependencies
 
 The test suite requires Ruby 1.9.* along with `RSpec`, `Rack`, and `Sinatra` gems.

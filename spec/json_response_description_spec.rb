@@ -122,3 +122,66 @@ describe "WeaselDiesel JSON response description" do
   end
   
 end
+
+
+
+describe "WeaselDiesel simple JSON object response description" do
+
+# JSON response example
+=begin
+  {"organization": {"name": "Example"}}
+=end
+
+  before :all do
+    @timestamp = Time.now.to_i
+    @service =  describe_service "json_obj" do |service|
+      service.formats  :json
+      service.response do |response|
+        response.object :organization do |node|
+          node.string :name
+        end
+      end
+    end
+    @response  = @service.response
+  end
+
+  it "should have a properly structured reponse" do
+    top_object = @service.response.element_named(:organization)
+    top_object.should_not be_nil
+    name_node = top_object.properties.find{|o| o.name == :name}
+    name_node.should_not be_nil
+    name_node.type.should == :string
+  end
+
+end
+
+
+describe "WeaselDiesel anonymous JSON object response description" do
+
+# JSON response example
+=begin
+  {{"name": "Example"}}
+=end
+
+  before :all do
+    @timestamp = Time.now.to_i
+    @service =  describe_service "anon_json_obj" do |service|
+      service.formats  :json
+      service.response do |response|
+        response.object do |node|
+          node.string :name
+        end
+      end
+    end
+    @response  = @service.response
+  end
+
+  it "should have a properly structured reponse" do
+    top_object = @service.response.elements.first
+    top_object.should_not be_nil
+    name_node = top_object.properties.find{|o| o.name == :name}
+    name_node.should_not be_nil
+    name_node.type.should == :string
+  end
+
+end

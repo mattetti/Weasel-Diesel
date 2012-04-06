@@ -62,12 +62,13 @@ class WeaselDiesel
       el
     end
 
-    # Defines an anonymous element
-    # Useful for JSON response description
-    #
-    # @return [WeaselDiesel::Response::Element]
-    def object
-      yield element
+    # Defines an element/object in a consistent way with
+    # the way objects are defined in nested objects.
+    # @param [Symbol, String] name the name of the element.
+    # @param [Hash] opts the options for the newly created element.
+    # @return [WeaselDiesel::Response] returns self since it yields to the used block.
+    def object(name=nil, opts={})
+      yield element(opts.merge(:name => name))
     end
 
     # Returns a response element object based on its name
