@@ -2,7 +2,12 @@
 
 Weasel Diesel is a DSL to describe and document your web API. 
 
-To get you going quickly, there's a Sinatra-based [example
+To get you going quickly, see the [generator for sinatra apps](https://github.com/mattetti/wd-sinatra).
+The wd_sinatra gem allows you to generate the structure for a sinatra app using Weasel Diesel and with lots of goodies.
+Updating is trivial since the core features are provided by this library and the wd_sinatra gem.
+
+
+You can also check out this Sinatra-based [example
 application](https://github.com/mattetti/sinatra-web-api-example) that
 you can fork and use as a base for your application.
 
