@@ -351,6 +351,7 @@ class WeaselDiesel
       yield(params) if block_given?
       namespaced_params << params unless namespaced_params.include?(params)
     end
+    alias :object :namespace
 
     # Returns the namespaced params
     #
