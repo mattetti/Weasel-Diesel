@@ -1,3 +1,5 @@
+require 'erb' # used to sanitize the error message and avoid XSS attacks
+
 # ParamsVerification module.
 # Written to verify a service params without creating new objects.
 # This module is used on all requests requiring validation and therefore performance
@@ -208,7 +210,7 @@ module ParamsVerification
     # Raise an exception unless no unexpected params were found
     unexpected_keys = (params.keys - param_names)
     unless unexpected_keys.empty?
-      raise UnexpectedParam, "Request included unexpected parameter(s): #{unexpected_keys.join(', ')}"
+      raise UnexpectedParam, "Request included unexpected parameter(s): #{unexpected_keys.map{|k| ERB::Util.html_escape(k)}.join(', ')}"
     end
   end
   

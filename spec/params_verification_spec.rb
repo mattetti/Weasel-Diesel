@@ -98,5 +98,18 @@ describe ParamsVerification do
     params = @valid_params.dup
     lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception
   end
+
+  it "should raise an exception when an unexpected param is found" do
+    params = @valid_params.dup
+    params['attack'] = true
+    lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::UnexpectedParam)
+  end
+
+  it "should prevent XSS attack on unexpected param name being listed in the exception message" do
+    params = @valid_params.dup
+    params["7e22c<script>alert('xss vulnerability')</script>e88ff3f0952"] = 1
+    escaped_error_message = /7e22c&lt;script&gt;alert\('xss vulnerability'\)&lt;\/script&gt;e88ff3f0952/
+    lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::UnexpectedParam, escaped_error_message)
+  end
   
 end
