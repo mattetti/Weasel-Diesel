@@ -24,9 +24,9 @@ class WeaselDiesel
       # @option options [Symbol] :default The default value of the param.
       # @option options [Symbol] :minvalue The minimum acceptable value.
       # @option options [Symbol] :maxvalue The maximim acceptable value.
+      # @option options [Symbol] :doc Documentation for the param.
       # @api public
       attr_reader :options
-
 
       # @param [Symbol, String] name 
       #   The param's name
@@ -36,6 +36,7 @@ class WeaselDiesel
       # @option opts [Symbol] :default The default value of the param.
       # @option opts [Symbol] :minvalue The minimum acceptable value.
       # @option opts [Symbol] :maxvalue The maximim acceptable value.
+      # @option opts [Symbol] :doc Documentation for the param.
       # @api public
       def initialize(name, opts = {})
         @name    = name
@@ -48,6 +49,14 @@ class WeaselDiesel
       # @api public
       def namespace
         @options[:space_name]
+      end
+
+      # The documentation of this Rule
+      #
+      # @return [NilClass, String]
+      # api public
+      def doc
+        @options[:doc]
       end
 
       # Converts the rule into a hash with its name and options.
