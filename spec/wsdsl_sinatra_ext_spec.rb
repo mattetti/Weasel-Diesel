@@ -4,8 +4,8 @@ require File.expand_path("./../lib/framework_ext/sinatra.rb", File.dirname(__FIL
 WeaselDiesel.send(:include, WeaselDieselSinatraExtension)
 
 describe "Hello World example" do
-    require_relative "hello_world_service"
-    require_relative "hello_world_controller"
+    require "hello_world_service"
+    require "hello_world_controller"
 
     def app
       Sinatra::Application
