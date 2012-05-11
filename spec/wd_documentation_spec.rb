@@ -15,8 +15,9 @@ describe WeaselDiesel::Documentation do
 
   it "should have a list of params doc" do
     @doc.params_doc.should be_an_instance_of(Hash)
-    @doc.params_doc.keys.sort.should == [:framework, :version]
+    @doc.params_doc.keys.sort.should == [:framework, :num, :version]
     @doc.params_doc[:framework].should == "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
+    @doc.params_doc[:num].should == 'The number to test'
   end
 
   it "should allow to define namespaced params doc" do

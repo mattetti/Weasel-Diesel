@@ -408,7 +408,17 @@ module Kernel
   def describe_service(url, &block)
     service = WeaselDiesel.new(url)
     yield service
+
+    service.defined_params.list_optional.each do |rule|
+      service.doc.param(rule.name, rule.options[:doc]) if rule.options[:doc]
+    end
+
+    service.defined_params.list_required.each do |rule|
+      service.doc.param(rule.name, rule.options[:doc]) if rule.options[:doc]
+    end
+
     WSList.add(service)
+
     service
   end
 

@@ -10,7 +10,7 @@ describe_service "services/test.xml" do |service|
     p.datetime :timestamp, :default => Time.now
     p.string   :alpha,     :in      => ['a', 'b', 'c']
     p.string   :version,   :null    => false
-    p.integer  :num,      :minvalue => 42
+    p.integer  :num,       :minvalue => 42,            :doc => "The number to test"
 
   end
 
