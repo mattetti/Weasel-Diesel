@@ -1,5 +1,7 @@
 # Web Service DSL
 
+[![CI Build Status](https://secure.travis-ci.org/mattetti/Weasel-Diesel.png?branch=master)](http://travis-ci.org/mattetti/Weasel-Diesel)
+
 Weasel Diesel is a DSL to describe and document your web API. 
 
 To get you going quickly, see the [generator for sinatra apps](https://github.com/mattetti/wd-sinatra).
