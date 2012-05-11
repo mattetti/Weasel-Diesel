@@ -216,6 +216,32 @@ describe WeaselDiesel do
       @sparams.namespaced_params.first.space_name.should == :user
     end
 
+    it "should allow to define namespaced param" do
+      service = WSList.all.find{|s| s.url == "services.xml"}
+      service.params do |params|
+        params.namespace :preference do |ns|
+          ns.param :id, "Ze id."
+        end
+      end
+      service.params.namespaced_params.should_not be_empty
+      ns = service.params.namespaced_params.find{|ns| ns.space_name == :preference}
+      ns.should_not be_nil
+      ns.list_optional.first.name.should == "Ze id."
+    end
+
+    it "should allow object as an alias to namespaced param" do
+      service = WSList.all.find{|s| s.url == "services.xml"}
+      service.params do |params|
+        params.object :preference do |ns|
+          ns.param :id, "Ze id."
+        end
+      end
+      service.params.namespaced_params.should_not be_empty
+      ns = service.params.namespaced_params.find{|ns| ns.space_name == :preference}
+      ns.should_not be_nil
+      ns.list_optional.first.name.should == "Ze id."
+    end
+
     describe WeaselDiesel::Params::Rule do
       before :all do
         @rule = @sparams.list_required.first
@@ -259,6 +285,19 @@ describe WeaselDiesel do
       service = WSList.all.find{|s| s.url == "services.xml"}
       service.documentation do |doc|
         doc.namespace :preference do |ns|
+          ns.param :id, "Ze id."
+        end
+      end
+      service.doc.namespaced_params.should_not be_empty
+      ns = service.doc.namespaced_params.find{|ns| ns.name == :preference}
+      ns.should_not be_nil
+      ns.params[:id].should == "Ze id."
+    end
+
+    it "should allow object to be an alias for namespace params" do
+      service = WSList.all.find{|s| s.url == "services.xml"}
+      service.documentation do |doc|
+        doc.object :preference do |ns|
           ns.param :id, "Ze id."
         end
       end

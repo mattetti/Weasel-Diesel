@@ -119,6 +119,7 @@ class WeaselDiesel
       end
       @namespaced_params << new_ns_param
     end
+    alias :object :namespace
 
     def response
       @response ||= Documentation.new
