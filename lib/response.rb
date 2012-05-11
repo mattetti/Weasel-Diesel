@@ -348,6 +348,13 @@ class WeaselDiesel
         end
       end
 
+      # Converts an element into a json representation
+      #
+      # @return [String] the element attributes formated in a json structure
+      def to_json
+        to_hash.to_json
+      end
+
       def to_html
         output = ""
         if name

@@ -63,8 +63,13 @@ The most common way to use this service looks like that:
     @service.response.elements.first.doc.name.should == "player_creation_ratings"
   end
 
+  it "should have a json representation of an response element" do
+    json = @service.response.elements.first.to_json
+    loaded_json = JSON.load(json)
+    loaded_json[@service.response.elements.first.doc.name].should_not be_empty
+  end
+
   it "should have documentation for a response element attribute" do
-    p @service.response.elements.first.doc.inspect
     @service.response.elements.first.doc.attributes.should_not be_empty
     @service.response.elements.first.doc.attributes[:id].should == "id doc"
   end
