@@ -96,4 +96,54 @@ The most common way to use this service looks like that:
     @service.response.elements.first.to_html.should be_a(String)
   end
 
+  describe "legacy param documentation" do
+
+    before :all do
+      @original_services = WSList.all.dup
+      WSList.all.clear
+      define_service
+    end
+
+    after :all do
+      WSList.all.replace @original_services
+    end
+
+    def define_service
+      describe_service "legacy_param_doc" do |service|
+        service.formats  :xml, :json
+
+        service.params do |p|
+          p.string :framework, :in => WeaselDieselSpecOptions, :null => false, :required => true
+
+          p.datetime :timestamp, :default => Time.now
+          p.string   :alpha,     :in      => ['a', 'b', 'c']
+          p.string   :version,   :null    => false
+          p.integer  :num,      :minvalue => 42
+
+        end
+
+        service.params.namespace :user do |user|
+          user.integer :id, :required => :true
+          user.string :sex, :in => %Q{female, male}
+          user.boolean :mailing_list, :default => true
+        end
+
+        service.documentation do |doc|
+          # doc.overall <markdown description text>
+          doc.overall "This is a test service used to test the framework."
+          # doc.params <name>, <definition>
+          doc.param :framework, "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
+          doc.param :version, "The version of the framework to use."
+        end
+      end
+    end
+
+    it "should have the param documented" do
+      service = WSList["legacy_param_doc"]
+      service.doc.params_doc.keys.sort.should == [:framework, :version]
+      service.doc.params_doc[service.doc.params_doc.keys.first].should_not be_nil
+    end
+
+  end
+
 end
