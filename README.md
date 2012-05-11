@@ -20,7 +20,7 @@ describe_service "hello_world" do |service|
   service.disable_auth # on by default
 
   # INPUT
-  service.param.string  :name, :default => 'World'
+  service.param.string  :name, :default => 'World', :doc => "The name of the person to greet."
 
   # OUTPUT
   service.response do |response|
@@ -33,7 +33,6 @@ describe_service "hello_world" do |service|
   # DOCUMENTATION
   service.documentation do |doc|
   	doc.overall "This service provides a simple hello world implementation example."
-  	doc.param :name, "The name of the person to greet."
   	doc.example "<code>curl -I 'http://localhost:9292/hello_world?name=Matt'</code>"
  end
 
@@ -59,9 +58,15 @@ Or a more complex example using XML:
       service.params do |p|
         p.string :framework, :in => SpecOptions, :null => false, :required => true
        
-        p.datetime :timestamp, :default => Time.now
+        p.datetime :timestamp, 
+                   :default => Time.now, 
+                   :doc => "The test framework used, could be one of the two following: #{SpecOptions.join(", ")}."
+
         p.string   :alpha,     :in      => ['a', 'b', 'c']
-        p.string   :version,   :null    => false
+        p.string   :version,   
+                   :null    => false,
+                   :doc => "The version of the framework to use."
+                   
         p.integer  :num,      :minvalue => 42
         p.namespace :user do |user|
           user.integer :id, :required => :true
@@ -91,10 +96,6 @@ Or a more complex example using XML:
         doc.overall <<-DOC
          This is a test service used to test the framework.
         DOC
-        
-        # doc.params <name>, <definition>
-        doc.params :framework, "The test framework used, could be one of the two following: #{SpecOptions.join(", ")}."
-        doc.params :version, "The version of the framework to use."
         
         # doc.example <markdown text>
         doc.example <<-DOC
