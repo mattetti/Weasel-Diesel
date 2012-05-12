@@ -5,11 +5,15 @@ describe_service "services/test.xml" do |service|
   service.http_verb :get
 
   service.params do |p|
-    p.string :framework, :in => WeaselDieselSpecOptions, :null => false, :required => true
+    p.string :framework, 
+      :in => WeaselDieselSpecOptions, 
+      :null => false, 
+      :required => true,
+      :doc => "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
 
     p.datetime :timestamp, :default => Time.now
     p.string   :alpha,     :in      => ['a', 'b', 'c']
-    p.string   :version,   :null    => false
+    p.string   :version,   :null    => false, :doc => "The version of the framework to use."
     p.integer  :num,       :minvalue => 42,            :doc => "The number to test"
 
   end
@@ -65,10 +69,6 @@ describe_service "services/test.xml" do |service|
     doc.overall <<-DOC
      This is a test service used to test the framework.
     DOC
-
-    # doc.params <name>, <definition>
-    doc.param :framework, "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
-    doc.param :version, "The version of the framework to use."
 
     # doc.example <markdown text>
     doc.example <<-DOC
