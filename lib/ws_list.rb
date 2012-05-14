@@ -53,6 +53,18 @@ module WSList
     @list.find{|service| service.url == url}
   end
   
+  # Returns a service based on its verb and url
+  #
+  # @param [String] verb The request method (GET, POST, PUT, DELETE)
+  # @param [String] url The url of the service you are looking for.
+  # @return [Nil, WeaselDiesel] The found service.
+  #
+  # @api public
+  def find(verb, url)
+    verb = verb.to_s.downcase.to_sym
+    @list.find{|service| service.verb == verb && service.url == url}
+  end
+  
   
 end
 
