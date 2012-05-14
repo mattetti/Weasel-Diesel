@@ -79,7 +79,7 @@ module ParamsVerification
     params.each_pair do |key, value|
       if value.is_a?(Hash)
         namespaced = service_params.namespaced_params.find{|np| np.space_name.to_s == key.to_s}
-        raise UnexpectedParam, "Request included unexpected parameter: #{key}" if namespaced.nil?
+        raise UnexpectedParam, "Request included unexpected parameter: #{ERB::Util.html_escape(key)}" if namespaced.nil?
         unexpected_params?(params[key], namespaced.param_names)
       end
     end
@@ -123,7 +123,7 @@ module ParamsVerification
       verify_cast(param_name, param_value, rule.options[:type])
     end
 
-    if rule.options[:options] || rule.options[:in]
+    if rule.options[:options] || rule.options[:in.inspect]
       choices = rule.options[:options] || rule.options[:in]
       if rule.options[:type]
         # Force the cast so we can compare properly
