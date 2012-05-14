@@ -1,4 +1,6 @@
-WeaselDieselSpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
+unless Object.const_defined?("WeaselDieselSpecOptions")
+  WeaselDieselSpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
+end
 
 describe_service "services/test.xml" do |service|
   service.formats  :xml, :json
@@ -77,6 +79,30 @@ The most common way to use this service looks like that:
     DOC
   end
 end
+
+describe_service "services/test.xml" do |service|
+  service.formats  :xml, :json
+  service.http_verb :delete
+
+  service.params do |p|
+    p.integer  :id, :doc => "id of item to be deleted"
+  end
+
+  service.response do |response|
+    response.element(:name => "player_creation_ratings") do |e|
+      e.integer  :id, :doc => "id doc"
+    end
+  end
+
+
+  service.documentation do |doc|
+    # doc.overall <markdown description text>
+    doc.overall <<-DOC
+     This deletes a test service.
+    DOC
+  end
+end
+
 
 
 describe_service "services/test_no_params.xml" do |service|
