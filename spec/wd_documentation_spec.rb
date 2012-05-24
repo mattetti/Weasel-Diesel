@@ -20,6 +20,16 @@ describe WeaselDiesel::Documentation do
     @doc.params_doc[:num].should == 'The number to test'
   end
 
+  it "shouldn't list the namespaced documentation at the root of the object" do
+    @doc.params_doc[:mailing_list].should be_nil
+  end
+
+  it "should have info on the documented namespaced params" do
+    @doc.namespaced_params.should_not be_empty
+    expected_documentation = @doc.namespaced_params.find{|ns| ns.name == :user}.params[:mailing_list]
+    expected_documentation.should_not be_nil
+  end
+
   it "should allow to define namespaced params doc" do
     service = WSList.all.find{|s| s.url == "services.xml"}
     service.documentation do |doc|

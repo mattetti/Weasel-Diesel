@@ -351,6 +351,31 @@ class WeaselDiesel
     route_loading_point <=> other.route_loading_point
   end
 
+  # Takes input param documentation and copy it over to the document object.
+  # We need to do that so the params can be both documented when a param is defined
+  # and in the documentation block.
+  # @api private
+  def sync_input_param_doc
+    defined_params.namespaced_params.each do |prms| 
+      doc.namespace(prms.space_name) do |ns|
+        prms.list_optional.each do |rule|
+          ns.param(rule.name, rule.options[:doc]) if rule.options[:doc]
+        end
+        prms.list_required.each do |rule|
+          ns.param(rule.name, rule.options[:doc]) if rule.options[:doc]
+        end
+      end
+    end
+
+    defined_params.list_optional.each do |rule|
+      doc.param(rule.name, rule.options[:doc]) if rule.options[:doc]
+    end
+
+    defined_params.list_required.each do |rule|
+      doc.param(rule.name, rule.options[:doc]) if rule.options[:doc]
+    end
+  end
+
   SERVICE_ROOT_REGEXP = /(.*?)[\/\(\.]/
   SERVICE_ACTION_REGEXP = /[\/\(\.]([a-z0-9_]+)[\/\(\.\?]/i
   SERVICE_RESTFUL_SHOW_REGEXP = /\/:[a-z0-9_]+\.\w{3}$/
@@ -387,6 +412,8 @@ class WeaselDiesel
     end
   end
 
+
+
 end
 
 # Extending the top level module to add some helpers
@@ -409,14 +436,7 @@ module Kernel
     service = WeaselDiesel.new(url)
     yield service
 
-    service.defined_params.list_optional.each do |rule|
-      service.doc.param(rule.name, rule.options[:doc]) if rule.options[:doc]
-    end
-
-    service.defined_params.list_required.each do |rule|
-      service.doc.param(rule.name, rule.options[:doc]) if rule.options[:doc]
-    end
-
+    service.sync_input_param_doc
     WSList.add(service)
 
     service

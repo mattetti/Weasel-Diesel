@@ -27,7 +27,7 @@ describe_service "services/test.xml" do |service|
   service.params.namespace :user do |user|
     user.integer :id, :required => :true
     user.string :sex, :in => %Q{female, male}
-    user.boolean :mailing_list, :default => true
+    user.boolean :mailing_list, :default => true, :doc => "is the user subscribed to the ML?"
   end
 
   # the response contains a list of player creation ratings each object in the list
