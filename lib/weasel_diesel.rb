@@ -326,7 +326,11 @@ class WeaselDiesel
   # @return [WeaselDiesel::Documentation] The service documentation object
   # @api public
   def documentation
-    yield(doc)
+    if block_given?
+      yield(doc)
+    else
+      doc
+    end
   end
 
   # Assign a route loading point to compare two routes.
