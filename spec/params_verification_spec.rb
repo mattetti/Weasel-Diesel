@@ -15,6 +15,8 @@ describe ParamsVerification do
   it "should validate valid params" do
     params = copy(@valid_params)
     lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_exception
+    params['name'] = 'Mattetti'
+    lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_exception
   end
   
   it "should return the params" do

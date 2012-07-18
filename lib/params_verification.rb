@@ -206,29 +206,37 @@ module ParamsVerification
     # enforces a minimum numeric value
     if rule.options[:min_value]
       min = rule.options[:min_value]
-      errors ||= []
-      errors << "Value for parameter '#{param_name}' is lower than the min accepted value (#{min})." if param_value.to_i < min
+      if param_value.to_i < min
+        errors ||= []
+        errors << "Value for parameter '#{param_name}' ('#{param_value}') is lower than the min accepted value (#{min})."
+      end
     end
 
     # enforces a maximum numeric value
     if rule.options[:max_value]
       max = rule.options[:max_value]
-      errors ||= []
-      errors << "Value for parameter '#{param_name}' is higher than the max accepted value (#{max})." if param_value.to_i > max
+      if param_value.to_i > max
+        errors ||= []
+        errors << "Value for parameter '#{param_name}' ('#{param_value}') is higher than the max accepted value (#{max})."
+      end
     end
 
     # enforces a minimum string length
     if rule.options[:min_length]
       min = rule.options[:min_length]
-      errors ||= []
-      errors << "Length of parameter '#{param_name}' is shorter than the min accepted value (#{min})." if param_value.to_s.length < min
+      if param_value.to_s.length < min
+        errors ||= []
+        errors << "Length of parameter '#{param_name}' ('#{param_value}') is shorter than the min accepted value (#{min})."
+      end
     end
 
     # enforces a maximum string length
     if rule.options[:max_length]
       max = rule.options[:max_length]
-      errors ||= []
-      errors << "Length of parameter '#{param_name}' is longer than the max accepted value (#{max})." if param_value.to_s.length > max
+      if param_value.to_s.length > max
+        errors ||= []
+        errors << "Length of parameter '#{param_name}' ('#{param_value}') is longer than the max accepted value (#{max})."
+      end
     end
 
     errors
