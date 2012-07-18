@@ -158,7 +158,7 @@ Options can be combined.
 * `in` or `options` limits the range of the possible values being
   passed. Example: `service.param.string :skills, :options %w{ruby scala clojure}`
 * `default` sets a value for your in case you don't pass one. Example:
-  `service.param.datetime :timestamp, :default => Time.now`
+  `service.param.datetime :timestamp, :default => Time.now.iso8601`
 * `min_value` forces the param value to be equal or greater than the
   option's value. Example: `service.param.integer :age, :min_value => 21
 * `max_value` forces the param value to be equal or less than the

@@ -9,11 +9,10 @@ describe_service "services/test.xml" do |service|
   service.params do |p|
     p.string :framework, 
       :in => WeaselDieselSpecOptions, 
-      :null => false, 
       :required => true,
       :doc => "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
 
-    p.datetime :timestamp, :default => Time.now
+    p.datetime :timestamp, :default => Time.now.iso8601
     p.string   :alpha,     :in      => ['a', 'b', 'c']
     p.string   :version,   :null    => false, :doc => "The version of the framework to use."
     p.integer  :num,       :min_value => 42,  :max_value => 1000, :doc => "The number to test"
