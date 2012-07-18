@@ -108,7 +108,131 @@ Or a more complex example using XML:
     end
 ```
 
-## JSON APIs
+## INPUT DSL
+
+As shown in the two examples above, input parameters can be:
+* optional or required
+* namespaced
+* typed
+* marked as not being null if passed
+* set to have a value defined in a list
+* set to have a min value
+* set to have a min length
+* set to have a max value
+* set to have a max length
+* documented
+
+Most of these settings are used to verify the input requests.
+
+### Supported defined types:
+
+* integer
+* float, decimal
+* string
+* boolean
+* array (comma delimited string)
+* binary, file
+
+#### Note regarding required vs optional params.
+
+You can't set a required param to be `:null => true`, if you do so, the
+setting will be ignored since all required params have to be present.
+
+If you set an optional param to be `:null => false`, the verification
+will only fail if the param was present in the request but the passed
+value is nil. You might want to use that setting if you have an optional
+param that, by definition isn't required but, if passed has to not be
+null.
+
+
+### Validation and other param options
+
+You can set many rules to define an input parameter.
+Here is a quick overview of the available param options, check the specs for more examples.
+Options can be combined.
+
+* `required` by default the defined optional input parameters are
+  optional. However their presence can be required by using this flag.
+  (Setting `:null => true` will be ignored if the paramter is required)
+  Example: `service.param.string :id, :required => true`
+* `in` or `options` limits the range of the possible values being
+  passed. Example: `service.param.string :skills, :options %w{ruby scala clojure}`
+* `default` sets a value for your in case you don't pass one. Example:
+  `service.param.datetime :timestamp, :default => Time.now`
+* `min_value` forces the param value to be equal or greater than the
+  option's value. Example: `service.param.integer :age, :min_value => 21
+* `max_value` forces the param value to be equal or less than the
+  options's value. Example: `service.param.integer :votes, :max_value => 7
+* `min_length` forces the length of the param value to be equal or
+  greater than the option's value. Example: `service.param.string :name, :min_length => 2`
+* `max_length` forces the length of the param value to be equal or
+  lesser than the options's value. Example: `service.param.string :name, :max_length => 251`
+* `null` in the case of an optional parameter, if the parameter is being
+  passed, the value can't be nil or empty.
+* `doc` document the param.
+
+### Namespaced/nested object
+
+Input parameters can be defined nested/namespaced.
+This is particuliarly frequent when using Rails for instance.
+
+```ruby
+service.params do |param|
+    param.string :framework, 
+      :in => ['RSpec', 'Bacon'],
+      :required => true,
+      :doc => "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
+
+    param.datetime :timestamp, :default => Time.now
+    param.string   :alpha,     :in      => ['a', 'b', 'c']
+    param.string   :version,   :null    => false, :doc => "The version of the framework to use."
+    param.integer  :num,       :min_value => 42,  :max_value => 1000, :doc => "The number to test"
+    param.string   :name,      :min_length => 5, :max_length => 25
+  end
+
+  service.params.namespace :user do |user|
+    user.integer :id, :required => :true
+    user.string  :sex, :in => %Q{female, male}
+    user.boolean :mailing_list, :default => true, :doc => "is the user subscribed to the ML?"
+    user.array   :skills, :in => %w{ruby js cooking}
+  end
+```
+
+
+
+Here is the same type of input but this time using a JSON jargon,
+`namespace` and `object` are aliases and can therefore can be used based
+on how the input type.
+
+```ruby
+# INPUT using 1.9 hash syntax
+service.params do |param|
+  param.integer :playlist_id,
+            doc: "The ID of the playlist to which the track belongs.",
+            required: true
+  param.object :track do |track|
+    track.string :title,
+                  doc: "The title of the track.",
+                  required: true
+    track.string :album_title,
+                  doc: "The title of the album to which the track belongs.",
+                  required: true
+    track.string :artist_name,
+                  doc: "The name of the track's artist.",
+                  required: true
+    track.string :rdio_id,
+                  doc: "The Rdio ID of the track.",
+                  required: true
+  end
+end
+```
+
+
+
+## OUTPUT DSL
+
+
+### JSON API example
 
 Consider the following JSON response:
 
@@ -164,28 +288,31 @@ JSON response validation can be done using an optional module as shown in
 The goal of this module is to help automate API testing by
 validating the data structure of the returned object.
 
+Another simple examples:
 
-Other JSON DSL examples:
-
+Actual output:
 ```
 {"organization": {"name": "Example"}}
 ```
 
+Output DSL:
 ``` Ruby
-  describe_service "example" do |service|
-    service.formats  :json
-    service.response do |response|
-      response.object :organization do |node|
-        node.string :name
-      end
+describe_service "example" do |service|
+  service.formats  :json
+  service.response do |response|
+    response.object :organization do |node|
+      node.string :name
     end
   end
+end
 ```
 
+Actual output:
 ``` 
  {"name": "Example"}
 ```
 
+Output DSL:
 ``` Ruby
 describe_service "example" do |service|
   service.formats  :json
@@ -196,8 +323,6 @@ describe_service "example" do |service|
   end
 end
 ```
-
-
 
 
 ## Test Suite & Dependencies

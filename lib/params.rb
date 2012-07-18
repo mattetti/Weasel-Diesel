@@ -22,8 +22,11 @@ class WeaselDiesel
       # @option options [Symbol] :in A list of acceptable values.
       # @option options [Symbol] :options A list of acceptable values.
       # @option options [Symbol] :default The default value of the param.
-      # @option options [Symbol] :minvalue The minimum acceptable value.
-      # @option options [Symbol] :maxvalue The maximim acceptable value.
+      # @option options [Symbol] :min_value The minimum acceptable value.
+      # @option options [Symbol] :max_value The maximum acceptable value.
+      # @option options [Symbol] :min_length The minimum acceptable string length.
+      # @option options [Symbol] :max_length The maximum acceptable string length.
+      # @option options [Boolean] :null Can this value be null?
       # @option options [Symbol] :doc Documentation for the param.
       # @api public
       attr_reader :options
@@ -34,8 +37,11 @@ class WeaselDiesel
       # @option opts [Symbol] :in A list of acceptable values.
       # @option opts [Symbol] :options A list of acceptable values.
       # @option opts [Symbol] :default The default value of the param.
-      # @option opts [Symbol] :minvalue The minimum acceptable value.
-      # @option opts [Symbol] :maxvalue The maximim acceptable value.
+      # @option options [Symbol] :min_value The minimum acceptable value.
+      # @option options [Symbol] :max_value The maximum acceptable value.
+      # @option options [Symbol] :min_length The minimum acceptable string length.
+      # @option options [Symbol] :max_length The maximum acceptable string length.
+      # @option options [Boolean] :null Can this value be null?
       # @option opts [Symbol] :doc Documentation for the param.
       # @api public
       def initialize(name, opts = {})

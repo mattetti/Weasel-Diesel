@@ -21,7 +21,7 @@ describe WeaselDiesel::Params do
 
   it "should have a list of optional param rules" do
     @sparams.list_optional.should be_an_instance_of(Array)
-    @sparams.list_optional.length.should == 4
+    @sparams.list_optional.length.should == 5
   end
 
   it "should have a list of namespaced param rules" do

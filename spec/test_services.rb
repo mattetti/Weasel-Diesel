@@ -16,8 +16,8 @@ describe_service "services/test.xml" do |service|
     p.datetime :timestamp, :default => Time.now
     p.string   :alpha,     :in      => ['a', 'b', 'c']
     p.string   :version,   :null    => false, :doc => "The version of the framework to use."
-    p.integer  :num,       :minvalue => 42,            :doc => "The number to test"
-
+    p.integer  :num,       :min_value => 42,  :max_value => 1000, :doc => "The number to test"
+    p.string   :name,      :min_length => 5, :max_length => 25
   end
 
   # service.param :delta, :optional => true, :type => 'float'
@@ -26,8 +26,10 @@ describe_service "services/test.xml" do |service|
 
   service.params.namespace :user do |user|
     user.integer :id, :required => :true
-    user.string :sex, :in => %Q{female, male}
+    user.string  :sex, :in => %Q{female, male}
     user.boolean :mailing_list, :default => true, :doc => "is the user subscribed to the ML?"
+    user.array   :groups, :required => true, :in => %w{developer admin manager}
+    user.array   :skills, :in => %w{ruby java networking}
   end
 
   # the response contains a list of player creation ratings each object in the list
