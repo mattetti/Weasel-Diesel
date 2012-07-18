@@ -23,6 +23,12 @@ describe ParamsVerification do
     returned_params.should be_an_instance_of(Hash)
     returned_params.keys.size.should >= 3
   end
+
+  it "shouldn't set empty nil values for optional params that aren't passed" do
+    params = copy(@valid_params)
+    returned_params = ParamsVerification.validate!(params, @service.defined_params)
+    returned_params.has_key?('name').should be_false
+  end
   
   it "should return array in the params" do
     params = copy(@valid_params)

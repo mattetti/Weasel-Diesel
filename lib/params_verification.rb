@@ -174,7 +174,7 @@ module ParamsVerification
   #
   def self.validate_and_cast_type(param_value, param_name, rule_type, params, namespace=nil)
     # checks type & modifies params if needed
-    if rule_type
+    if rule_type && param_value
       verify_cast(param_name, param_value, rule_type)
       param_value = type_cast_value(rule_type, param_value)
       # update the params hash with the type cast value
