@@ -65,6 +65,14 @@ describe ParamsVerification do
     returned_params['timestamp'].should_not be_nil
   end
 
+  it "should support various datetime formats" do
+    params = copy(@valid_params)
+    params['timestamp'] = Time.now.iso8601
+    lambda { ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_error
+    params['timestamp'] = Time.now.getutc.iso8601
+    lambda { ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_error(ParamsVerification::InvalidParamType)
+  end
+
   it "should set the default value for a namespace optional param" do
     params = copy(@valid_params)
     params['user']['mailing_list'].should be_nil
