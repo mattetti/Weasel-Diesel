@@ -106,14 +106,14 @@ module ParamsVerification
 
     # Checks presence
     if !(namespaced_params || params).keys.include?(param_name)
-      raise MissingParam, "'#{rule.name}' is missing - passed params: #{params.inspect}."
+      raise MissingParam, "'#{rule.name}' is missing - passed params: #{html_escape(params.inspect)}."
     end
 
     updated_param_value, updated_params = validate_and_cast_type(param_value, param_name, rule.options[:type], params, namespace)
 
     # check for nulls in params that don't allow them
     if !valid_null_param?(param_name, updated_param_value, rule)
-      raise InvalidParamValue, "Value for parameter '#{param_name}' cannot be null - passed params: #{updated_params.inspect}."
+      raise InvalidParamValue, "Value for parameter '#{param_name}' cannot be null - passed params: #{html_escape(updated_params.inspect)}."
     elsif updated_param_value
       value_errors = validate_ruled_param_value(param_name, updated_param_value, rule)
       raise InvalidParamValue, value_errors.join(', ') if value_errors
@@ -138,7 +138,7 @@ module ParamsVerification
     param_value, namespaced_params = extract_param_values(params, param_name, namespace)
 
     if param_value && !valid_null_param?(param_name, param_value, rule)
-      raise InvalidParamValue, "Value for parameter '#{param_name}' cannot be null if passed - passed params: #{params.inspect}."
+      raise InvalidParamValue, "Value for parameter '#{param_name}' cannot be null if passed - passed params: #{html_escape(params.inspect)}."
     end
 
     # Use a default value if one is available and the submitted param value is nil
@@ -199,7 +199,7 @@ module ParamsVerification
       choices = rule.options[:options] || rule.options[:in]
       unless param_value.is_a?(Array) ? (param_value & choices == param_value) : choices.include?(param_value)
         errors ||= []
-        errors << "Value for parameter '#{param_name}' (#{param_value}) is not in the allowed set of values."
+        errors << "Value for parameter '#{param_name}' (#{html_escape(param_value)}) is not in the allowed set of values."
       end
     end
 
@@ -208,7 +208,7 @@ module ParamsVerification
       min = rule.options[:min_value]
       if param_value.to_i < min
         errors ||= []
-        errors << "Value for parameter '#{param_name}' ('#{param_value}') is lower than the min accepted value (#{min})."
+        errors << "Value for parameter '#{param_name}' ('#{html_escape(param_value)}') is lower than the min accepted value (#{min})."
       end
     end
 
@@ -217,7 +217,7 @@ module ParamsVerification
       max = rule.options[:max_value]
       if param_value.to_i > max
         errors ||= []
-        errors << "Value for parameter '#{param_name}' ('#{param_value}') is higher than the max accepted value (#{max})."
+        errors << "Value for parameter '#{param_name}' ('#{html_escape(param_value)}') is higher than the max accepted value (#{max})."
       end
     end
 
@@ -226,7 +226,7 @@ module ParamsVerification
       min = rule.options[:min_length]
       if param_value.to_s.length < min
         errors ||= []
-        errors << "Length of parameter '#{param_name}' ('#{param_value}') is shorter than the min accepted value (#{min})."
+        errors << "Length of parameter '#{param_name}' ('#{html_escape(param_value)}') is shorter than the min accepted value (#{min})."
       end
     end
 
@@ -235,7 +235,7 @@ module ParamsVerification
       max = rule.options[:max_length]
       if param_value.to_s.length > max
         errors ||= []
-        errors << "Length of parameter '#{param_name}' ('#{param_value}') is longer than the max accepted value (#{max})."
+        errors << "Length of parameter '#{param_name}' ('#{html_escape(param_value)}') is longer than the max accepted value (#{max})."
       end
     end
 
@@ -324,7 +324,7 @@ module ParamsVerification
     return if value == nil
     validation = ParamsVerification.type_validations[expected_type.to_sym]
     unless validation.nil? || value.to_s =~ validation
-      raise InvalidParamType, "Value for parameter '#{name}' (#{value}) is of the wrong type (expected #{expected_type})"
+      raise InvalidParamType, "Value for parameter '#{name}' (#{html_escape(value)}) is of the wrong type (expected #{expected_type})"
     end
   end
 
@@ -347,5 +347,8 @@ module ParamsVerification
     true
   end
 
-  
+  def self.html_escape(msg)
+    ERB::Util.html_escape(msg)
+  end
+
 end
