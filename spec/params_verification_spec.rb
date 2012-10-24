@@ -173,7 +173,7 @@ describe ParamsVerification do
   it "should prevent XSS attack on unexpected param name being listed in the exception message" do
     params = copy(@valid_params)
     params["7e22c<script>alert('xss vulnerability')</script>e88ff3f0952"] = 1
-    escaped_error_message = /7e22c&lt;script&gt;alert\('xss vulnerability'\)&lt;\/script&gt;e88ff3f0952/
+    escaped_error_message = /7e22c&lt;script&gt;alert\(.*\)&lt;\/script&gt;e88ff3f0952/
     lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::UnexpectedParam, escaped_error_message)
   end
 
