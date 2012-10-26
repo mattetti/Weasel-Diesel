@@ -3,13 +3,13 @@ require File.expand_path("spec_helper", File.dirname(__FILE__))
 describe WeaselDiesel do
 
   before :all do
-    @service = WSList.all.find{|s| s.url == 'services/test.xml'}
+    @service = WSList.find(:get, '/services/test.xml')
     @service.should_not be_nil
   end
 
   it "should have an url" do
     # dummy test since that's how we found the service, but oh well
-    @service.url.should == 'services/test.xml'
+    @service.url.should == '/services/test.xml'
   end
 
   it "should have some http verbs defined" do
@@ -38,6 +38,16 @@ describe WeaselDiesel do
 
   it "should have some documentation" do
     @service.doc.should be_an_instance_of(WeaselDiesel::Documentation)
+  end
+
+  it "should store urls with a leading slash" do
+    service = WeaselDiesel.new("/foo")
+    service.url.should == "/foo"
+    service.url.should == WeaselDiesel.new("foo").url
+    WeaselDiesel.new("foo").url.should_not == WeaselDiesel.new("foo/").url
+
+    root = WeaselDiesel.new("/")
+    root.url.should == "/"
   end
 
 end

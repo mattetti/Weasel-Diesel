@@ -3,6 +3,7 @@ require File.expand_path('params', File.dirname(__FILE__))
 require File.expand_path('response', File.dirname(__FILE__))
 require File.expand_path('documentation', File.dirname(__FILE__))
 require File.expand_path('ws_list', File.dirname(__FILE__))
+require File.expand_path('kernel_ext', File.dirname(__FILE__))
 
 # WeaselDiesel offers a web service DSL to define web services,
 # their params, http verbs, formats expected as well as the documentation
@@ -117,14 +118,15 @@ class WeaselDiesel
 
   # Service constructor which is usually used via {Kernel#describe_service}
   #
-  # @param [String] url Service's url
+  # @param [String] url Service's url ( the url will automatically be prepended a slash if it doesn't already contain one.
   # @see #describe_service See how this class is usually initialized using `describe_service`
   # @api public
   def initialize(url)
-    @url                 = url
+    @url                 = url.start_with?('/') ? url : "/#{url}"
     @defined_params      = WeaselDiesel::Params.new
     @doc                 = WeaselDiesel::Documentation.new
     @response            = WeaselDiesel::Response.new
+    # TODO: extract to its own optional lib
     if WeaselDiesel.use_controller_dispatch
       @name                = extract_service_root_name(url)
       if WeaselDiesel.use_pluralized_controllers
@@ -135,6 +137,7 @@ class WeaselDiesel
       end
       @action              = extract_service_action(url)
     end
+    #
     @verb                = :get
     @formats             = []
     @version             = '0.1'
@@ -169,6 +172,7 @@ class WeaselDiesel
   # @return [Boolean] The updated value, default to false
   # @api public
   # @since 0.3.0
+  # @deprecated
   def self.use_controller_dispatch
     @controller_dispatch
   end
@@ -180,6 +184,7 @@ class WeaselDiesel
   # @return [Boolean] The updated value
   # @api public
   # @since 0.1.1
+  # @deprecated
   def self.use_controller_dispatch=(val)
     @controller_dispatch = val
   end
@@ -192,6 +197,7 @@ class WeaselDiesel
   #
   # @return [#to_s] The response from the controller action
   # @api private
+  # @deprecated
   def controller_dispatch(app)
     unless @controller
       klass = @controller_name.split("::")
@@ -417,33 +423,5 @@ class WeaselDiesel
   end
 
 
-
-end
-
-# Extending the top level module to add some helpers
-#
-# @api public
-module Kernel
-
-  # Base DSL method called to describe a service
-  #
-  # @param [String] url The url of the service to add.
-  # @yield [WeaselDiesel] The newly created service.
-  # @return [Array] The services already defined
-  # @example Describing a basic service
-  #   describe_service "hello-world.xml" do |service|
-  #     # describe the service
-  #   end
-  #
-  # @api public
-  def describe_service(url, &block)
-    service = WeaselDiesel.new(url)
-    yield service
-
-    service.sync_input_param_doc
-    WSList.add(service)
-
-    service
-  end
 
 end
