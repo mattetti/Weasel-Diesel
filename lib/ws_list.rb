@@ -4,6 +4,7 @@
 module WSList
 
   class UnknownService < StandardError; end
+  class DuplicateServiceDescription < StandardError; end
 
   module_function
   
@@ -12,10 +13,14 @@ module WSList
   #
   # @param [WeaselDiesel] The service to add.
   # @return [Array<WeaselDiesel>] All the added services.
+  # @raise DuplicateServiceDescription If a service is being duplicated.
   # @api public
   def add(service)
     @list ||= []
-    @list << service unless @list.find{|s| s.url == service.url && s.verb == service.verb}
+    if WSList.find(service.verb, service.url)
+      raise DuplicateServiceDescription, "A service accessible via #{service.verb} #{service.url} already exists"
+    end
+    @list << service
     @list
   end
   
@@ -34,6 +39,7 @@ module WSList
   # @return [WeaselDiesel] The found service.
   #
   # @api public
+  # @deprecated
   def named(name)
     service = all.find{|service| service.name == name}
     if service.nil?
@@ -49,6 +55,8 @@ module WSList
   # @return [Nil, WeaselDiesel] The found service.
   #
   # @api public
+  # @deprecated use #find instead since this method doesn't support a verb being passed
+  #  and the url might or might not match depending on the leading slash.
    def [](url)
     @list.find{|service| service.url == url}
   end
@@ -62,7 +70,8 @@ module WSList
   # @api public
   def find(verb, url)
     verb = verb.to_s.downcase.to_sym
-    @list.find{|service| service.verb == verb && service.url == url}
+    slashed_url = url.start_with?('/') ? url : "/#{url}"
+    @list.find{|service| service.verb == verb && service.url == slashed_url}
   end
   
   

@@ -3,7 +3,7 @@ require_relative "spec_helper"
 describe ParamsVerification do
   
   before :all do
-    @service = WSList.all.find{|s| s.url == 'services/test.xml'}
+    @service = WSList.find(:get, '/services/test.xml')
     @service.should_not be_nil
     @valid_params = {'framework' => 'RSpec', 'version' => '1.02', 'user' => {'id' => '123', 'groups' => 'manager,developer', 'skills' => 'java,ruby'}}
   end
@@ -87,7 +87,7 @@ describe ParamsVerification do
   end
 
   it "should cast a comma delimited string into an array when param marked as an array" do
-    service = WSList.all.find{|s| s.url == "services/array_param.xml"}
+    service = WSList.find(:post, "/services/array_param.xml")
     service.should_not be_nil
     params = {'seq' => "a,b,c,d,e,g"}
     validated = ParamsVerification.validate!(params, service.defined_params)
@@ -95,7 +95,7 @@ describe ParamsVerification do
   end
 
   it "should not raise an exception if a req array param doesn't contain a comma" do
-    service = WSList.all.find{|s| s.url == "services/array_param.xml"}
+    service = WSList.find(:post, "/services/array_param.xml")
     params = {'seq' => "a b c d e g"}
     lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception(ParamsVerification::InvalidParamType)
   end
@@ -144,7 +144,7 @@ describe ParamsVerification do
     lambda{ ParamsVerification.validate!(params, @service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamValue)
     # other service
     params = {'preference' => {'region_code' => 'us', 'language_code' => 'de'}}
-    service = WSList.all.find{|s| s.url == 'preferences.xml'}
+    service = WSList.find(:get, '/preferences.xml')
     service.should_not be_nil
     lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception(ParamsVerification::InvalidParamValue)
   end
@@ -158,7 +158,7 @@ describe ParamsVerification do
   end
 
   it "should validate that no params are passed when accept_no_params! is set on a service" do
-    service = WSList.all.find{|s| s.url == "services/test_no_params.xml"}
+    service = WSList.find(:get, "/services/test_no_params.xml")
     service.should_not be_nil
     params = copy(@valid_params)
     lambda{ ParamsVerification.validate!(params, service.defined_params) }.should raise_exception

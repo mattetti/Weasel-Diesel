@@ -3,7 +3,7 @@ require File.expand_path("spec_helper", File.dirname(__FILE__))
 describe WeaselDiesel::Documentation do
 
   before :all do
-    @service = WSList.all.find{|s| s.url == 'services/test.xml'}
+    @service = WSList.find(:get, '/services/test.xml')
     @service.should_not be_nil
     @doc = @service.doc
     @doc.should_not be_nil
@@ -31,7 +31,7 @@ describe WeaselDiesel::Documentation do
   end
 
   it "should allow to define namespaced params doc" do
-    service = WSList.all.find{|s| s.url == "services.xml"}
+    service = WSList.find(:put, "/services.xml")
     service.documentation do |doc|
       doc.namespace :preference do |ns|
         ns.param :id, "Ze id."
@@ -44,7 +44,7 @@ describe WeaselDiesel::Documentation do
   end
 
   it "should allow object to be an alias for namespace params" do
-    service = WSList.all.find{|s| s.url == "services.xml"}
+    service = WSList.find(:put, "/services.xml")
     service.documentation do |doc|
       doc.object :preference do |ns|
         ns.param :id, "Ze id."
@@ -149,7 +149,7 @@ The most common way to use this service looks like that:
     end
 
     it "should have the param documented" do
-      service = WSList["legacy_param_doc"]
+      service = WSList.find(:get, "legacy_param_doc")
       service.doc.params_doc.keys.sort.should == [:framework, :version]
       service.doc.params_doc[service.doc.params_doc.keys.first].should_not be_nil
     end

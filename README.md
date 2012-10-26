@@ -16,9 +16,9 @@ you can fork and use as a base for your application.
 DSL examples:
 
 ``` ruby
-describe_service "hello_world" do |service|
+describe_service "/hello_world" do |service|
   service.formats   :json
-  service.http_verb :get
+  service.http_verb :get # default verb, can be ommitted.
   service.disable_auth # on by default
 
   # INPUT
@@ -52,7 +52,7 @@ Or a more complex example using XML:
 ``` ruby
     SpecOptions = ['RSpec', 'Bacon'] # usually pulled from a model
 
-    describe_service "wsdsl/test.xml" do |service|
+    describe_service "/wsdsl/test.xml" do |service|
       service.formats  :xml, :json
       service.http_verb :get
       
@@ -262,7 +262,7 @@ Consider the following JSON response:
 It would be described as follows:
 
 ``` ruby
-    describe_service "json_list" do |service|
+    describe_service "/json_list" do |service|
       service.formats  :json
       service.response do |response|
         response.array :people do |node|

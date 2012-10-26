@@ -12,7 +12,7 @@ describe "Hello World example" do
       WSList.all.clear
       require "hello_world_service"
       require "hello_world_controller"
-      @service = WSList.all.find{|s| s.url == 'hello_world.xml'}
+      @service = WSList.find(:get, 'hello_world.xml')
       @service.should_not be_nil
       @service.load_sinatra_route
     end
