@@ -3,7 +3,7 @@ require File.expand_path("spec_helper", File.dirname(__FILE__))
 describe WeaselDiesel::Params do
 
   before :all do
-    @service = WSList.all.find{|s| s.url == 'services/test.xml'}
+    @service = WSList.find(:get, '/services/test.xml')
     @service.should_not be_nil
     @sparams = @service.params
   end
@@ -31,7 +31,7 @@ describe WeaselDiesel::Params do
   end
 
   it "should allow to define namespaced param" do
-    service = WSList.all.find{|s| s.url == "services.xml"}
+    service = WSList.find(:put, "/services.xml")
     service.params do |params|
       params.namespace :preference do |ns|
         ns.param :id, "Ze id."
@@ -44,7 +44,7 @@ describe WeaselDiesel::Params do
   end
 
   it "should allow object as an alias to namespaced param" do
-    service = WSList.all.find{|s| s.url == "services.xml"}
+    service = WSList.find(:put, "/services.xml")
     service.params do |params|
       params.object :preference do |ns|
         ns.param :id, "Ze id."

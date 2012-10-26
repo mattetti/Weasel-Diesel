@@ -127,3 +127,11 @@ describe_service "services/array_param.xml" do |s|
   end
 
 end
+
+describe_service "/slash/foo" do |service|
+  service.formats :json
+end
+
+describe_service "/" do |service|
+  service.extra["name"] = "root"
+end

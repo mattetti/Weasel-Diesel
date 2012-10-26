@@ -3,7 +3,7 @@ require File.expand_path("spec_helper", File.dirname(__FILE__))
 describe "WeaselDiesel #controller_dispatch" do
 
   before :all do
-    @service = WSList.all.find{|s| s.url == 'services/test.xml'}
+    @service = WSList.find(:get, '/services/test.xml')
     @service.should_not be_nil
   end
 
@@ -46,7 +46,7 @@ describe "WeaselDiesel #controller_dispatch" do
 
     it "should be able to dispatch controller" do
       describe_service("projects.xml") { |s| }
-      service = WSList["projects.xml"]
+      service = WSList.find(:get, "projects.xml")
       service.controller_dispatch("application").
         should == ["application", "projects", "list"]
     end
@@ -62,10 +62,10 @@ describe "WeaselDiesel #controller_dispatch" do
         service.action = "list"
       end
 
-      service = WSList["project/:project_id/tasks.xml"]
+      service = WSList.find(:get, "project/:project_id/tasks.xml")
       service.controller_dispatch("application").should == ["application", "project", "list"]
 
-      service = WSList["project/:project_id/task/:task_id/items.xml"]
+      service = WSList.find(:get, "project/:project_id/task/:task_id/items.xml")
       service.controller_dispatch("application").should == ["application", "project", "list"]
     end
 
@@ -74,7 +74,7 @@ describe "WeaselDiesel #controller_dispatch" do
         service.controller_name = "UnknownController"
         service.action = "list"
       end
-      service = WSList["unknown.xml"]
+      service = WSList.find(:get, "unknown.xml")
       lambda { service.controller_dispatch("application") }.
         should raise_error("The UnknownController class was not found")
     end
@@ -87,7 +87,7 @@ describe "WeaselDiesel #controller_dispatch" do
       WSList.all.clear
       WeaselDiesel.use_controller_dispatch = true
       load File.expand_path('test_services.rb', File.dirname(__FILE__))
-      @c_service = WSList.all.find{|s| s.url == 'services/test.xml'}
+      @c_service = WSList.find(:get, '/services/test.xml')
       @c_service.should_not be_nil
     end
     after :all do
@@ -110,7 +110,7 @@ describe "WeaselDiesel #controller_dispatch" do
     end
 
     it "should support restful routes based on the HTTP verb" do
-      service = WSList.all.find{|s| s.url == "services.xml"}
+      service = WSList.find(:put, "/services.xml")
       service.should_not be_nil
       service.http_verb.should == :put
       service.action.should_not be_nil
@@ -151,7 +151,7 @@ describe "WeaselDiesel #controller_dispatch" do
         service.controller_name = "CustomController"
         service.action = "foo"
       end
-      service = WSList.all.find{|s| s.url == "players/:id.xml"}
+      service = WSList.find(:get, "players/:id.xml")
       service.controller_name.should == "CustomController"
       service.action.should == "foo"
     end
