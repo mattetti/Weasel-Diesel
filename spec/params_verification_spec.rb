@@ -192,7 +192,7 @@ describe ParamsVerification do
     service.params do |p|
       p.integer :id, :required => false, :null => true
     end
-    params = {:id => nil}
+    params = {"id" => nil}
     lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception(ParamsVerification::UnexpectedParam)
   end
 end
