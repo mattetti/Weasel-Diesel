@@ -3,6 +3,16 @@
 All changes can be seen on GitHub and git tags are used to isolate each
 release.
 
+*1.2.1*:
+
+* Modified the way an empty string param is cast/verified. If a param is
+passed as an empty string but the param isn't specified as a string, the
+param is nullified. So if you pass `{'id' => ''}`, and `id` is set to be
+an integer param, the cast params will look like that: `{'id' => nil}`,
+however if `name` is a string param and `{'name' => ''}` is passed, the
+value won't be nullified.
+
+
 **1.2.0**: 
 
 * All service urls are now stored with a prepended slash (if not defined
