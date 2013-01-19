@@ -190,9 +190,11 @@ describe ParamsVerification do
   it "should allow optional null integer params" do
     service = WeaselDiesel.new("spec")
     service.params do |p|
-      p.integer :id, :required => false, :null => true
+      p.integer :id, :optional => true, :null => true
     end
+    params = {"id" => ""}
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception
     params = {"id" => nil}
-    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception(ParamsVerification::UnexpectedParam)
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception
   end
 end

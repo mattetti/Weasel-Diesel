@@ -165,7 +165,7 @@ module ParamsVerification
   #
   # @param [Object] param_value The value to validate and cast.
   # @param [String] param_name The name of the param we are validating.
-  # @param [Symbol] type The expected object type.
+  # @param [Symbol] rule_type The expected object type.
   # @param [Hash] params The params that might need to be updated.
   # @param [String, Symbol] namespace The optional namespace used to access the `param_value`
   #
@@ -175,6 +175,8 @@ module ParamsVerification
   def self.validate_and_cast_type(param_value, param_name, rule_type, params, namespace=nil)
     # checks type & modifies params if needed
     if rule_type && param_value
+      # nullify empty strings for any types other than string
+      param_value = nil if param_value == '' && rule_type != :string
       verify_cast(param_name, param_value, rule_type)
       param_value = type_cast_value(rule_type, param_value)
       # update the params hash with the type cast value
