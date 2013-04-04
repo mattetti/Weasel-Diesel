@@ -24,8 +24,8 @@ class WeaselDiesel
     # Lists all top level simple elements and array elements.
     #
     # @return [Array<WeaselDiesel::Response::Element, WeaselDiesel::Response::Array>]
-    def nodes 
-      elements + arrays
+    def nodes
+      (elements + arrays).inject({}){|hash,item| hash.merge item}
     end
 
     # Shortcut to automatically create a node of array type.
