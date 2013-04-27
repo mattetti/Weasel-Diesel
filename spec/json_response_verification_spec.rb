@@ -73,6 +73,18 @@ describe "JSON response verification" do
       end
     end
 
+    @top_level_array_service = describe_service "tl_array#{__LINE__}" do |service|
+      service.formats :json
+      service.response do |response|
+        # anonymous array response
+        response.array do |arr|
+          arr.object do |node|
+            node.string :name
+          end
+        end
+      end
+    end
+
   end
 
 
@@ -118,6 +130,10 @@ describe "JSON response verification" do
         "pets" => [{"id" => 23, "name" => "medor"}, {"id" => 34, "name" => "rex"}]
       }]
     }
+  end
+
+  def valid_top_level_array_response
+    [ { :name => "Bob" }, { :name => "Judy" } ]
   end
 
 
@@ -221,5 +237,18 @@ describe "JSON response verification" do
     valid.should be_true
   end
 
+  it "should validate the response" do
+    valid, errors = @service.validate_hash_response(valid_response)
+    errors.should == []
+    valid.should be_true
+    errors.should be_empty
+  end
+
+  it "should validated a top level array" do
+    valid, errors = @top_level_array_service.validate_hash_response(valid_top_level_array_response)
+    errors.should == []
+    valid.should be_true
+    errors.should be_empty
+  end
 
 end
