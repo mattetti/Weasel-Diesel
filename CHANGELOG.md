@@ -3,6 +3,9 @@
 All changes can be seen on GitHub and git tags are used to isolate each
 release.
 
+1.2.2:
+* Added support for anonymous top level arrays.
+
 *1.2.1*:
 
 * Modified the way an empty string param is cast/verified. If a param is

@@ -176,12 +176,44 @@ describe "WeaselDiesel anonymous JSON object response description" do
     @response  = @service.response
   end
 
-  it "should have a properly structured reponse" do
+  it "should have a properly structured response" do
     top_object = @service.response.elements.first
     top_object.should_not be_nil
     name_node = top_object.properties.find{|o| o.name == :name}
     name_node.should_not be_nil
     name_node.type.should == :string
+  end
+
+end
+
+
+describe "WeaselDiesel top level array response description" do
+
+=begin
+'[ { "name":"Bob" }, { "name": "Judy" } ]'
+=end
+
+  before :all do
+    @service = describe_service 'tl_array' do |service|
+      service.formats :json
+      service.response do |response|
+        # anonymous array response
+        response.array do |arr|
+          arr.object do |node|
+            node.string :name
+          end
+        end
+      end
+    end
+  end
+
+  it "should have a properly structured response" do
+    top_object = @service.response.nodes.first
+    top_object.should_not be_nil
+    top_object.should be_an_instance_of(WeaselDiesel::Response::Vector)
+    top_object.elements.first.should_not be_nil
+    top_object.elements.first.attributes.first.name.should eq(:name)
+    top_object.elements.first.attributes.first.type.should eq(:string)
   end
 
 end

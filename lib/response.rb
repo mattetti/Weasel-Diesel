@@ -34,7 +34,7 @@ class WeaselDiesel
     # @param [String, Symbol] name the name of the element.
     # @param [Hash] opts the element options.
     # @see Vector#initialize
-    def array(name, type=nil)
+    def array(name=nil, type=nil)
       vector = Vector.new(name, type)
       yield(vector) if block_given?
       @arrays << vector
@@ -101,7 +101,7 @@ class WeaselDiesel
     end
 
     # The Response element class describing each element of a service response.
-    # Instances are usually not instiated directly but via the Response#element accessor.
+    # Instances are usually not instantiated directly but via the Response#element accessor.
     #
     # @see WeaselDiesel::Response#element
     # @api public
@@ -273,7 +273,7 @@ class WeaselDiesel
       #
       # @param [Symbol, String] name the name of the element.
       # @param [Hash] opts the options for the newly created element.
-      def object(name, opts={}, &block)
+      def object(name=nil, opts={}, &block)
         element(opts.merge(:name => name), &block)
       end
 
