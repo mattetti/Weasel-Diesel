@@ -89,12 +89,12 @@ describe "JSON response verification" do
 
 
   def valid_response(namespaced=true)
-    response = { 
-      "id" => 1, 
+    response = {
+      "id" => 1,
       "name" => "matt",
-      "created_at" => "2011-09-22T16:32:46-07:00", 
+      "created_at" => "2011-09-22T16:32:46-07:00",
       "creds" => { "id" => 42, "price" => 2010.07, "enabled" => false }
-      } 
+      }
     namespaced ? {"user" => response} : response
   end
 
