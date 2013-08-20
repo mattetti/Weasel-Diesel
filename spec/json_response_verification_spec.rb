@@ -89,12 +89,12 @@ describe "JSON response verification" do
 
 
   def valid_response(namespaced=true)
-    response = { 
-      "id" => 1, 
+    response = {
+      "id" => 1,
       "name" => "matt",
-      "created_at" => "2011-09-22T16:32:46-07:00", 
+      "created_at" => "2011-09-22T16:32:46-07:00",
       "creds" => { "id" => 42, "price" => 2010.07, "enabled" => false }
-      } 
+      }
     namespaced ? {"user" => response} : response
   end
 
@@ -133,12 +133,11 @@ describe "JSON response verification" do
   end
 
   def valid_top_level_array_response
-    [ { :name => "Bob" }, { :name => "Judy" } ]
+    [ { "name" => "Bob" }, { "name" => "Judy" } ]
   end
 
-
   it "should validate the response" do
-    valid, errors = @service.validate_hash_response(valid_response)
+    valid, errors = @service.verify(valid_response)
     errors.should == []
     valid.should be_true
     errors.should be_empty
@@ -147,7 +146,7 @@ describe "JSON response verification" do
   it "should detect that the response is missing the top level object" do
     response = valid_response
     response.delete("user")
-    valid, errors = @service.validate_hash_response(response)
+    valid, errors = @service.verify(response)
     valid.should be_false
     errors.should_not be_empty
   end
@@ -155,7 +154,7 @@ describe "JSON response verification" do
   it "should detect that a property integer type is wrong" do
      response = valid_response
      response["user"]["id"] = 'test'
-     valid, errors = @service.validate_hash_response(response)
+     valid, errors = @service.verify(response)
      valid.should be_false
      errors.should_not be_empty
      errors.first.should match(/id/)
@@ -165,7 +164,7 @@ describe "JSON response verification" do
   it "should detect that an integer attribute value is nil" do
     response = valid_response
      response["user"]["id"] = nil
-     valid, errors = @service.validate_hash_response(response)
+     valid, errors = @service.verify(response)
      valid.should be_false
      errors.should_not be_empty
      errors.first.should match(/id/)
@@ -175,38 +174,36 @@ describe "JSON response verification" do
   it "should detect that a string attribute value is nil [bug]" do
     response = valid_response
     response["user"]["name"] = nil
-    valid, errors = @service.validate_hash_response(response)
+    valid, errors = @service.verify(response)
     valid.should be_false
     errors.should_not be_empty
     errors.first.should match(/name/)
     errors.first.should match(/wrong type/)
   end
 
-
   it "should detect that a nested object is missing" do
     response = valid_response
     response["user"].delete("creds")
-    valid, errors = @service.validate_hash_response(response)
+    valid, errors = @service.verify(response)
     valid.should be_false
     errors.first.should match(/creds/)
     errors.first.should match(/missing/)
   end
 
   it "should validate non namespaced responses" do
-    valid, errors = @second_service.validate_hash_response(valid_response(false))
+    valid, errors = @second_service.verify(valid_response(false))
     valid.should be_true
   end
 
   it "should validate nil attributes if marked as nullable" do
     response = valid_response(false)
     response["name"] = nil
-    valid, errors = @second_service.validate_hash_response(response)
+    valid, errors = @second_service.verify(response)
     valid.should be_true
   end
 
-
   it "should validate array items" do
-    valid, errors = @third_service.validate_hash_response(valid_array_response)
+    valid, errors = @third_service.verify(valid_array_response)
     valid.should be_true
     errors.should be_empty
   end
@@ -214,38 +211,37 @@ describe "JSON response verification" do
   it "should validate an empty array" do
     response = valid_array_response
     response["users"] = []
-    valid, errors = @third_service.validate_hash_response(response)
+    valid, errors = @third_service.verify(response)
     valid.should be_true
   end
 
   it "should catch error in an array item" do
     response = valid_array_response
     response["users"][1]["id"] = 'test'
-    valid, errors = @third_service.validate_hash_response(response)
+    valid, errors = @third_service.verify(response)
     valid.should be_false
     errors.should_not be_empty
   end
 
   it "should validate nested arrays" do
-    valid, errors = @forth_service.validate_hash_response(valid_nested_array_response)
+    valid, errors = @forth_service.verify(valid_nested_array_response)
     valid.should be_true
   end
 
-
   it "should respect optional properties" do
-    valid, errors = @optional_prop_service.validate_hash_response({})
+    valid, errors = @optional_prop_service.verify({})
     valid.should be_true
   end
 
   it "should validate the response" do
-    valid, errors = @service.validate_hash_response(valid_response)
+    valid, errors = @service.verify(valid_response)
     errors.should == []
     valid.should be_true
     errors.should be_empty
   end
 
   it "should validated a top level array" do
-    valid, errors = @top_level_array_service.validate_hash_response(valid_top_level_array_response)
+    valid, errors = @top_level_array_service.verify(valid_top_level_array_response)
     errors.should == []
     valid.should be_true
     errors.should be_empty
