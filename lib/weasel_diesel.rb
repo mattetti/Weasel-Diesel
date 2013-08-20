@@ -366,8 +366,8 @@ class WeaselDiesel
   # and in the documentation block.
   # @api private
   def sync_input_param_doc
-    defined_params.namespaced_params.each do |prms| 
-      doc.namespace(prms.space_name) do |ns|
+    defined_params.namespaced_params.each do |prms|
+      doc.namespace(prms.space_name.name) do |ns|
         prms.list_optional.each do |rule|
           ns.param(rule.name, rule.options[:doc]) if rule.options[:doc]
         end

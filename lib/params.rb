@@ -5,7 +5,30 @@ class WeaselDiesel
   # @see WeaselDiesel#params
   #
   # @api public
-  class Params  
+  class Params
+
+    # Namespaces have a name, and options.
+    #
+    # @api public
+    class Namespace
+      # @return [Symbol, String] name The name of the namespace.
+      # @api public
+      attr_reader :name
+
+      # @return [Boolean] :null Can this namespace be null?
+      # @api public
+      attr_reader :null
+
+      # @param [Symbol, String] name
+      #   The namespace's name
+      # @param [Hash] opts The namespace options
+      # @option opts [Boolean] :null Can this value be null?
+      # @api public
+      def initialize(name, opts={})
+        @name = name
+        @null = opts[:null] || false
+      end
+    end # of Namespace
 
     # Params usually have a few rules used to validate requests.
     # Rules are not usually initialized directly but instead via
@@ -31,17 +54,17 @@ class WeaselDiesel
       # @api public
       attr_reader :options
 
-      # @param [Symbol, String] name 
+      # @param [Symbol, String] name
       #   The param's name
       # @param [Hash] opts The rule options
       # @option opts [Symbol] :in A list of acceptable values.
       # @option opts [Symbol] :options A list of acceptable values.
       # @option opts [Symbol] :default The default value of the param.
-      # @option options [Symbol] :min_value The minimum acceptable value.
-      # @option options [Symbol] :max_value The maximum acceptable value.
-      # @option options [Symbol] :min_length The minimum acceptable string length.
-      # @option options [Symbol] :max_length The maximum acceptable string length.
-      # @option options [Boolean] :null Can this value be null?
+      # @option opts [Symbol] :min_value The minimum acceptable value.
+      # @option opts [Symbol] :max_value The maximum acceptable value.
+      # @option opts [Symbol] :min_length The minimum acceptable string length.
+      # @option opts [Symbol] :max_length The maximum acceptable string length.
+      # @option opts [Boolean] :null Can this value be null?
       # @option opts [Symbol] :doc Documentation for the param.
       # @api public
       def initialize(name, opts = {})
@@ -51,7 +74,7 @@ class WeaselDiesel
 
       # The namespace used if any
       #
-      # @return [NilClass, String]
+      # @return [NilClass, WeaselDiesel::Params::Namespace]
       # @api public
       def namespace
         @options[:space_name]
@@ -76,7 +99,7 @@ class WeaselDiesel
 
     # The namespace used if any
     #
-    # @return [String]
+    # @return [NilClass, WeaselDiesel::Params::Namespace]
     # @api public
     attr_reader :space_name
 
@@ -126,7 +149,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def string(name, options={})
       param(:string, name, options)
@@ -143,7 +166,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def integer(name, options={})
       param(:integer, name, options)
@@ -160,7 +183,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def float(name, options={})
       param(:float, name, options)
@@ -177,7 +200,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def decimal(name, options={})
       param(:decimal, name, options)
@@ -194,7 +217,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def boolean(name, options={})
       param(:boolean, name, options)
@@ -211,7 +234,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def datetime(name, options={})
       param(:datetime, name, options)
@@ -228,7 +251,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def text(name, options={})
       param(:text, name, options)
@@ -245,7 +268,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def binary(name, options={})
       param(:binary, name, options)
@@ -262,7 +285,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Array<WeaselDiesel::Params::Rule>] 
+    # @return [Array<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def array(name, options={})
       param(:array, name, options)
@@ -279,7 +302,7 @@ class WeaselDiesel
     #    service.param.string  :type, :in => LeaderboardType.names, :default => LeaderboardType::LIFETIME
     #
     # @api public
-    # @return [Arrays<WeaselDiesel::Params::Rule>] 
+    # @return [Arrays<WeaselDiesel::Params::Rule>]
     #   List of optional or required param rules depending on the new param rule type
     def file(name, options={})
       param(:file, name, options)
@@ -358,11 +381,16 @@ class WeaselDiesel
 
     # Defines a namespaced param
     #
+    # @param [Symbol, String] name
+    #   The name of the namespace
+    # @param [Hash] opts
+    #   A hash representing the namespace settings
+    #
     # @yield [Params] the newly created namespaced param
     # @return [Array<WeaselDiesel::Params>] the list of all the namespaced params
     # @api public
-    def namespace(name)
-      params = Params.new(:space_name => name)
+    def namespace(name, opts={})
+      params = Params.new(:space_name => Namespace.new(name, :null => opts[:null]))
       yield(params) if block_given?
       namespaced_params << params unless namespaced_params.include?(params)
     end
@@ -382,9 +410,10 @@ class WeaselDiesel
     # @api public
     def param_names
       first_level_expected_params = (list_required + list_optional).map{|rule| rule.name.to_s}
-      first_level_expected_params += namespaced_params.map{|r| r.space_name.to_s}
+      first_level_expected_params += namespaced_params.map{|r| r.space_name.name.to_s}
       first_level_expected_params
     end
 
   end # of Params
+
 end
