@@ -31,6 +31,10 @@ describe_service "services/test.xml" do |service|
     user.array   :skills, :in => %w{ruby java networking}
   end
 
+  service.params.namespace :options, :null => true do |option|
+    option.boolean :verbose, :default => false, :required => :true
+  end
+
   # the response contains a list of player creation ratings each object in the list
 
 =begin
