@@ -7,14 +7,14 @@ require 'erb' # used to sanitize the error message and avoid XSS attacks
 #
 # @api public
 module ParamsVerification
-  
+
   class ParamError        < StandardError; end #:nodoc
   class NoParamsDefined   < ParamError; end #:nodoc
   class MissingParam      < ParamError; end #:nodoc
   class UnexpectedParam   < ParamError; end #:nodoc
   class InvalidParamType  < ParamError; end #:nodoc
   class InvalidParamValue < ParamError; end #:nodoc
-  
+
   # An array of validation regular expressions.
   # The array gets cached but can be accessed via the symbol key.
   #
@@ -29,12 +29,12 @@ module ParamsVerification
                             #:array    => /,/
                           }
   end
-  
+
   # Validation against each required WeaselDiesel::Params::Rule
   # and returns the potentially modified params (with default values)
-  # 
+  #
   # @param [Hash] params The params to verify (incoming request params)
-  # @param [WeaselDiesel::Params] service_params A Playco service param compatible object listing required and optional params 
+  # @param [WeaselDiesel::Params] service_params A Playco service param compatible object listing required and optional params
   # @param [Boolean] ignore_unexpected Flag letting the validation know if unexpected params should be ignored
   #
   # @return [Hash]
@@ -42,53 +42,55 @@ module ParamsVerification
   #
   # @example Validate request params against a service's defined param rules
   #   ParamsVerification.validate!(request.params, @service.defined_params)
-  # 
+  #
   # @api public
   def self.validate!(params, service_params, ignore_unexpected=false)
-    
+
     # Verify that no garbage params are passed, if they are, an exception is raised.
     # only the first level is checked at this point
     unless ignore_unexpected
       unexpected_params?(params, service_params.param_names)
     end
-    
+
     # dupe the params so we don't modify the passed value
     updated_params = params.dup
     # Required param verification
     service_params.list_required.each do |rule|
       updated_params = validate_required_rule(rule, updated_params)
     end
-    
+
     # Set optional defaults if any optional
     service_params.list_optional.each do |rule|
       updated_params = validate_optional_rule(rule, updated_params)
     end
-    
+
     # check the namespaced params
     service_params.namespaced_params.each do |param|
-      param.list_required.each do |rule|
-        updated_params = validate_required_rule(rule, updated_params, param.space_name.to_s)
-      end
-      param.list_optional.each do |rule|
-        updated_params = validate_optional_rule(rule, updated_params, param.space_name.to_s)
+      unless param.space_name.null && updated_params[param.space_name.name.to_s].nil?
+        param.list_required.each do |rule|
+          updated_params = validate_required_rule(rule, updated_params, param.space_name.name.to_s)
+        end
+        param.list_optional.each do |rule|
+          updated_params = validate_optional_rule(rule, updated_params, param.space_name.name.to_s)
+        end
       end
     end
-    
+
     # verify nested params, only 1 level deep tho
     params.each_pair do |key, value|
       if value.is_a?(Hash)
-        namespaced = service_params.namespaced_params.find{|np| np.space_name.to_s == key.to_s}
+        namespaced = service_params.namespaced_params.find{|np| np.space_name.name.to_s == key.to_s}
         raise UnexpectedParam, "Request included unexpected parameter: #{ERB::Util.html_escape(key)}" if namespaced.nil?
         unexpected_params?(params[key], namespaced.param_names)
       end
     end
-    
+
     updated_params
   end
-  
-  
+
+
   private
-  
+
   # Validates a required rule against a list of params passed.
   #
   #
@@ -131,7 +133,7 @@ module ParamsVerification
   # @param [String] namespace An optional namespace
   #
   # @return [Hash] The potentially modified params
-  # 
+  #
   # @api private
   def self.validate_optional_rule(rule, params, namespace=nil)
     param_name  = rule.name.to_s
@@ -169,7 +171,7 @@ module ParamsVerification
   # @param [Hash] params The params that might need to be updated.
   # @param [String, Symbol] namespace The optional namespace used to access the `param_value`
   #
-  # @return [Array<Object, Hash>] An array containing the param value and 
+  # @return [Array<Object, Hash>] An array containing the param value and
   #   a hash representing the potentially modified params after going through the filter.
   #
   def self.validate_and_cast_type(param_value, param_name, rule_type, params, namespace=nil)
@@ -267,8 +269,8 @@ module ParamsVerification
       end
     end
   end
-  
-  
+
+
   def self.unexpected_params?(params, param_names)
     # Raise an exception unless no unexpected params were found
     unexpected_keys = (params.keys - param_names)
@@ -276,8 +278,8 @@ module ParamsVerification
       raise UnexpectedParam, "Request included unexpected parameter(s): #{unexpected_keys.map{|k| ERB::Util.html_escape(k)}.join(', ')}"
     end
   end
-  
-  
+
+
   def self.type_cast_value(type, value)
     return value if value == nil
     case type
@@ -311,7 +313,7 @@ module ParamsVerification
       value
     end
   end
-  
+
   # Checks that the value's type matches the expected type for a given param. If a nil value is passed
   # the verification is skipped.
   #
