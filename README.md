@@ -196,6 +196,10 @@ service.params do |param|
     user.boolean :mailing_list, :default => true, :doc => "is the user subscribed to the ML?"
     user.array   :skills, :in => %w{ruby js cooking}
   end
+
+  service.params.namespace :attachment, :null => true do |attachment|
+    attachment.string :url, :required => true
+  end
 ```
 
 
