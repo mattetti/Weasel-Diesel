@@ -24,7 +24,7 @@ class WeaselDiesel
     # Lists all top level simple elements and array elements.
     #
     # @return [Array<WeaselDiesel::Response::Element, WeaselDiesel::Response::Array>]
-    def nodes 
+    def nodes
       elements + arrays
     end
 
@@ -164,7 +164,7 @@ class WeaselDiesel
       # @option opts [String, Symbol] attribute_name The name of the attribute, the value being the type
       # @option opts [String, Symbol] :doc The attribute documentation
       # @option opts [String, Symbol] :mock An optional mock value used by service related tools
-      # 
+      #
       # @example Creation of a response attribute called 'best_lap_time'
       #   service.response do |response|
       #    response.element(:name => "my_stats", :type => 'Leaderboard') do |e|
@@ -174,13 +174,13 @@ class WeaselDiesel
       #
       # @return [Array<WeaselDiesel::Response::Attribute>]
       # @api public
-      def attribute(opts, extra_opts={})
-        raise ArgumentError unless opts.is_a?(Hash) && extra_opts.is_a?(Hash)
-        new_attribute = Attribute.new(opts, extra_opts)
+      def attribute(opts)
+        raise ArgumentError unless opts.is_a?(Hash)
+        new_attribute = Attribute.new(opts)
         @attributes << new_attribute
         # document the attribute if description available
         # we might want to have a placeholder message when a response attribute isn't defined
-        if opts.merge!(extra_opts).has_key?(:doc)
+        if opts.has_key?(:doc)
           @doc.attribute(new_attribute.name, opts[:doc])
         end
         @attributes
@@ -191,7 +191,7 @@ class WeaselDiesel
       # @param [Hash] opts An element's attribute options
       # @option opts [String, Symbol] attribute_name The name of the attribute, the value being the type
       # @option opts [String, Symbol] :mock An optional mock value used by service related tools
-      # 
+      #
       # @example Creation of a response attribute called 'best_lap_time'
       #   service.response do |response|
       #    response.element(:name => "my_stats", :type => 'Leaderboard') do |e|
@@ -212,12 +212,12 @@ class WeaselDiesel
       # Defines an array aka vector of elements.
       #
       # @param [String, Symbol] name The name of the array element.
-      # @param [String, Symbol] type Optional type information, useful to store the represented 
+      # @param [String, Symbol] type Optional type information, useful to store the represented
       #        object types for instance.
       #
       # @param [Proc] &block
       #   A block to execute against the newly created array.
-      # 
+      #
       # @example Defining an element array called 'player_creation_rating'
       #   element.array 'player_creation_rating', 'PlayerCreationRating' do |a|
       #     a.attribute :comments  => :string
@@ -227,7 +227,7 @@ class WeaselDiesel
       #   end
       # @yield [Vector] the newly created array/vector instance
       # @see Element#initialize
-      # 
+      #
       # @return [Array<WeaselDiesel::Response::Vector>]
       # @api public
       def array(name, type=nil)
@@ -299,7 +299,7 @@ class WeaselDiesel
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def string(name=nil, opts={})
-        attribute({name => :string}, opts)
+        attribute({name => :string}.merge(opts))
       end
 
       # Shortcut to create a string attribute
@@ -307,7 +307,7 @@ class WeaselDiesel
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def integer(name=nil, opts={})
-        attribute({name => :integer}, opts)
+        attribute({name => :integer}.merge(opts))
       end
 
       # Shortcut to create a string attribute
@@ -315,7 +315,7 @@ class WeaselDiesel
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def float(name=nil, opts={})
-        attribute({name => :float}, opts)
+        attribute({name => :float}.merge(opts))
       end
 
       # Shortcut to create a string attribute
@@ -323,7 +323,7 @@ class WeaselDiesel
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def boolean(name=nil, opts={})
-        attribute({name => :boolean}, opts)
+        attribute({name => :boolean}.merge(opts))
       end
 
       # Shortcut to create a string attribute
@@ -331,7 +331,7 @@ class WeaselDiesel
       # @param [Symbol, String] name the name of the attribute.
       # @param [Hash] opts the attribute options.
       def datetime(name=nil, opts={})
-        attribute({name => :datetime}, opts)
+        attribute({name => :datetime}.merge(opts))
       end
 
       # Converts an element into a hash representation
@@ -429,17 +429,14 @@ class WeaselDiesel
         # name, type, doc, type
         #
         # @param [Hash, Array] o_params
-        # @param [Hash] o_extra_params A hash with extra params passed, needed to support Ruby 1.8 :(
         #
         # @api public
-        def initialize(o_params, o_extra_params={})
+        def initialize(o_params)
           params = o_params.dup
-          extra_params = o_extra_params.dup
           if params.is_a?(Hash)
             @name, @type = params.shift
             @doc  = params.delete(:doc) if params.has_key?(:doc)
-            @doc  ||= extra_params.delete(:doc) if extra_params.has_key?(:doc)
-            @opts = params.merge!(extra_params)
+            @opts = params
           elsif params.is_a?(Array)
             @name = params.shift
             @type = params.shift

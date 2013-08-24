@@ -7,8 +7,8 @@ describe_service "services/test.xml" do |service|
   service.http_verb :get
 
   service.params do |p|
-    p.string :framework, 
-      :in => WeaselDieselSpecOptions, 
+    p.string :framework,
+      :in => WeaselDieselSpecOptions,
       :required => true,
       :doc => "The test framework used, could be one of the two following: #{WeaselDieselSpecOptions.join(", ")}."
 
@@ -38,7 +38,6 @@ describe_service "services/test.xml" do |service|
   # the response contains a list of player creation ratings each object in the list
 
 =begin
-  #Format not supported by Ruby 1.8 due to hash insertion order not being maintained.
   service.response do |response|
     response.element(:name => "player_creation_ratings") do |e|
       e.attribute  :id          => :integer, :doc => "id doc"
