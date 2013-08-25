@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/mattetti/Weasel-Diesel"
   s.summary     = %q{Web Service DSL}
   s.description = %q{Ruby DSL describing Web Services without implementation details.}
+  s.license     = 'MIT'
 
   s.rubyforge_project = "wsdsl"
 
