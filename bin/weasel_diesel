@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "thor/group"
+require_relative "../lib/weasel_diesel"
+
+class WeaselDieselCli < Thor::Group
+  include Thor::Actions
+
+  desc "Generate documentation for the web services"
+  argument :source_path, :required => true, :type => :string, :desc => "The source path for Weasel Diesel web service definitions"
+  argument :destination_path, :type => :string, :desc => "The destination path for generated documentation", :default => "doc"
+
+  def generate
+    ENV['DONT_CONNECT'] = 'true'
+    ENV['DONT_PRINT_ROUTES'] = 'true'
+
+    Dir.glob(File.join(destination_root, source_path, "**", "*.rb")).each do |api|
+      require api
+    end
+
+    require 'fileutils'
+    destination = File.join(destination_root, destination_path)
+    FileUtils.mkdir_p(destination) unless File.exist?(destination)
+    File.open("#{destination}/index.html", "w"){|f| f << doc_template.result(binding)}
+    puts "Documentation available there: #{destination}/index.html"
+    `open #{destination}/index.html` if RUBY_PLATFORM =~ /darwin/ && !ENV['DONT_OPEN']
+  end
+
+  private
+
+  def response_element_html(el)
+    response_element_template.result(binding)
+  end
+
+  def input_params_html(required, optional)
+    input_params_template.result(binding)
+  end
+
+  def input_params_template
+    file = resources.join '_input_params.erb'
+    ERB.new File.read(file)
+  end
+
+  def response_element_template
+    file = resources.join '_response_element.erb'
+    ERB.new File.read(file)
+  end
+
+  def doc_template
+    file = resources.join 'template.erb'
+    ERB.new File.read(file)
+  end
+
+  def resources
+    require 'pathname'
+    @resources ||= Pathname.new(File.join(File.dirname(__FILE__), '..', 'lib', 'weasel_diesel', 'doc_generator'))
+  end
+
+end
+
+WeaselDieselCli.start

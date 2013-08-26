@@ -386,6 +386,12 @@ class WeaselDiesel
     end
   end
 
+  # Left for generators to implement. It's empty because WD itself isn't concerned
+  # with implementation, but needs it defined so doc generation can read WD web
+  # service definitions.
+  def implementation(&block)
+  end
+
   SERVICE_ROOT_REGEXP = /(.*?)[\/\(\.]/
   SERVICE_ACTION_REGEXP = /[\/\(\.]([a-z0-9_]+)[\/\(\.\?]/i
   SERVICE_RESTFUL_SHOW_REGEXP = /\/:[a-z0-9_]+\.\w{3}$/
@@ -421,7 +427,5 @@ class WeaselDiesel
       end
     end
   end
-
-
 
 end

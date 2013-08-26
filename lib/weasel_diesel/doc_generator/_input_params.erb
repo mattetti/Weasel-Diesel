@@ -1,0 +1,21 @@
+<ul class="param-list">
+<% (required + optional).each do |rule| %>
+  <li>
+    <span class="param-name <%= 'param-required' if required.include?(rule) %>">
+      <%= rule.name %>
+    </span>
+    <span class="param-details">
+      <span class="param-type">
+        <%= rule.options[:type] || 'string' %>.
+      </span>
+      <% if options = rule.options[:options] %>
+        Value options: <code class='param-value'><%= options.join(', ') %></code>.
+      <% end %>
+      <% if default = rule.options[:default] %>
+        Default value:  <code class='param-value'><%= default %></code>.
+      <% end %>
+    </span>
+    <%= rule.options[:doc] %>
+  </li>
+<% end %>
+</ul>

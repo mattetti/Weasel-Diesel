@@ -1,0 +1,40 @@
+<ul class="param-list">
+  <% if el.name %>
+  <li class="param-name">
+    <%= el.name %>
+    <% if false && el.is_a?(WeaselDiesel::Response::Vector) %>
+      <span class="response-array">(Array, these are the properties of each array item)</span>
+    <% end %>
+  </li>
+  <% end %>
+  <% el.properties.each do |prop| %>
+  <li>
+    <span class="param-name">
+      <%= prop.name %>
+    </span>
+    <span class="param-details">
+      <span class="param-type">
+        <%= prop.type %>.
+      </span>
+      <% if false && prop.opts && prop.opts.respond_to?(:[]) && prop.opts[:null] %>
+      Can be blank or missing.
+      <% end %>
+      <% unless true && prop.doc.nil? or prop.doc.empty? %>
+        <%= prop.doc %>
+      <% end %>
+    </span>
+  </li>
+  <% end %>
+
+  <% if false && el.arrays %>
+    <% el.arrays.each do |e| %>
+      <%= response_element_html(e) %>
+    <% end %>
+  <% end %>
+
+  <% if false && el.elements %>
+    <% el.elements.each do |e| %>
+      <%= response_element_html(e) %>
+    <% end %>
+  <% end %>
+</ul>
