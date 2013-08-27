@@ -70,7 +70,7 @@ describe ParamsVerification do
     params['timestamp'] = Time.now.iso8601
     lambda { ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_error
     params['timestamp'] = Time.now.getutc.iso8601
-    lambda { ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_error(ParamsVerification::InvalidParamType)
+    lambda { ParamsVerification.validate!(params, @service.defined_params) }.should_not raise_error
   end
 
   it "should set the default value for a namespace optional param" do
@@ -111,7 +111,7 @@ describe ParamsVerification do
   it "should not raise an exception if a req array param doesn't contain a comma" do
     service = WSList.find(:post, "/services/array_param.xml")
     params = {'seq' => "a b c d e g"}
-    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception(ParamsVerification::InvalidParamType)
+    lambda{ ParamsVerification.validate!(params, service.defined_params) }.should_not raise_exception
   end
 
   it "should raise an exception when a param is of the wrong type" do

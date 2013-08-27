@@ -5,7 +5,8 @@ release.
 
 ## 1.3.0
 * Move documentation generation from wd_sinatra into Weasel-Diesel.
-* Drop support for Ruby 1.8.7
+* Drop support for Ruby 1.8.7.
+* Fix rspec deprecation: `expect { }.not_to raise_error(SpecificErrorClass)`
 
 ## 1.2.2:
 * Added support for anonymous top level arrays.
