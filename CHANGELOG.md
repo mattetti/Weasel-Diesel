@@ -3,14 +3,14 @@
 All changes can be seen on GitHub and git tags are used to isolate each
 release.
 
-**HEAD**:
+## 1.3.0
 * Move documentation generation from wd_sinatra into Weasel-Diesel.
 * Drop support for Ruby 1.8.7
 
-1.2.2:
+## 1.2.2:
 * Added support for anonymous top level arrays.
 
-1.2.1:
+## 1.2.1:
 
 * Modified the way an empty string param is cast/verified. If a param is
 passed as an empty string but the param isn't specified as a string, the
@@ -19,8 +19,7 @@ an integer param, the cast params will look like that: `{'id' => nil}`,
 however if `name` is a string param and `{'name' => ''}` is passed, the
 value won't be nullified.
 
-
-**1.2.0**:
+## 1.2.0:
 
 * All service urls are now stored with a prepended slash (if not defined
   with one). `WDList.find(<verb>, <url>)` will automatically find the
