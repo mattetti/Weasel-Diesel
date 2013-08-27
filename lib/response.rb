@@ -337,15 +337,16 @@ class WeaselDiesel
 
       # Converts an element into a hash representation
       #
+      # @param [Boolean] root_node true if this node has no parents.
       # @return [Hash] the element attributes formated in a hash
-      def to_hash
+      def to_hash(root_node=true)
         attrs = {}
         attributes.each{ |attr| attrs[attr.name] = attr.type }
-        (vectors + elements).each{ |el| attrs[el.name] = el.to_hash }
+        (vectors + elements).each{ |el| attrs[el.name] = el.to_hash(false) }
         if self.class == Vector
-          [attrs]
+          (root_node && name) ? {name => [attrs]} : [attrs]
         else
-          attrs
+          (root_node && name) ? {name => attrs} : attrs
         end
       end
 
