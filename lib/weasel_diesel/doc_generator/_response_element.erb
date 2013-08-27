@@ -1,0 +1,49 @@
+<table class="table table-striped table-responsive">
+  <tdbody>
+    <% if el.name %>
+      <tr>
+        <td colspan="2">
+          <strong><%= el.name %></strong>
+          <% if false && el.is_a?(WeaselDiesel::Response::Vector) %>
+            <span class="response-array">(Array, these are the properties of each array item)</span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    <% el.properties.each do |prop| %>
+      <tr>
+        <td>
+          <strong><%= prop.name %></strong>
+          <br />
+          <em>
+            <% if false && prop.opts && prop.opts.respond_to?(:[]) && prop.opts[:null] %>
+              required
+            <% else %>
+              optional
+            <% end %>
+          </em>
+        </td>
+        <td>
+          <p>
+            <strong><%= prop.type %></strong>
+            <% unless true && prop.doc.nil? or prop.doc.empty? %>
+              - <%= prop.doc %>
+            <% end %>
+          </p>
+        </td>
+      </tr>
+    <% end %>
+
+    <% if false && el.arrays %>
+      <% el.arrays.each do |e| %>
+        <%= response_element_html(e) %>
+      <% end %>
+    <% end %>
+
+    <% if false && el.elements %>
+      <% el.elements.each do |e| %>
+        <%= response_element_html(e) %>
+      <% end %>
+    <% end %>
+  </tdbody>
+</table>

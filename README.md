@@ -328,6 +328,16 @@ describe_service "example" do |service|
 end
 ```
 
+## Documentation generation
+
+```bash
+    $ weasel_diesel generate_doc <SOURCE_PATH> <DESTINATION_PATH>
+```
+
+To generate documentation for the APIs you created in the api folder. The
+source path is the location of your ruby files. The destination is optional,
+'doc' is the default.
+
 
 ## Test Suite & Dependencies
 

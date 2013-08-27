@@ -4,6 +4,7 @@ All changes can be seen on GitHub and git tags are used to isolate each
 release.
 
 **HEAD**:
+* Move documentation generation from wd_sinatra into Weasel-Diesel.
 * Drop support for Ruby 1.8.7
 
 1.2.2:
