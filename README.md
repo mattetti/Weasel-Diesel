@@ -34,8 +34,8 @@ describe_service "/hello_world" do |service|
 
   # DOCUMENTATION
   service.documentation do |doc|
-  	doc.overall "This service provides a simple hello world implementation example."
-  	doc.example "<code>curl -I 'http://localhost:9292/hello_world?name=Matt'</code>"
+    doc.overall "This service provides a simple hello world implementation example."
+    doc.example "<code>curl -I 'http://localhost:9292/hello_world?name=Matt'</code>"
  end
 
   # ACTION/IMPLEMENTATION (specific to the sinatra app example, can
