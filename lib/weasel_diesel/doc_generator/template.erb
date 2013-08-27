@@ -1,246 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="utf-8">
-    <title>Weasel Diesel - API documentation</title>
-    <style>
-    body {
-      background: rgb(223, 223, 223);
-      color: #333;
-      font-size: 13px;
-      line-height: 1.7em;
-      text-align: center;
-      margin: 0;
-      font-family: Helvetica, Arial;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-    }
+    <title>API Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
 
-    @media all and (min-width : 740px) {
-      .container {
-        width: 640px;
-        margin: 2em auto;
-        border: 1px #CCC solid;
-        border-radius: 4px;
-        padding: 26px 40px 0 26px;
-      }
-    }
-    @media all and (max-width : 740px) {
-      .container {
-        width: 90%;
-        margin: 0;
-        padding: 2em 5% 0 5%;
-        border: 0;
-      }
-    }
-    .container {
-      background: #FFF;
-      text-align: left;
-      height: 100%;
-    }
-
-    footer {
-      border-top: 1px solid #AAA;
-      color: #666;
-      text-align: center;
-      margin: 2em 2em 0 2em;
-      padding: 0em;
-    }
-
-    a, a:visited {
-      color: #4183C4;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .link-to-top {
-      display: inline;
-      float: right;
-      font-size: 13px;
-      color: #666;
-      width: 2em;
-      background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEGSURBVDjLpZM/LwRRFMXPspmEaGc1shHRaiXsJ5GIRixbCr6SikxIlqgJM5UohIiGdofovHf/PZVmYwZvTntPfjnn3txWCAFNNFE33L/ZKXYv+1dRgL3r7bu0PbucJp3e4GLjtsrXGq9wkA8SU7tPk87i/MwCzAyP5QNeytcnJl46XMuoNoGKDoVlTkQhJpAgmJqcBjnqkqPTXxN8qz9cD6vdHtQMxXOBt49y5XjzLB/3tau6kWewKiwoRu8jZFvn+U++GgCBlWFBQY4qr1ANcAQxgQaFjwH4TwYrQ5skYBOYKbzjiASOwCrNd2BBwZ4jAcowGJgkAuAZ2dEJhAUqij//wn/1BesSumImTttSAAAAAElFTkSuQmCC") right no-repeat;
-    }
-    .link-to-top:hover {
-      text-decoration: none;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      color: #333;
-    }
-
-    .toc {
-      font-size: 16px;
-      line-height: 28px;
-    }
-    .api {
-      margin: 13px 0;
-    }
-    h3 {
-      margin: 13px 0 4px 0;
-    }
-    h4 {
-      margin: 8px 0 4px 0;
-    }
-
-    ul {
-      padding-left:1.2em;
-    }
-    li {
-      margin: 0;
-      padding: 0;
-      line-height: 26px;
-    }
-    .param-list {
-      list-style-type: none;
-      margin: 0 auto;
-    }
-
-    .verb-url {
-      border: 1px solid #cacaca;
-      line-height: 1.2em;
-      font: 12px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
-      padding: 10px;
-      overflow: auto;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      -moz-background-clip: padding;
-      -webkit-background-clip: padding-box;
-      background-clip: padding-box;
-      background-color: #FAFAFB;
-      color: #393939;
-      margin: 0px;
-    }
-
-    .auth-required {
-      background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ/SURBVDjLbVJBaxNBGH2bpEkTmxi1NTRKTZtoQUHEWz0Igj2I4kG9eVNQhEBO7bEHc+yv8JAiHnr2B4gFqVrQRhObljQolBSTJqZJdnZmfbNr2rU68DEz33zfm/fejGHbNrxjaWlpRCk1J6WcYZxkgPGTsWJZ1mIul/vlrTe8AIVC4Qqbl5PJ5GQsFoPP5wP36PV6qNfr2OIg0L35+fm1fwDYPMLDj+l0OmOaJmq1Gjqdjr4dgUAAiUTCqSsWixvMXV5YWOjqvW+AxOSz8fHxjBAC5XJ5s91up7gO6tDrUqn0QwOTXYZSsoO+wGDB5EwkEkGlUgGb7mSz2apHajWfz9+sVqvFVCrl1P4PYExr5m16vYUjQ+c0O11DtmN/ebD95pG9UpnGzl7Y0Xz30ir8toAtLdiWG0JIvFi76piaGG7g9plVTD/5YLgMCPLg/g0YtMTwhznfApRBfsP6kAYJSKuN57Md5oXTsvHy7aEEfZMutHZfIRAahWGMsHAICMeZVsD+HmTrG8zudyhrH+HJLGyz7wEgRSh9k4nm+nvqPIb4xWuovV5k/2lMXJ9F8+s6ARqIpk6QsIQtTC+AcGTYpBqfvgBfcJTuKMi+xKfdMCZgIp6eRK8TYu2+w2oA4PwDm+5qVK218XmNLN7xxILqKfS7pGqTWekLmuVtV65STs8hA73RqJQQP5+CP3KKACamHj7FlGBDawfH00kEW0MuA8o9AmA6qMrSHqwTIAoM08hAkHkN0ES3UYfotBGdiNFu5cr2AmgJobOPET7nhxEMuU/o40soSjO7iHbbVNgnUen6pY0/AOCTbC7PuV44H0f8Cetg5g9zP5aU7loDcfwGcrKyzYdvwUUAAAAASUVORK5CYII=") 0% 0% no-repeat;
-      padding-right: 20px;
-      width: 3em;
-    }
-
-    .param-name {
-      font-weight: bold;
-      margin-right: 5px;
-    }
-    .param-required:after {
-      content: '*';
-      color: red;
-      margin: 0;
-    }
-    .param-type {
-      text-transform: capitalize;
-    }
-    .param-details {
-      color: #777;
-    }
-    .param-value {
-      font-family: monospace;
-    }
-    .namespace-required:after {
-      content: '*';
-      color: red;
-      font-weight: bold;
-      margin-left: 5px;
-    }
-
-    .example {
-      border: 1px solid #cacaca;
-      line-height: 1.2em;
-      font: 12px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
-      padding: 10px;
-      overflow: auto;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      -moz-background-clip: padding;
-      -webkit-background-clip: padding-box;
-      background-clip: padding-box;
-      background-color: #FAFAFB;
-      color: #393939;
-    }
-    .input .example, .response .example {
-      margin-left: 1.2em;
-    }
-    .response-array {
-      color: #777;
-      font-weight: normal;
-      font-size: 13px;
-    }
-    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
   </head>
   <body>
-    <div class="container" id="top">
-      <h1>Web API</h1>
-      <ul class="toc">
-      <% WSList.all.each do |api| %>
-        <li><a href="#<%= "raw-#{api.verb}-#{api.url}" %>"><%= api.doc.desc %></a></li>
-      <% end %>
-      </ul>
-
-      <% WSList.all.each do |api| %>
-      <div class="api" id="<%= "raw-#{api.verb}-#{api.url}" %>">
-        <a class="link-to-top" href="#top">&nbsp;</a>
-        <h2><%= api.doc.desc %></h2>
-        <pre class="verb-url"><%= api.verb.upcase %> <%= '[SSL]' if api.ssl %> <%= api.url %></pre>
-
-        <div class="input">
-          <h3>
-            Input
-            <% if api.auth_required %>
-            <span class="auth-required" title="Authentication required"></span>
-            <% end %>
-          </h3>
-
-          <%# TODO support for nested namespaced params %>
-          <ul class="param-list">
-          <% api.params.namespaced_params.each do |params| %>
-            <li>
-              <h4 class="<%= 'namespace-required' unless params.space_name.null %>">Namespace <%= params.space_name.name %></h4>
-              <%= input_params_html(params.list_required, params.list_optional) %>
-            </li>
-          <% end %>
-          </ul>
-
-          <% if api.required_rules.any? || api.optional_rules.any? %>
-            <%= input_params_html(api.required_rules, api.optional_rules) %>
-          <% end %>
-
-          <% api.doc.examples.each do |example| %>
-          <pre class="example"><%= example %></pre>
-          <% end %>
+    <div class="container">
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">API Documentation</a>
         </div>
-
-        <div class="response">
-          <% if api.response.nodes.any? %>
-            <h3>
-              Response
-              <% if api.response.arrays %>
-                <span class="response-array">(Array, these are the properties of each array item)</span>
-              <% end %>
-            </h3>
-
-            <% api.response.arrays.each do |array| %>
-              <%= response_element_html(array) %>
-            <% end %>
-            <% api.response.elements.each do |el| %>
-              <%= response_element_html(el) %>
-            <% end %>
-          <% end %>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">Home</a></li>
+          </ul>
         </div>
       </div>
-      <% end %>
 
-      <footer>
-        <p>
-          Documentation generated on <%= Time.now.strftime('%d-%b-%Y') %> with <a href="https://github.com/mattetti/wd-sinatra">wd-sinatra</a>
-          -
-          <a href="http://www.famfamfam.com/lab/icons/silk/">Silk icons</a> by Famfamfam
-        </p>
-      </footer>
+      <div class="row">
+        <div class="sidebar col-md-3 well">
+          <h5>Resources</h5>
+          <ul>
+            <% WSList.all.sort{|a,b| a.url <=> b.url}.each do |api| %>
+              <li><a href="#<%= "raw-#{api.verb}-#{api.url}" %>"><%= api.verb.upcase %> <%= api.url %></a></li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="content col-md-9">
+          <div class="jumbotron">
+            <h1>API Documentation</h1>
+            <p>Resources are listed on the sidebar to the left.</p>
+          </div>
+
+          <% WSList.all.each do |api| %>
+            <div id="<%= "raw-#{api.verb}-#{api.url}" %>">
+              <div class="overall">
+                <h2><%= api.verb.upcase %> <%= '[SSL]' if api.ssl %> <%= api.url %></h2>
+                <% if api.auth_required %>
+                  <span class='label label-danger'>Authentication required</span>
+                <% end %>
+
+                <% if api.doc.desc %>
+                  <p>
+                    <%= "#{api.doc.desc}" %>
+                  </p>
+                <% end %>
+              </div>
+
+              <div class="parameters">
+                <h3>Parameters</h3>
+                <% if api.required_rules.any? || api.optional_rules.any? %>
+                  <%= input_params_html(api.required_rules, api.optional_rules) %>
+                <% end %>
+
+                <ul class="list-unstyled">
+                <% api.params.namespaced_params.each do |params| %>
+                  <li>
+                    <strong><%= params.space_name.name %></strong>
+                    <em>
+                      (<%= params.space_name.null ? 'optional' : 'required' %>)
+                    </em>
+                    <%= input_params_html(params.list_required, params.list_optional) %>
+                  </li>
+                <% end %>
+                </ul>
+              </div>
+
+              <div class="example-request">
+                <h3>Example Request</h3>
+                <% api.doc.examples.each do |example| %>
+                  <pre class="example"><%= example %></pre>
+                <% end %>
+              </div>
+
+              <div class="response">
+                <% if api.response.nodes.any? %>
+                  <h3>Response</h3>
+                  <% if api.response.arrays %>
+                    <span class="response-array">(Array, these are the properties of each array item)</span>
+                  <% end %>
+
+                  <% api.response.arrays.each do |array| %>
+                    <%= response_element_html(array) %>
+                  <% end %>
+                  <% api.response.elements.each do |el| %>
+                    <%= response_element_html(el) %>
+                  <% end %>
+                <% end %>
+                <h4>Example</h4>
+                <pre><%= api.response.to_json %></pre>
+              </div>
+
+          </div>
+          <hr>
+        <% end %>
+
+        <footer>
+          <p>&copy; <%= Time.now.year %></p>
+        </footer>
+        </div>
+      </div>
     </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </body>
 </html>
