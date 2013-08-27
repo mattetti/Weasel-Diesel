@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">API Documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">Home</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="sidebar col-md-3 well">
+          <h5>Resources</h5>
+          <ul>
+            <% WSList.all.sort{|a,b| a.url <=> b.url}.each do |api| %>
+              <li><a href="#<%= "raw-#{api.verb}-#{api.url}" %>"><%= api.verb.upcase %> <%= api.url %></a></li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="content col-md-9">
+          <div class="jumbotron">
+            <h1>API Documentation</h1>
+            <p>Resources are listed on the sidebar to the left.</p>
+          </div>
+
+          <% WSList.all.each do |api| %>
+            <div id="<%= "raw-#{api.verb}-#{api.url}" %>">
+              <div class="overall">
+                <h2><%= api.verb.upcase %> <%= '[SSL]' if api.ssl %> <%= api.url %></h2>
+                <% if api.auth_required %>
+                  <span class='label label-danger'>Authentication required</span>
+                <% end %>
+
+                <% if api.doc.desc %>
+                  <p>
+                    <%= "#{api.doc.desc}" %>
+                  </p>
+                <% end %>
+              </div>
+
+              <div class="parameters">
+                <h3>Parameters</h3>
+                <% if api.required_rules.any? || api.optional_rules.any? %>
+                  <%= input_params_html(api.required_rules, api.optional_rules) %>
+                <% end %>
+
+                <ul class="list-unstyled">
+                <% api.params.namespaced_params.each do |params| %>
+                  <li>
+                    <strong><%= params.space_name.name %></strong>
+                    <em>
+                      (<%= params.space_name.null ? 'optional' : 'required' %>)
+                    </em>
+                    <%= input_params_html(params.list_required, params.list_optional) %>
+                  </li>
+                <% end %>
+                </ul>
+              </div>
+
+              <div class="example-request">
+                <h3>Example Request</h3>
+                <% api.doc.examples.each do |example| %>
+                  <pre class="example"><%= example %></pre>
+                <% end %>
+              </div>
+
+              <div class="response">
+                <% if api.response.nodes.any? %>
+                  <h3>Response</h3>
+                  <% if api.response.arrays %>
+                    <span class="response-array">(Array, these are the properties of each array item)</span>
+                  <% end %>
+
+                  <% api.response.arrays.each do |array| %>
+                    <%= response_element_html(array) %>
+                  <% end %>
+                  <% api.response.elements.each do |el| %>
+                    <%= response_element_html(el) %>
+                  <% end %>
+                <% end %>
+                <h4>Example</h4>
+                <pre><%= api.response.to_json %></pre>
+              </div>
+
+          </div>
+          <hr>
+        <% end %>
+
+        <footer>
+          <p>&copy; <%= Time.now.year %></p>
+        </footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

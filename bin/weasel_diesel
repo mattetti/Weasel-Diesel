@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require_relative "../lib/weasel_diesel/cli"
+
+WeaselDiesel::Cli.start

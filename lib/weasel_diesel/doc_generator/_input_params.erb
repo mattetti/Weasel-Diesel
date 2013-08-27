@@ -1,0 +1,36 @@
+<table class="table table-striped table-responsive">
+  <tdbody>
+    <% [["required", required], ["optional", optional]].each do |label, rules| %>
+      <% unless rules.empty? %>
+          <% rules.each do |rule| %>
+          <tr>
+            <td>
+              <strong><%= rule.name %></strong>
+              <br />
+              <em><%= label %></em>
+            </td>
+            <td>
+              <p>
+                <strong><%= rule.options[:type] || 'string' %></strong>
+
+                <% if desc = rule.doc %>
+                  - <%= desc %>
+                <% end %>
+              </p>
+
+              <% if options = rule.options[:options] %>
+                <strong>Options:</strong> <%= options.join(', ') %>
+                <br />
+              <% end %>
+
+              <% if default = rule.options[:default] %>
+                <strong>Default:</strong> <%= default %>
+                <br />
+              <% end %>
+            </td>
+          </tr>
+          <% end %>
+      <% end %>
+    <% end %>
+  </tdbody>
+</table>
