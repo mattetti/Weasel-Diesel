@@ -2,7 +2,7 @@
   <tdbody>
     <% if el.name %>
       <tr>
-        <td>
+        <td colspan="2">
           <strong><%= el.name %></strong>
           <% if false && el.is_a?(WeaselDiesel::Response::Vector) %>
             <span class="response-array">(Array, these are the properties of each array item)</span>
