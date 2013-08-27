@@ -8,7 +8,12 @@ class WeaselDiesel
 
     desc "generate_doc SOURCE_PATH DESTINATION_PATH", "Generate HTML documentation for WeaselDiesel web services"
     def generate_doc(source_path, destination_path="doc")
-      Dir.glob(File.join(destination_root, source_path, "**", "*.rb")).each do |api|
+      api_files = Dir.glob(File.join(destination_root, source_path, "**", "*.rb"))
+      if api_files.empty?
+        puts "No ruby files in source_path: #{File.join(destination_root, source_path)}"
+        return
+      end
+      api_files.each do |api|
         require api
       end
 
