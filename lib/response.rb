@@ -153,6 +153,7 @@ class WeaselDiesel
         @type       = type
         @attributes = []
         @meta_attributes = []
+        @elements   = []
         @vectors    = []
         @key        = nil
         # we don't need to initialize the nested elements, by default they should be nil
@@ -340,11 +341,11 @@ class WeaselDiesel
       def to_hash
         attrs = {}
         attributes.each{ |attr| attrs[attr.name] = attr.type }
-        elements.each{ |el| attrs[el.name] = el.to_hash } if elements
+        (vectors + elements).each{ |el| attrs[el.name] = el.to_hash }
         if self.class == Vector
-          name ? {name => [attrs]} : [attrs]
+          [attrs]
         else
-          name ? {name => attrs} : attrs
+          attrs
         end
       end
 
