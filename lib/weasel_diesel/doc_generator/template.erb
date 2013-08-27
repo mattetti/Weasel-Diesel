@@ -98,7 +98,7 @@
                   <% end %>
                 <% end %>
                 <h4>Example</h4>
-                <pre><%= api.response.to_json %></pre>
+                <pre><%= JSON.pretty_generate(JSON.parse(api.response.to_json)) %></pre>
               </div>
 
           </div>
