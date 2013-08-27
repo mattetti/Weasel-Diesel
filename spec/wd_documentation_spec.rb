@@ -77,7 +77,9 @@ The most common way to use this service looks like that:
   it "should have a json representation of an response element" do
     json = @service.response.elements.first.to_json
     loaded_json = JSON.load(json)
-    loaded_json[@service.response.elements.first.doc.name].should_not be_empty
+    loaded_json.has_key?(@service.response.elements.first.name).should be_true
+    loaded_json[@service.response.elements.first.name].should_not be_empty
+    loaded_json[@service.response.elements.first.name].has_key?("player_creation_rating").should be_true
   end
 
   it "should have documentation for a response element attribute" do
