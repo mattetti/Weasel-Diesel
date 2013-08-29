@@ -2,7 +2,7 @@ require "thor"
 require_relative "../weasel_diesel"
 
 class WeaselDiesel
-  class Cli < Thor
+  class CLI < Thor
     include Thor::Actions
     namespace :weasel_diesel
 
