@@ -7,6 +7,7 @@ release.
 * Move documentation generation from wd_sinatra into Weasel-Diesel.
 * Drop support for Ruby 1.8.7.
 * Fix rspec deprecation: `expect { }.not_to raise_error(SpecificErrorClass)`
+* DSL now only extends the top level main object.
 
 ## 1.2.2:
 * Added support for anonymous top level arrays.

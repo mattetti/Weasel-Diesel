@@ -3,7 +3,7 @@ require_relative 'params'
 require_relative 'response'
 require_relative 'documentation'
 require_relative 'ws_list'
-require_relative 'kernel_ext'
+require 'weasel_diesel/dsl'
 
 # WeaselDiesel offers a web service DSL to define web services,
 # their params, http verbs, formats expected as well as the documentation
