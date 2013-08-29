@@ -1,4 +1,4 @@
-require File.expand_path("spec_helper", File.dirname(__FILE__))
+require_relative 'spec_helper'
 
 describe WeaselDiesel::Params do
 
@@ -69,7 +69,7 @@ describe WeaselDiesel::Params do
 
     it "should have options" do
       @rule.options[:type].should == :string
-      @rule.options[:in].should ==  WeaselDieselSpecOptions
+      @rule.options[:in].should == WeaselDieselSpecOptions
       @rule.options[:null].should be_false
     end
   end

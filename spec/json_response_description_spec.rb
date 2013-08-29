@@ -1,34 +1,34 @@
-require File.expand_path("spec_helper", File.dirname(__FILE__))
+require_relative 'spec_helper'
 
 describe "WeaselDiesel JSON response description" do
 
 # JSON response example
 =begin
-  { vouchers: [ 
-  { 
-    id : 1, 
+  { vouchers: [
+  {
+    id : 1,
     redeemed : false,
-    created_at : 123123123123, 
+    created_at : 123123123123,
     option: {
       id : 1231,
       price: 123.32
     }
-  }, 
-  { 
-    id : 2, 
+  },
+  {
+    id : 2,
     redeemed : true,
-    created_at : 123123123123, 
+    created_at : 123123123123,
     option: {
       id : 1233,
       price: 1.32
     }
-  }, 
+  },
 ] }
 =end
 
   before :all do
     @timestamp = Time.now.to_i
-    @service =  describe_service "json_list" do |service|
+    @service = describe_service "json_list" do |service|
       service.formats  :json
       service.response do |response|
         response.array :vouchers do |node|
@@ -104,7 +104,7 @@ describe "WeaselDiesel JSON response description" do
   end
 
   it "should allow an anonymous object at the root of the response" do
-    service =  describe_service "json_anonymous_obj" do |service|
+    service = describe_service "json_anonymous_obj" do |service|
       service.formats  :json
       service.response do |response|
         response.object do |obj|
@@ -120,7 +120,7 @@ describe "WeaselDiesel JSON response description" do
     obj.properties.find{|prop| prop.name == :id}.should_not be_nil
     obj.properties.find{|prop| prop.name == :foo}.should_not be_nil
   end
-  
+
 end
 
 
@@ -134,7 +134,7 @@ describe "WeaselDiesel simple JSON object response description" do
 
   before :all do
     @timestamp = Time.now.to_i
-    @service =  describe_service "json_obj" do |service|
+    @service = describe_service "json_obj" do |service|
       service.formats  :json
       service.response do |response|
         response.object :organization do |node|
@@ -165,7 +165,7 @@ describe "WeaselDiesel anonymous JSON object response description" do
 
   before :all do
     @timestamp = Time.now.to_i
-    @service =  describe_service "anon_json_obj" do |service|
+    @service = describe_service "anon_json_obj" do |service|
       service.formats  :json
       service.response do |response|
         response.object do |node|

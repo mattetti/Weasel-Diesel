@@ -1,9 +1,9 @@
-require File.expand_path('inflection', File.dirname(__FILE__))
-require File.expand_path('params', File.dirname(__FILE__))
-require File.expand_path('response', File.dirname(__FILE__))
-require File.expand_path('documentation', File.dirname(__FILE__))
-require File.expand_path('ws_list', File.dirname(__FILE__))
-require File.expand_path('kernel_ext', File.dirname(__FILE__))
+require_relative 'inflection'
+require_relative 'params'
+require_relative 'response'
+require_relative 'documentation'
+require_relative 'ws_list'
+require_relative 'kernel_ext'
 
 # WeaselDiesel offers a web service DSL to define web services,
 # their params, http verbs, formats expected as well as the documentation

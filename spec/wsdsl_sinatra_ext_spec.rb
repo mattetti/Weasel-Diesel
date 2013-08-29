@@ -1,6 +1,6 @@
-require File.expand_path("spec_helper", File.dirname(__FILE__))
+require_relative 'spec_helper'
 require 'sinatra'
-require File.expand_path("./../lib/framework_ext/sinatra.rb", File.dirname(__FILE__))
+require_relative '../lib/framework_ext/sinatra'
 WeaselDiesel.send(:include, WeaselDieselSinatraExtension)
 
 describe "Hello World example" do

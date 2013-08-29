@@ -1,5 +1,5 @@
-require File.expand_path("spec_helper", File.dirname(__FILE__))
-require File.expand_path("../lib/json_response_verification", File.dirname(__FILE__))
+require_relative 'spec_helper'
+require_relative '../lib/json_response_verification'
 
 WeaselDiesel.send(:include, JSONResponseVerification)
 
