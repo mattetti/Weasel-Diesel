@@ -10,5 +10,6 @@ require_relative "../lib/framework_ext/sinatra_controller"
 ENV["RACK_ENV"] = 'test'
 
 RSpec.configure do |conf|
+  conf.include WeaselDiesel::DSL
   conf.include Rack::Test::Methods
 end
