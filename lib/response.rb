@@ -153,6 +153,7 @@ class WeaselDiesel
         @type       = type
         @attributes = []
         @meta_attributes = []
+        @elements   = []
         @vectors    = []
         @key        = nil
         # we don't need to initialize the nested elements, by default they should be nil
@@ -336,15 +337,16 @@ class WeaselDiesel
 
       # Converts an element into a hash representation
       #
+      # @param [Boolean] root_node true if this node has no parents.
       # @return [Hash] the element attributes formated in a hash
-      def to_hash
+      def to_hash(root_node=true)
         attrs = {}
         attributes.each{ |attr| attrs[attr.name] = attr.type }
-        elements.each{ |el| attrs[el.name] = el.to_hash } if elements
+        (vectors + elements).each{ |el| attrs[el.name] = el.to_hash(false) }
         if self.class == Vector
-          name ? {name => [attrs]} : [attrs]
+          (root_node && name) ? {name => [attrs]} : [attrs]
         else
-          name ? {name => attrs} : attrs
+          (root_node && name) ? {name => attrs} : attrs
         end
       end
 
