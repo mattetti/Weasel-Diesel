@@ -338,6 +338,8 @@ To generate documentation for the APIs you created in the api folder. The
 source path is the location of your ruby files. The destination is optional,
 'doc' is the default.
 
+Here's a [sample](https://s3.amazonaws.com/f.cl.ly/items/3V1Q123b2E2c0z350V0n/index.html)
+of what the generator documentation looks like.
 
 ## Test Suite & Dependencies
 
