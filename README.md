@@ -8,10 +8,12 @@ To get you going quickly, see the [generator for sinatra apps](https://github.co
 The wd_sinatra gem allows you to generate the structure for a sinatra app using Weasel Diesel and with lots of goodies.
 Updating is trivial since the core features are provided by this library and the wd_sinatra gem.
 
-
 You can also check out this Sinatra-based [example
 application](https://github.com/mattetti/sinatra-web-api-example) that
 you can fork and use as a base for your application.
+
+* API Docs: http://rubydoc.info/gems/weasel_diesel/frames
+* Google Group: https://groups.google.com/forum/#!forum/weaseldiesel
 
 DSL examples:
 
