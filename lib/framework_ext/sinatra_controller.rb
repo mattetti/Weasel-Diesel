@@ -72,9 +72,4 @@ class SinatraServiceController
   # Forwarding some methods to the underlying app object
   def_delegators :app, :settings, :halt, :compile_template, :session
 
-  # Returns true or false if the player is logged in.
-  def logged_in?
-    !session[:player_id].nil?
-  end
-
 end
