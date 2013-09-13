@@ -3,6 +3,9 @@
 All changes can be seen on GitHub and git tags are used to isolate each
 release.
 
+## HEAD
+* Remove deprecated #controller_dispatch.
+
 ## 1.3.0
 * Move documentation generation from wd_sinatra into Weasel-Diesel.
 * Drop support for Ruby 1.8.7.
