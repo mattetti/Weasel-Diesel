@@ -1,4 +1,3 @@
-require_relative 'inflection'
 require_relative 'params'
 require_relative 'response'
 require_relative 'documentation'
@@ -126,18 +125,6 @@ class WeaselDiesel
     @defined_params      = WeaselDiesel::Params.new
     @doc                 = WeaselDiesel::Documentation.new
     @response            = WeaselDiesel::Response.new
-    # TODO: extract to its own optional lib
-    if WeaselDiesel.use_controller_dispatch
-      @name                = extract_service_root_name(url)
-      if WeaselDiesel.use_pluralized_controllers
-        base_name = ExtlibCopy::Inflection.pluralize(ExtlibCopy::Inflection.singular(name))
-        @controller_name     = "#{ExtlibCopy.classify(base_name)}Controller"
-      else
-        @controller_name     = "#{ExtlibCopy.classify(name)}Controller"
-      end
-      @action              = extract_service_action(url)
-    end
-    #
     @verb                = :get
     @formats             = []
     @version             = '0.1'
@@ -164,52 +151,6 @@ class WeaselDiesel
   # @since 0.1.1
   def self.use_pluralized_controllers=(val)
     @pluralized_controllers = val
-  end
-
-  # Checks the WeaselDiesel flag to see if controller are used to dispatch requests.
-  # This allows apps to use this DSL but route to controller/actions.
-  #
-  # @return [Boolean] The updated value, default to false
-  # @api public
-  # @since 0.3.0
-  # @deprecated
-  def self.use_controller_dispatch
-    @controller_dispatch
-  end
-
-  # Sets a WeaselDiesel global flag so the controller settings can be generated
-  # Setting this flag will automatically set the controller/action names.
-  # @param [Boolean] True if the controllers are pluralized, False otherwise.
-  #
-  # @return [Boolean] The updated value
-  # @api public
-  # @since 0.1.1
-  # @deprecated
-  def self.use_controller_dispatch=(val)
-    @controller_dispatch = val
-  end
-
-  # Offers a way to dispatch the service at runtime
-  # Basically, it dispatches the request to the defined controller/action
-  # The full request cycle looks like that:
-  # client -> webserver -> rack -> env -> [service dispatcher] -> controller action -> rack -> webserver -> client
-  # @param [Object] app Reference object such as a Sinatra::Application to be passed to the controller.
-  #
-  # @return [#to_s] The response from the controller action
-  # @api private
-  # @deprecated
-  def controller_dispatch(app)
-    unless @controller
-      klass = @controller_name.split("::")
-      begin
-        @controller = klass.inject(Object) { |const,k| const.const_get(k) }
-      rescue NameError => e
-        raise "The #{@controller_name} class was not found"
-      end
-    end
-    # We are passing the service object to the controller so the
-    # param verification could be done when the controller gets initialized.
-    @controller.new(app, self).send(@action)
   end
 
   # Returns the defined params

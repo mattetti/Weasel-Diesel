@@ -1,4 +1,5 @@
 require_relative "spec_helper"
+require_relative '../lib/params_verification'
 
 describe ParamsVerification do
 
